@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  *{box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  body{margin:0;background:#0a0d0d;font-family:"Helvetica Neue","Helvetica Neue LT Std",Helvetica,Arial,sans-serif;}
+  a{color:#4DD5D0;text-decoration:none;}a:hover{color:#62E6DD;}
+  .pace-noscroll::-webkit-scrollbar{display:none;}
+  .pace-noscroll{scrollbar-width:none;-ms-overflow-style:none;}
+  @keyframes paceSpin{to{transform:rotate(360deg);}}
+  @keyframes paceRing{0%{transform:scale(.6);opacity:0;}40%{opacity:1;}100%{transform:scale(1.15);opacity:0;}}
+  @keyframes paceDot{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+  @keyframes paceLogoIn{0%{opacity:0;transform:scale(.86) translateY(10px);}100%{opacity:1;transform:scale(1) translateY(0);}}
+  input[type=range].pace-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background-color:#3a4041;background-image:linear-gradient(#4DD5D0,#4DD5D0);background-repeat:no-repeat;background-size:var(--pct,0%) 100%;outline:none;margin:14px 0 0;cursor:pointer;}
+  input[type=range].pace-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #4DD5D0;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:pointer;}
+  input[type=range].pace-slider::-moz-range-thumb{width:22px;height:22px;border:3px solid #4DD5D0;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:pointer;}
+  input[type=range].pace-slider::-moz-range-track{height:6px;border-radius:3px;background:#3a4041;}
+  input[type=range].pace-slider::-moz-range-progress{height:6px;border-radius:3px;background:#4DD5D0;}
+</style>
+<script src="icon-data.js"></script>
+</helmet>
+<div style="min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:radial-gradient(120% 90% at 50% 0%,#12332f 0%,#0a0d0d 55%);">
+  <div style="position:relative;width:402px;height:874px;border-radius:46px;overflow:hidden;background:#000;border:1px solid #22282a;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 8px #16191a;">
+
+    <!-- status bar -->
+    <div style="position:absolute;top:0;left:0;right:0;height:52px;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px 30px 0;pointer-events:none;">
+      <span style="color:#fff;font-size:15px;font-weight:500;letter-spacing:.3px;">9:41</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="1" y="1" width="19" height="10" rx="3" stroke="#fff" stroke-opacity=".5"/><rect x="3" y="3" width="14" height="6" rx="1.5" fill="#fff"/><rect x="21" y="4" width="2" height="4" rx="1" fill="#fff"/></svg>
+      </div>
+    </div>
+
+    <!-- top scrim: longer, fades in on scroll -->
+    <div style="{{ scrimStyle }}"></div>
+
+    <!-- screen stack -->
+    <div ref="{{ screenRef }}" style="position:absolute;inset:0;">
+
+      <!-- ============ SPLASH / LOGO LOADING ============ -->
+      <sc-if value="{{ isSplash }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 40%,#154B4C 0%,#000 62%);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="animation:paceLogoIn .9s cubic-bezier(.22,1,.36,1) both;">
+            <img src="assets/pace-logo.svg" alt="Pace" style="width:230px;display:block;"/>
+          </div>
+          <div style="display:flex;gap:9px;margin-top:46px;">
+            <div style="width:9px;height:9px;border-radius:50%;background:#4DD5D0;animation:paceDot 1.1s ease-in-out infinite;"></div>
+            <div style="width:9px;height:9px;border-radius:50%;background:#4DD5D0;animation:paceDot 1.1s ease-in-out .18s infinite;"></div>
+            <div style="width:9px;height:9px;border-radius:50%;background:#4DD5D0;animation:paceDot 1.1s ease-in-out .36s infinite;"></div>
+          </div>
+          <div style="position:absolute;bottom:58px;left:0;right:0;text-align:center;color:#5f6b6b;font-size:14px;letter-spacing:.4px;">Finding your pace…</div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ONBOARDING QUESTIONS ============ -->
+      <sc-if value="{{ isOnboarding }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 28%);display:flex;flex-direction:column;">
+          <div style="padding:62px 20px 0;display:flex;align-items:center;gap:14px;">
+            <sc-if value="{{ onb.showBack }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ onb.back }}" style="cursor:pointer;width:40px;height:40px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="10" height="16" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </sc-if>
+            <div style="flex:1;height:6px;border-radius:3px;background:#26292a;overflow:hidden;"><div style="{{ onb.progressStyle }}"></div></div>
+            <div onClick="{{ onb.skip }}" style="cursor:pointer;color:#8b9092;font-size:15px;flex-shrink:0;">Skip</div>
+          </div>
+          <div style="padding:38px 24px 0;flex:1;">
+            <div style="color:#4DD5D0;font-size:13px;font-weight:500;letter-spacing:.6px;">{{ onb.stepLabel }}</div>
+            <div style="color:#fff;font-size:28px;font-weight:500;line-height:1.2;margin-top:10px;text-wrap:pretty;">{{ onb.title }}</div>
+            <div style="color:#B9BFC1;font-size:16px;line-height:1.5;margin-top:10px;">{{ onb.subtitle }}</div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:30px;">
+              <sc-for list="{{ onb.options }}" as="o" hint-placeholder-count="4">
+                <div onClick="{{ o.select }}" style="{{ o.style }}">
+                  <span>{{ o.label }}</span>
+                  <sc-if value="{{ o.checked }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ onb.isDays }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:8px;margin-top:30px;">
+                <sc-for list="{{ onb.dayChoices }}" as="d" hint-placeholder-count="5">
+                  <div onClick="{{ d.select }}" style="{{ d.style }}">{{ d.label }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ onb.isEnjoy }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px;">
+                <sc-for list="{{ onb.enjoy }}" as="o" hint-placeholder-count="6">
+                  <div onClick="{{ o.select }}" style="{{ o.style }}">
+                    <div style="{{ o.iconStyle }}"></div>
+                    <span>{{ o.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="padding:16px 24px 40px;">
+            <div onClick="{{ onb.next }}" style="{{ onb.nextStyle }}">{{ onb.nextLabel }}</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ HEALTH DATA & DEVICE INTEGRATION ============ -->
+      <sc-if value="{{ isConnect }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 28%);display:flex;flex-direction:column;padding-bottom:40px;">
+          <div style="padding:62px 24px 0;">
+            <div style="color:#fff;font-size:28px;font-weight:500;line-height:1.2;text-wrap:pretty;">Connect your health data</div>
+            <div style="color:#B9BFC1;font-size:16px;line-height:1.5;margin-top:10px;">Pace works best alongside what you already track. Link any of these — or none. You can change this anytime in Settings.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;padding:28px 20px 0;">
+            <sc-for list="{{ devices }}" as="d" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:14px;background:#16191a;border:1px solid #2b3132;border-radius:16px;padding:14px 16px;">
+                <div style="{{ d.tileStyle }}"><img src="{{ d.img }}" alt="{{ d.name }}" style="width:28px;height:28px;object-fit:contain;"/></div>
+                <div style="flex:1;min-width:0;">
+                  <div style="color:#fff;font-size:17px;font-weight:500;">{{ d.name }}</div>
+                  <div style="color:#8b9092;font-size:13px;margin-top:2px;">{{ d.sub }}</div>
+                </div>
+                <div onClick="{{ d.toggle }}" style="{{ d.btnStyle }}">
+                  <sc-if value="{{ d.connected }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                  {{ d.btnLabel }}
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex:1;min-height:24px;"></div>
+          <div style="padding:24px 24px 0;display:flex;flex-direction:column;gap:16px;">
+            <div onClick="{{ finishOnboarding }}" style="cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">{{ connectCta }}</div>
+            <div onClick="{{ skipConnect }}" style="cursor:pointer;text-align:center;color:#8b9092;font-size:15px;">Not now</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ HOME ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:64px 0 120px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px 0;">
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <span style="color:#FED18D;font-size:14px;">Thursday, July 2</span>
+              <span style="color:#fff;font-size:24px;font-weight:500;">Good afternoon</span>
+            </div>
+            <div onClick="{{ goAccount }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;overflow:hidden;background:#9CF3EA;flex-shrink:0;">
+              <img src="assets/avatar-jolyne.png" alt="profile" style="width:100%;height:100%;object-fit:cover;object-position:80% 12%;"/>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:36px 20px 14px;">
+            <span style="color:#fff;font-size:20px;font-weight:500;">You're already doing</span>
+            <div onClick="{{ goProgress }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
+              <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;">
+            <sc-for list="{{ already }}" as="c" hint-placeholder-count="2">
+              <div onClick="{{ c.flip }}" style="cursor:pointer;flex:none;width:216px;height:153px;perspective:900px;">
+                <div style="{{ c.inner }}">
+                  <div style="position:absolute;inset:0;border-radius:16px;background:#1E1F20;padding:16px 18px;-webkit-backface-visibility:hidden;backface-visibility:hidden;opacity:{{ c.frontOp }};transition:opacity .28s ease;display:flex;flex-direction:column;justify-content:space-between;">
+                    <div>
+                      <div style="color:#fff;font-size:16px;font-weight:500;margin-bottom:5px;">{{ c.title }}</div>
+                      <div style="display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.7" stroke="#B9BFC1" stroke-width="1.1"/><path d="M6.5 3.4V6.7l2.3 1.3" stroke="#B9BFC1" stroke-width="1.1" stroke-linecap="round"/></svg>
+                        {{ c.time }}
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:flex-end;gap:6px;">
+                      <sc-if value="{{ c.arrow }}" hint-placeholder-val="{{ true }}"><svg width="18" height="34" viewBox="0 0 18 34" fill="none" style="display:block;margin-bottom:2px;flex-shrink:0;"><path d="M9 33V4M9 4L3 11M9 4l6 7" stroke="#F1EA2E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                      <span style="{{ c.numStyle }}">{{ c.value }}</span>
+                      <span style="color:#fff;font-size:15px;font-weight:500;line-height:1.05;padding-bottom:4px;">{{ c.unit }}</span>
+                    </div>
+                  </div>
+                  <div style="position:absolute;inset:0;border-radius:16px;background:#1E1F20;border:1px solid #2f3536;padding:16px 18px;-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform:rotateY(180deg);transform:rotateY(180deg);opacity:{{ c.backOp }};transition:opacity .28s ease;display:flex;flex-direction:column;justify-content:center;gap:10px;">
+                    <div style="color:#B9BFC1;font-size:13px;">Today's breakdown</div>
+                    <div style="color:#fff;font-size:15px;line-height:1.5;">{{ c.detail }}</div>
+                    <div style="color:#FA8815;font-size:13px;">Tap to flip back</div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:34px 20px 14px;">
+            <span style="color:#fff;font-size:20px;font-weight:500;">Suggested for you</span>
+            <div onClick="{{ goMove }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
+              <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="pace-noscroll" style="display:flex;gap:14px;overflow-x:auto;padding:0 20px 8px;">
+            <sc-for list="{{ suggested }}" as="w" hint-placeholder-count="3">
+              <div onClick="{{ w.open }}" style="cursor:pointer;flex:none;width:172px;">
+                <div style="position:relative;width:172px;height:186px;border-radius:16px;overflow:hidden;">
+                  <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                  <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:13px;padding:5px 12px;border-radius:20px;">{{ w.tag }}</span>
+                </div>
+                <div style="color:#fff;font-size:17px;font-weight:500;margin-top:11px;">{{ w.title }}</div>
+                <div style="font-size:14px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:34px 20px 8px;">
+                <span style="color:#fff;font-size:20px;font-weight:500;">Saved workouts</span>
+                <div onClick="{{ goAccountSaved }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
+                  <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="pace-noscroll" style="display:flex;gap:14px;overflow-x:auto;padding:0 20px 8px;">
+                <sc-for list="{{ savedCards }}" as="w" hint-placeholder-count="3">
+                  <div onClick="{{ w.open }}" style="cursor:pointer;flex:none;width:172px;">
+                    <div style="position:relative;width:172px;height:186px;border-radius:16px;overflow:hidden;">
+                      <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                      <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:13px;padding:5px 12px;border-radius:20px;">{{ w.tag }}</span>
+                    </div>
+                    <div style="color:#fff;font-size:17px;font-weight:500;margin-top:11px;">{{ w.title }}</div>
+                    <div style="font-size:14px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ============ MOVE ============ -->
+      <sc-if value="{{ isMove }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 120px;">
+          <div style="padding:16px 20px 0;display:flex;align-items:center;gap:12px;">
+            <div onClick="{{ goSearch }}" style="cursor:pointer;flex:1;display:flex;align-items:center;gap:11px;height:52px;padding:0 20px;border-radius:26px;background:rgba(30,31,32,.7);backdrop-filter:blur(10px);border:1px solid #2b3132;">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6.3" stroke="#B9BFC1" stroke-width="1.6"/><path d="M12.7 12.7L16 16" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span style="color:#B9BFC1;font-size:16px;">Search workouts</span>
+            </div>
+            <div onClick="{{ openFilter }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#111" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <sc-for list="{{ moveSections }}" as="s" hint-placeholder-count="3">
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:30px 20px 14px;">
+                <span style="color:#fff;font-size:20px;font-weight:500;">{{ s.title }}</span>
+                <div onClick="{{ s.seeAll }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
+                  <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="pace-noscroll" style="display:flex;gap:14px;overflow-x:auto;padding:0 20px 6px;">
+                <sc-for list="{{ s.items }}" as="w" hint-placeholder-count="3">
+                  <div onClick="{{ w.open }}" style="cursor:pointer;flex:none;width:186px;">
+                    <div style="position:relative;width:186px;height:196px;border-radius:16px;overflow:hidden;">
+                      <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                      <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:13px;padding:5px 12px;border-radius:20px;">{{ w.tag }}</span>
+                    </div>
+                    <div style="color:#fff;font-size:17px;font-weight:500;margin-top:11px;">{{ w.title }}</div>
+                    <div style="font-size:14px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ============ SEARCH ============ -->
+      <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 18%);padding:60px 0 120px;">
+          <div style="padding:16px 20px 0;display:flex;align-items:center;gap:12px;">
+            <div onClick="{{ back }}" style="cursor:pointer;padding:6px;flex-shrink:0;">
+              <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;gap:11px;height:50px;padding:0 18px;border-radius:26px;background:rgba(30,31,32,.7);backdrop-filter:blur(10px);border:1px solid #2b3132;">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6.3" stroke="#B9BFC1" stroke-width="1.6"/><path d="M12.7 12.7L16 16" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <input type="text" placeholder="Search workouts" style="flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:16px;font-family:inherit;"/>
+            </div>
+            <div onClick="{{ openFilter }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#111" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:120px 0;">
+              <div style="width:40px;height:40px;border-radius:50%;border:3px solid #2b3132;border-top-color:#FA8815;animation:paceSpin .8s linear infinite;"></div>
+              <span style="color:#737A7B;font-size:14px;">Finding your pace…</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="color:#B9BFC1;font-size:16px;padding:22px 20px 6px;">24 workouts</div>
+              <sc-for list="{{ searchResults }}" as="w" hint-placeholder-count="5">
+                <div onClick="{{ w.open }}" style="cursor:pointer;display:flex;gap:16px;padding:14px 20px;align-items:flex-start;">
+                  <div style="width:132px;height:92px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative;">
+                    <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                    <span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.62);color:#fff;font-size:11px;padding:3px 9px;border-radius:16px;">{{ w.tag }}</span>
+                  </div>
+                  <div style="flex:1;padding-top:2px;">
+                    <div style="color:#fff;font-size:18px;font-weight:500;">{{ w.title }}</div>
+                    <div style="font-size:14px;margin-top:5px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+                    <div style="color:#737A7B;font-size:14px;margin-top:3px;">{{ w.equip }}</div>
+                  </div>
+                  <svg width="15" height="19" viewBox="0 0 15 19" fill="none" style="margin-top:4px;"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#B9BFC1" stroke-width="1.4" fill="{{ w.markFill }}"/></svg>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ============ WORKOUT DETAIL ============ -->
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:#000;">
+          <div style="position:relative;width:100%;height:420px;">
+            <img src="{{ detail.img }}" alt="{{ detail.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 78%,#000 100%);"></div>
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;top:60px;left:20px;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;">
+              <svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div onClick="{{ toggleSave }}" style="cursor:pointer;position:absolute;top:60px;right:20px;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;">
+              <svg width="14" height="17" viewBox="0 0 15 19" fill="none"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#fff" stroke-width="1.5" fill="{{ detail.saveFill }}"/></svg>
+            </div>
+          </div>
+          <div style="position:relative;z-index:2;padding:0 24px 40px;margin-top:-34px;">
+            <span style="display:inline-block;background:rgba(30,31,32,.85);backdrop-filter:blur(8px);color:#fff;font-size:14px;padding:7px 16px;border-radius:20px;">{{ detail.tag }}</span>
+            <h1 style="color:#fff;font-size:34px;font-weight:500;margin:20px 0 12px;">{{ detail.title }}</h1>
+            <div style="font-size:17px;"><span style="color:#4DD5D0;">{{ detail.min }}</span><span style="color:#B9BFC1;"> · {{ detail.level }} · {{ detail.sets }} · {{ detail.cal }}</span></div>
+            <div style="color:#737A7B;font-size:16px;margin-top:8px;">{{ detail.equip }}</div>
+            <p style="color:#fff;font-size:16px;line-height:1.62;margin:28px 0 0;">{{ detail.desc }}</p>
+            <div onClick="{{ startWorkout }}" style="cursor:pointer;margin-top:40px;height:64px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.34);">Let's Go</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ START WORKOUT ============ -->
+      <sc-if value="{{ isWorkout }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;">
+          <div style="padding:60px 24px 0;background:linear-gradient(180deg,#154B4C 0%,#000 100%);">
+            <div onClick="{{ back }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;">
+              <svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="color:#B9BFC1;font-size:20px;margin:22px 0 12px;">Up next: {{ ex.next }}</div>
+            <div style="display:flex;gap:8px;padding-bottom:22px;">
+              <sc-for list="{{ ex.segments }}" as="seg" hint-placeholder-count="6">
+                <div style="{{ seg.style }}"></div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:6px 24px 0;">
+            <div style="color:#4DD5D0;font-size:17px;">Set {{ ex.setLabel }}</div>
+            <div style="color:#fff;font-size:30px;font-weight:500;margin-top:4px;">{{ ex.name }}</div>
+          </div>
+          <div style="flex:1;position:relative;margin-top:14px;">
+            <sc-if value="{{ voiceOff }}" hint-placeholder-val="{{ true }}">
+              <img src="{{ ex.img }}" alt="exercise" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,#000 0%,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 74%,#000 100%);"></div>
+            </sc-if>
+            <sc-if value="{{ voiceOn }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:0 34px;">
+                <div style="display:flex;align-items:center;gap:9px;color:#F1EA2E;font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:6px;">
+                  <svg width="16" height="16" viewBox="0 0 28 28" fill="none"><path d="M5 15v-1a9 9 0 0118 0v1" stroke="#F1EA2E" stroke-width="2" stroke-linecap="round"/><rect x="3" y="15" width="6" height="9" rx="2.5" fill="#F1EA2E"/><rect x="19" y="15" width="6" height="9" rx="2.5" fill="#F1EA2E"/></svg>
+                  VOICE GUIDE ON
+                </div>
+                <sc-for list="{{ ex.cues }}" as="c" hint-placeholder-count="4">
+                  <div style="{{ c.style }}">{{ c.text }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="padding:26px 40px 46px;display:flex;align-items:center;justify-content:space-between;background:#000;">
+            <div onClick="{{ togglePause }}" style="cursor:pointer;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.62);display:flex;align-items:center;justify-content:center;">
+              <span style="{{ ex.pauseIcon }}"></span>
+            </div>
+            <div onClick="{{ nextExercise }}" style="cursor:pointer;position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center;">
+              <svg width="132" height="132" viewBox="0 0 132 132" fill="none" style="position:absolute;inset:0;">
+                <circle cx="66" cy="66" r="58" stroke="#3a4041" stroke-width="9" fill="none"/>
+                <circle cx="66" cy="66" r="58" stroke="#F1EA2E" stroke-width="9" fill="none" stroke-linecap="round" style="{{ ex.ringStyle }}"/>
+              </svg>
+              <span style="position:relative;color:#fff;font-size:40px;font-weight:500;letter-spacing:1px;">{{ ex.clock }}</span>
+            </div>
+            <div onClick="{{ toggleVoice }}" style="{{ headphoneStyle }}">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M5 15v-1a9 9 0 0118 0v1" stroke="#111" stroke-width="2" stroke-linecap="round"/><rect x="3" y="15" width="6" height="9" rx="2.5" fill="#111"/><rect x="19" y="15" width="6" height="9" rx="2.5" fill="#111"/></svg>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ RECORD / ADD ACTIVITY ============ -->
+      <sc-if value="{{ isRecord }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 130px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
+            <span style="color:#fff;font-size:30px;font-weight:500;">Add an activity</span>
+            <div onClick="{{ addCatBtn.open }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:26px 20px 10px;">
+            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
+              <div onClick="{{ cat.select }}" onPointerDown="{{ cat.press }}" onPointerUp="{{ cat.release }}" onPointerLeave="{{ cat.release }}" style="{{ cat.style }}">
+                <sc-if value="{{ cat.showDel }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ cat.del }}" style="{{ cat.delStyle }}"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1l-7 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+                </sc-if>
+                <div style="{{ cat.iconStyle }}"></div>
+                <span style="{{ cat.labelStyle }}">{{ cat.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="color:#737A7B;font-size:13px;padding:0 20px;">Tip: press and hold a category to remove it.</div>
+
+          <sc-if value="{{ noCat }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;justify-content:center;height:360px;">
+              <span style="color:#3f4647;font-size:30px;font-weight:500;text-align:center;line-height:1.3;">Choose or add<br/>a category</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ hasCat }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:26px 20px 0;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="color:#fff;font-size:20px;font-weight:500;">Duration</span>
+                <span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ rec.duration }} min</span>
+              </div>
+              <input type="range" min="5" max="120" step="5" value="{{ rec.duration }}" onInput="{{ setDuration }}" class="pace-slider" style="--pct:{{ rec.durPct }};"/>
+
+              <!-- Walk / Run -->
+              <sc-if value="{{ isDistance }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:26px;"><span style="color:#fff;font-size:20px;font-weight:500;">Distance</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ rec.distance }} mi</span></div>
+                <input type="range" min="0" max="10" step="0.5" value="{{ rec.distance }}" onInput="{{ setDistance }}" class="pace-slider" style="--pct:{{ rec.distPct }};"/>
+                <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Intensity</div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ intensity }}" as="i" hint-placeholder-count="3"><div onClick="{{ i.select }}" style="{{ i.style }}">{{ i.label }}</div></sc-for></div>
+              </sc-if>
+
+              <!-- Stretch / Yoga -->
+              <sc-if value="{{ isFlex }}" hint-placeholder-val="{{ false }}">
+                <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Focus areas</div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ focus }}" as="f" hint-placeholder-count="6"><div onClick="{{ f.toggle }}" style="{{ f.style }}">{{ f.label }}</div></sc-for></div>
+                <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Intensity</div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ flexIntensity }}" as="i" hint-placeholder-count="3"><div onClick="{{ i.select }}" style="{{ i.style }}">{{ i.label }}</div></sc-for></div>
+              </sc-if>
+
+              <!-- Gym -->
+              <sc-if value="{{ isStrength }}" hint-placeholder-val="{{ false }}">
+                <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Workout groups</div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ groups }}" as="g" hint-placeholder-count="7"><div onClick="{{ g.toggle }}" style="{{ g.style }}">{{ g.label }}</div></sc-for></div>
+                <sc-if value="{{ gymHasGroup }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin:30px 0 14px;">
+                    <span style="color:#fff;font-size:20px;font-weight:500;">Equipment</span>
+                    <div onClick="{{ openScan }}" style="cursor:pointer;display:flex;align-items:center;gap:6px;color:#F1EA2E;font-size:14px;">Scan
+                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M2 8V4a2 2 0 012-2h4M18 2h4a2 2 0 012 2v4M24 18v4a2 2 0 01-2 2h-4M8 24H4a2 2 0 01-2-2v-4M6 13h14" stroke="#F1EA2E" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ equipment }}" as="e" hint-placeholder-count="5"><div onClick="{{ e.select }}" style="{{ e.style }}">{{ e.label }}</div></sc-for></div>
+                  <div style="margin-top:28px;"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:20px;font-weight:500;">Sets</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ rec.sets }}</span></div><input type="range" min="1" max="10" step="1" value="{{ rec.sets }}" onInput="{{ setSets }}" class="pace-slider" style="--pct:{{ rec.setsPct }};"/></div>
+                  <div style="margin-top:20px;"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:20px;font-weight:500;">Reps</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ rec.reps }}</span></div><input type="range" min="1" max="30" step="1" value="{{ rec.reps }}" onInput="{{ setReps }}" class="pace-slider" style="--pct:{{ rec.repsPct }};"/></div>
+                  <div style="margin-top:20px;"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:20px;font-weight:500;">Weights</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ rec.weight }} lbs</span></div><input type="range" min="0" max="100" step="5" value="{{ rec.weight }}" onInput="{{ setWeight }}" class="pace-slider" style="--pct:{{ rec.weightPct }};"/></div>
+                </sc-if>
+              </sc-if>
+
+              <!-- Custom / simple -->
+              <sc-if value="{{ isSimple }}" hint-placeholder-val="{{ false }}">
+                <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Intensity</div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ simpleIntensity }}" as="i" hint-placeholder-count="3"><div onClick="{{ i.select }}" style="{{ i.style }}">{{ i.label }}</div></sc-for></div>
+              </sc-if>
+
+              <div onClick="{{ recordTap }}" style="{{ recordBtnStyle }}">Record</div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ============ PROGRESS ============ -->
+      <sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 120px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <span style="color:#FED18D;font-size:14px;">Thursday, July 2</span>
+              <span style="color:#fff;font-size:24px;font-weight:500;">Summary</span>
+            </div>
+            <div onClick="{{ openEditSummary }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ editIconStyle }}"></div></div>
+          </div>
+          <div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:18px;">
+            <sc-if value="{{ cardSteps }}" hint-placeholder-val="{{ true }}">
+            <div onClick="{{ openStep }}" style="cursor:pointer;background:#1E1F20;border-radius:20px;padding:24px 22px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:22px;font-weight:500;">Step Count</span><span style="color:#B9BFC1;font-size:15px;display:flex;align-items:center;gap:5px;">Today <svg width="6" height="11" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:22px;">
+                <div style="display:flex;align-items:baseline;"><span style="color:#FA8815;font-size:52px;font-weight:500;letter-spacing:-1px;">2,847</span><span style="color:#fff;font-size:22px;font-weight:500;"> / {{ stepGoalLabel }}</span></div>
+                <div style="display:flex;align-items:flex-end;gap:6px;height:70px;">
+                  <sc-for list="{{ barsA }}" as="b" hint-placeholder-count="6"><div style="{{ b.style }}"></div></sc-for>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+            <sc-if value="{{ cardDistance }}" hint-placeholder-val="{{ true }}">
+            <div onClick="{{ openDist }}" style="cursor:pointer;background:#1E1F20;border-radius:20px;padding:24px 22px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:22px;font-weight:500;">Distance</span><span style="color:#B9BFC1;font-size:15px;display:flex;align-items:center;gap:5px;">Today <svg width="6" height="11" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:22px;">
+                <div style="display:flex;align-items:baseline;"><span style="color:#FA8815;font-size:52px;font-weight:500;letter-spacing:-1px;">5.4</span><span style="color:#FA8815;font-size:22px;font-weight:500;margin-left:7px;">mi</span><span style="color:#fff;font-size:22px;font-weight:500;margin-left:11px;">/ {{ distGoalLabel }} mi</span></div>
+                <div style="display:flex;align-items:flex-end;gap:6px;height:70px;">
+                  <sc-for list="{{ barsB }}" as="b" hint-placeholder-count="6"><div style="{{ b.style }}"></div></sc-for>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+            <sc-if value="{{ cardSessions }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#1E1F20;border-radius:20px;padding:24px 22px;">
+              <div onClick="{{ openSessions }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:22px;font-weight:500;">Sessions</span><svg width="7" height="13" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <sc-for list="{{ sessions }}" as="ss" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:16px;margin-top:20px;">
+                  <div style="width:52px;height:52px;border-radius:50%;background:#154B4C;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="{{ ss.iconStyle }}"></div></div>
+                  <div style="flex:1;"><div style="color:#fff;font-size:17px;">{{ ss.name }}</div><div style="color:#4DD5D0;font-size:22px;font-weight:500;margin-top:2px;">{{ ss.cal }}</div></div>
+                  <span style="color:#B9BFC1;font-size:15px;">{{ ss.date }}</span>
+                </div>
+              </sc-for>
+            </div>
+            </sc-if>
+            <sc-for list="{{ extraCards }}" as="ec" hint-placeholder-count="0">
+              <div style="background:#1E1F20;border-radius:20px;padding:24px 22px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:22px;font-weight:500;">{{ ec.name }}</span><span style="color:#B9BFC1;font-size:15px;display:flex;align-items:center;gap:5px;">This week <svg width="6" height="11" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:22px;">
+                  <div style="display:flex;align-items:baseline;"><span style="color:#FA8815;font-size:52px;font-weight:500;letter-spacing:-1px;">{{ ec.value }}</span><span style="color:#fff;font-size:22px;font-weight:500;">{{ ec.unit }} / {{ ec.goal }}</span></div>
+                  <div style="display:flex;align-items:flex-end;gap:6px;height:70px;">
+                    <sc-for list="{{ ec.bars }}" as="b" hint-placeholder-count="6"><div style="{{ b.style }}"></div></sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ FRIEND ============ -->
+      <sc-if value="{{ isFriend }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 120px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <span style="color:#FED18D;font-size:14px;">Thursday, July 2</span>
+              <span style="color:#fff;font-size:24px;font-weight:500;">Your Circle</span>
+            </div>
+            <div style="display:flex;gap:12px;">
+              <div onClick="{{ openAddFriend }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ addFriendStyle }}"></div></div>
+              <div onClick="{{ openSharedGoal }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ goalStyle }}"></div></div>
+            </div>
+          </div>
+          <div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:16px;">
+            <sc-for list="{{ feed }}" as="p" hint-placeholder-count="4">
+              <div style="background:#1E1F20;border-radius:20px;padding:20px;">
+                <div style="display:flex;align-items:flex-start;gap:14px;">
+                  <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;background:{{ p.avatarBg }};"><img src="{{ p.avatar }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"/></div>
+                  <div style="flex:1;"><div style="color:#fff;font-size:20px;font-weight:500;">{{ p.title }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:2px;">{{ p.ago }}</div></div>
+                  <span style="color:#B9BFC1;font-size:15px;">{{ p.min }}</span>
+                </div>
+                <div style="color:#fff;font-size:17px;margin-top:14px;line-height:1.45;">{{ p.text }}</div>
+                <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;border-radius:14px;overflow:hidden;width:100%;aspect-ratio:4/3;"><img src="{{ p.img }}" alt="post" style="width:100%;height:100%;object-fit:cover;"/></div></sc-if>
+                <div style="display:flex;align-items:center;gap:22px;margin-top:16px;">
+                  <div onClick="{{ p.like }}" style="cursor:pointer;display:flex;align-items:center;gap:7px;">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="{{ p.heartFill }}"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.49L12 20.3z" stroke="{{ p.heartStroke }}" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                    <span style="color:{{ p.heartStroke }};font-size:16px;">{{ p.likes }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:7px;">
+                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none"><path d="M2 9.5a7 7 0 1114 0 7 7 0 01-7 7H3.5L5 14a7 7 0 01-3-4.5z" stroke="#B9BFC1" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                    <span style="color:#B9BFC1;font-size:16px;">{{ p.comments }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ACCOUNT ============ -->
+      <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 60px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Account</span>
+            <div style="width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 2a6 6 0 016 6c0 5 2 7 2 7H2s2-2 2-7a6 6 0 016-6z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 19a2 2 0 004 0" stroke="#fff" stroke-width="1.5"/></svg></div>
+          </div>
+          <div style="padding:26px 20px 0;">
+            <div style="background:#1E1F20;border-radius:18px;padding:20px;display:flex;align-items:center;gap:18px;">
+              <div style="width:62px;height:62px;border-radius:50%;overflow:hidden;background:#9CF3EA;flex-shrink:0;"><img src="assets/avatar-jolyne.png" alt="Jolyne" style="width:100%;height:100%;object-fit:cover;object-position:80% 12%;"/></div>
+              <div style="flex:1;"><div style="color:#fff;font-size:22px;font-weight:500;">Jolyne Wu</div><div style="color:#B9BFC1;font-size:15px;margin-top:3px;">cholwu20@student.scad.edu</div></div>
+              <svg width="8" height="15" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="background:#1E1F20;border-radius:18px;padding:8px 18px;margin-top:22px;">
+              <sc-for list="{{ accountRows }}" as="r" hint-placeholder-count="8">
+                <div onClick="{{ r.tap }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:18px 2px;border-bottom:1px solid #2b3132;">
+                  <span style="color:#fff;font-size:19px;">{{ r.label }}</span>
+                  <svg width="8" height="15" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#737A7B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ NOTIFICATIONS ============ -->
+      <sc-if value="{{ isNotif }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 60px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Notifications</span>
+          </div>
+          <div style="padding:34px 20px 0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:20px;font-weight:500;">Frequency</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ notif.freq }}x</span></div>
+            <input type="range" min="1" max="8" step="1" value="{{ notif.freq }}" onInput="{{ setFreq }}" class="pace-slider" style="--pct:{{ notif.freqPct }};"/>
+            <div style="color:#8FA3A3;font-size:14px;line-height:1.45;margin-top:12px;">{{ notif.freqDesc }}</div>
+
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:30px 0 6px;">Best time</div>
+            <div style="color:#8FA3A3;font-size:14px;line-height:1.45;margin-bottom:14px;">Pick the days you want nudges, then the hours on those days.</div>
+            <div style="display:flex;gap:7px;">
+              <sc-for list="{{ bestDays }}" as="d" hint-placeholder-count="7">
+                <div onClick="{{ d.toggle }}" style="{{ d.style }}">{{ d.label }}</div>
+              </sc-for>
+            </div>
+            <div style="color:#4DD5D0;font-size:14px;margin:12px 0 18px;">{{ bestDaysSummary }}</div>
+            <div style="color:#B9BFC1;font-size:15px;margin-bottom:10px;">Hours on those days</div>
+            <div style="display:flex;background:#26292a;border-radius:12px;padding:4px;gap:4px;margin-bottom:16px;">
+              <sc-for list="{{ timeMode }}" as="m" hint-placeholder-count="2">
+                <div onClick="{{ m.select }}" style="{{ m.style }}">{{ m.label }}</div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ sameTime }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div onClick="{{ openTimeStart }}" style="cursor:pointer;flex:1;height:56px;border-radius:12px;border:1px solid #44494A;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#fff;font-size:18px;">{{ bestStart }} <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <span style="color:#B9BFC1;">—</span>
+                <div onClick="{{ openTimeEnd }}" style="cursor:pointer;flex:1;height:56px;border-radius:12px;border:1px solid #44494A;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#fff;font-size:18px;">{{ bestEnd }} <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ customTime }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ dayTimeRows }}" as="r" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:11px;">
+                    <span style="width:40px;color:#fff;font-size:15px;flex-shrink:0;">{{ r.key }}</span>
+                    <div onClick="{{ r.openStart }}" style="cursor:pointer;flex:1;height:48px;border-radius:10px;border:1px solid #44494A;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">{{ r.start }}</div>
+                    <span style="color:#B9BFC1;">–</span>
+                    <div onClick="{{ r.openEnd }}" style="cursor:pointer;flex:1;height:48px;border-radius:10px;border:1px solid #44494A;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">{{ r.end }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:30px 0 14px;">Tone</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+              <sc-for list="{{ tones }}" as="t" hint-placeholder-count="4">
+                <div onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}</div>
+              </sc-for>
+            </div>
+
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:30px 0 12px;">Trigger</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ triggers }}" as="tr" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;justify-content:space-between;height:60px;border:1px solid #2b3132;border-radius:12px;padding:0 18px;">
+                  <span style="color:#fff;font-size:19px;">{{ tr.label }}</span>
+                  <div onClick="{{ tr.toggle }}" style="{{ tr.trackStyle }}"><div style="{{ tr.knobStyle }}"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SCAN EQUIPMENT ============ -->
+      <sc-if value="{{ isScan }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;">
+          <div style="padding:60px 20px 0;">
+            <div style="position:relative;display:flex;align-items:center;justify-content:center;height:44px;">
+              <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:0;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span style="color:#fff;font-size:22px;font-weight:500;">{{ scanTitle }}</span>
+            </div>
+          </div>
+          <div style="flex:1;position:relative;margin:28px 24px;border-radius:24px;overflow:hidden;background:#0e1211;display:flex;align-items:center;justify-content:center;">
+            <video ref="{{ videoRef }}" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,.28);"></div>
+            <div style="position:relative;width:210px;height:210px;">
+              <div style="position:absolute;top:0;left:0;width:44px;height:44px;border-top:3px solid #FA8815;border-left:3px solid #FA8815;border-radius:8px 0 0 0;"></div>
+              <div style="position:absolute;top:0;right:0;width:44px;height:44px;border-top:3px solid #FA8815;border-right:3px solid #FA8815;border-radius:0 8px 0 0;"></div>
+              <div style="position:absolute;bottom:0;left:0;width:44px;height:44px;border-bottom:3px solid #FA8815;border-left:3px solid #FA8815;border-radius:0 0 0 8px;"></div>
+              <div style="position:absolute;bottom:0;right:0;width:44px;height:44px;border-bottom:3px solid #FA8815;border-right:3px solid #FA8815;border-radius:0 0 8px 0;"></div>
+            </div>
+            <span style="position:absolute;bottom:26px;left:0;right:0;text-align:center;color:#eef0f0;font-size:15px;">{{ scanHint }}</span>
+          </div>
+          <div style="padding:0 24px 46px;">
+            <div onClick="{{ scanRecognize }}" style="cursor:pointer;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">{{ scanButton }}</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ FILTER ============ -->
+      <sc-if value="{{ isFilter }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Filter</span>
+            <div onClick="{{ resetFilter }}" style="cursor:pointer;position:absolute;right:20px;color:#4DD5D0;font-size:16px;">Reset</div>
+          </div>
+          <div style="padding:30px 20px 0;">
+            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Category</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterCat }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Level</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterLevel }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 0;"><span style="color:#fff;font-size:20px;font-weight:500;">Max duration</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ filterVals.duration }} min</span></div>
+            <input type="range" min="10" max="90" step="5" value="{{ filterVals.duration }}" onInput="{{ setFilterDuration }}" class="pace-slider" style="--pct:{{ filterVals.durPct }};"/>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Equipment</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterEquip }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
+            <div onClick="{{ applyFilter }}" style="cursor:pointer;margin-top:34px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Show results</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ METRIC DETAIL ============ -->
+      <sc-if value="{{ isMetric }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">{{ metricMeta.title }}</span>
+          </div>
+          <div style="padding:26px 20px 0;">
+            <div style="display:flex;background:#1E1F20;border-radius:14px;padding:5px;gap:4px;"><sc-for list="{{ periods }}" as="p" hint-placeholder-count="4"><div onClick="{{ p.select }}" style="{{ p.style }}">{{ p.label }}</div></sc-for></div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin:26px 0 4px;"><span style="color:#FA8815;font-size:48px;font-weight:500;letter-spacing:-1px;">{{ metricMeta.value }}</span><span style="color:#fff;font-size:20px;font-weight:500;">{{ metricMeta.unit }} / {{ metricMeta.goal }}</span></div>
+            <div style="color:#737A7B;font-size:15px;">{{ chartCaption }}</div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:200px;margin-top:26px;padding:0 2px;">
+              <sc-for list="{{ chartBars }}" as="b" hint-placeholder-count="6">
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
+                  <div style="{{ b.barStyle }}"></div>
+                  <div style="{{ b.labelStyle }}">{{ b.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SESSIONS LIST ============ -->
+      <sc-if value="{{ isSessionsList }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Recorded sessions</span>
+          </div>
+          <div class="pace-noscroll" style="display:flex;gap:10px;overflow-x:auto;padding:22px 20px 4px;">
+            <sc-for list="{{ sessCats }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for>
+          </div>
+          <div style="padding:8px 20px 0;">
+            <sc-for list="{{ sessionGroups }}" as="g" hint-placeholder-count="2">
+              <div style="margin-top:18px;">
+                <div style="color:#B9BFC1;font-size:15px;font-weight:500;margin-bottom:10px;">{{ g.date }}</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                  <sc-for list="{{ g.items }}" as="r" hint-placeholder-count="2">
+                    <div onClick="{{ r.open }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;background:#1E1F20;border-radius:16px;padding:16px;">
+                      <div style="width:48px;height:48px;border-radius:50%;background:#154B4C;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="{{ r.iconStyle }}"></div></div>
+                      <div style="flex:1;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ r.name }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:3px;">{{ r.cat }} · {{ r.time }} · {{ r.cal }}</div></div>
+                      <svg width="8" height="15" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#737A7B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SESSION DETAIL ============ -->
+      <sc-if value="{{ isSessionDetail }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 26%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Session detail</span>
+          </div>
+          <div style="padding:26px 20px 0;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div style="width:60px;height:60px;border-radius:50%;background:#154B4C;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="{{ sessDetail.iconStyle }}"></div></div>
+              <div><div style="color:#fff;font-size:26px;font-weight:500;">{{ sessDetail.name }}</div><div style="color:#B9BFC1;font-size:15px;margin-top:4px;">{{ sessDetail.cat }} · {{ sessDetail.date }}</div><div style="color:#4DD5D0;font-size:14px;margin-top:3px;">{{ sessDetail.span }}</div></div>
+            </div>
+            <div style="background:#1E1F20;border-radius:18px;padding:6px 20px;margin-top:24px;">
+              <sc-for list="{{ sessDetail.rows }}" as="row" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #2b3132;">
+                  <span style="color:#B9BFC1;font-size:17px;">{{ row.k }}</span>
+                  <span style="color:#fff;font-size:17px;font-weight:500;">{{ row.v }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ sessDetail.hasNote }}" hint-placeholder-val="{{ false }}">
+              <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 10px;">Notes</div>
+              <p style="color:#B9BFC1;font-size:16px;line-height:1.6;margin:0;">{{ sessDetail.note }}</p>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ EDIT SUMMARY ============ -->
+      <sc-if value="{{ isEditSummary }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Edit summary</span>
+          </div>
+          <div style="padding:30px 20px 0;">
+            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Show cards</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ summaryCards }}" as="t" hint-placeholder-count="3">
+                <div style="border:1px solid #2b3132;border-radius:14px;overflow:hidden;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 18px;">
+                    <span style="color:#fff;font-size:19px;">{{ t.label }}</span>
+                    <div onClick="{{ t.toggle }}" style="{{ t.trackStyle }}"><div style="{{ t.knobStyle }}"></div></div>
+                  </div>
+                  <sc-if value="{{ t.on }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:2px 18px 18px;">
+                      <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#B9BFC1;font-size:16px;">{{ t.goalLabel }}</span><span style="color:#4DD5D0;font-size:16px;font-weight:500;">{{ t.disp }}</span></div>
+                      <input type="range" min="{{ t.min }}" max="{{ t.max }}" step="{{ t.step }}" value="{{ t.val }}" onInput="{{ t.setGoal }}" class="pace-slider" style="--pct:{{ t.pctv }};margin-top:10px;"/>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ saveSummary }}" style="cursor:pointer;margin-top:26px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Save</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SAVED WORKOUTS ============ -->
+      <sc-if value="{{ isSavedWorkouts }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Saved workouts</span>
+            <sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ toggleSavedEdit }}" style="cursor:pointer;position:absolute;right:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;">
+                <sc-if value="{{ savedEdit }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M4 11.5l5 5L18 6" stroke="#4DD5D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                <sc-if value="{{ notSavedEdit }}" hint-placeholder-val="{{ true }}"><div style="{{ editIconStyle }}"></div></sc-if>
+              </div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:20px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <sc-for list="{{ savedCards }}" as="w" hint-placeholder-count="4">
+                <div onClick="{{ w.open }}" style="cursor:pointer;">
+                  <div style="position:relative;width:100%;height:150px;border-radius:16px;overflow:hidden;">
+                    <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                    <span style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:12px;padding:4px 10px;border-radius:20px;">{{ w.tag }}</span>
+                    <sc-if value="{{ savedEdit }}" hint-placeholder-val="{{ false }}">
+                      <div onClick="{{ w.remove }}" style="cursor:pointer;position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:#EB6C0B;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);"><svg width="12" height="3" viewBox="0 0 12 3" fill="none"><path d="M1 1.5h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    </sc-if>
+                  </div>
+                  <div style="color:#fff;font-size:16px;font-weight:500;margin-top:10px;">{{ w.title }}</div>
+                  <div style="font-size:13px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;gap:10px;padding:0 40px;text-align:center;">
+              <span style="color:#fff;font-size:20px;font-weight:500;">No saved workouts yet</span>
+              <span style="color:#737A7B;font-size:16px;line-height:1.5;">Tap the bookmark on any workout to keep it here.</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ============ ADD FRIEND ============ -->
+      <sc-if value="{{ isAddFriend }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 24%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Add friend</span>
+          </div>
+          <div style="padding:26px 20px 0;display:flex;flex-direction:column;align-items:center;">
+            <div style="background:#fff;border-radius:22px;padding:18px;">
+              {{ qrEl }}
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:22px;">
+              <span style="color:#fff;font-size:24px;font-weight:500;letter-spacing:2px;">{{ myCode }}</span>
+              <div onClick="{{ copyCode }}" style="cursor:pointer;width:34px;height:34px;border-radius:9px;background:#1E1F20;display:flex;align-items:center;justify-content:center;">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="5.5" y="5.5" width="10" height="10" rx="2" stroke="#4DD5D0" stroke-width="1.5"/><path d="M12.5 5.5V4a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2h1.5" stroke="#4DD5D0" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+            <div style="color:#737A7B;font-size:15px;margin-top:8px;">Show this to a friend to connect</div>
+          </div>
+          <div style="padding:30px 20px 0;">
+            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Add by code</div>
+            <div style="display:flex;gap:12px;">
+              <input type="text" placeholder="Enter friend's code" style="flex:1;height:56px;border-radius:12px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:17px;font-family:inherit;padding:0 18px;"/>
+              <div onClick="{{ sendRequest }}" style="cursor:pointer;height:56px;padding:0 24px;border-radius:12px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:500;">Send</div>
+            </div>
+            <div onClick="{{ openScanFriend }}" style="cursor:pointer;margin-top:14px;height:56px;border-radius:12px;border:1px solid #44494A;display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font-size:17px;">
+              <svg width="20" height="20" viewBox="0 0 26 26" fill="none"><path d="M2 8V4a2 2 0 012-2h4M18 2h4a2 2 0 012 2v4M24 18v4a2 2 0 01-2 2h-4M8 24H4a2 2 0 01-2-2v-4M6 13h14" stroke="#4DD5D0" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Scan a friend's QR code
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SHARED GOAL ============ -->
+      <sc-if value="{{ isSharedGoal }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Create shared goal</span>
+          </div>
+          <div style="padding:28px 20px 0;">
+            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Goal</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ goalTemplates }}" as="g" hint-placeholder-count="3"><div onClick="{{ g.select }}" style="{{ g.style }}"><span style="font-size:18px;">{{ g.label }}</span><span style="font-size:14px;color:#B9BFC1;">{{ g.sub }}</span></div></sc-for>
+            </div>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Invite your circle</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ inviteFriends }}" as="f" hint-placeholder-count="3">
+                <div onClick="{{ f.toggle }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;background:#1E1F20;border-radius:16px;padding:14px 16px;">
+                  <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;background:{{ f.bg }};flex-shrink:0;"><img src="{{ f.avatar }}" alt="{{ f.name }}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"/></div>
+                  <span style="flex:1;color:#fff;font-size:18px;">{{ f.name }}</span>
+                  <div style="{{ f.checkStyle }}"><sc-if value="{{ f.on }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></div>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ createGoal }}" style="cursor:pointer;margin-top:30px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Create & invite</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ BREAK MODE ============ -->
+      <sc-if value="{{ isBreakMode }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 24%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Break mode</span>
+          </div>
+          <div style="padding:26px 20px 0;">
+            <div style="background:#1E1F20;border-radius:20px;padding:22px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="flex:1;padding-right:16px;"><div style="color:#fff;font-size:20px;font-weight:500;">Break mode</div><div style="color:#B9BFC1;font-size:15px;margin-top:5px;line-height:1.45;">Ease off without losing your progress.</div></div>
+              <div onClick="{{ toggleBreak }}" style="{{ breakTrackStyle }}"><div style="{{ breakKnobStyle }}"></div></div>
+            </div>
+            <p style="color:#fff;font-size:17px;line-height:1.6;margin:24px 4px 0;">{{ breakBlurb }}</p>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">What changes</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ breakFeatures }}" as="f" hint-placeholder-count="4">
+                <div style="display:flex;gap:14px;background:#1E1F20;border-radius:16px;padding:18px;">
+                  <div style="width:32px;height:32px;border-radius:50%;background:#154B4C;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="width:8px;height:8px;border-radius:50%;background:#4DD5D0;"></div></div>
+                  <div style="flex:1;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ f.t }}</div><div style="color:#B9BFC1;font-size:15px;margin-top:4px;line-height:1.45;">{{ f.d }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <!-- ============ FLOATING NAV ============ -->
+    <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;left:16px;right:16px;bottom:18px;height:74px;border-radius:40px;background:rgba(10,13,13,.62);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-around;padding:0 14px;z-index:30;">
+        <div onClick="{{ goHome }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;">
+          <div style="{{ navStyles.home }}"></div>
+          <span style="color:{{ nav.home }};font-size:12px;">Home</span>
+        </div>
+        <div onClick="{{ goMove }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;">
+          <div style="{{ navStyles.move }}"></div>
+          <span style="color:{{ nav.move }};font-size:12px;">Move</span>
+        </div>
+        <div onClick="{{ goRecord }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;">
+          <div style="{{ navStyles.record }}"></div>
+          <span style="color:{{ nav.record }};font-size:12px;">Record</span>
+        </div>
+        <div onClick="{{ goProgress }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;">
+          <div style="{{ navStyles.progress }}"></div>
+          <span style="color:{{ nav.progress }};font-size:12px;">Progress</span>
+        </div>
+        <div onClick="{{ goFriend }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;">
+          <div style="{{ navStyles.friend }}"></div>
+          <span style="color:{{ nav.friend }};font-size:12px;">Friend</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ NUDGE OVERLAY ============ -->
+    <sc-if value="{{ nudgeOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:16px;right:16px;top:62px;z-index:38;border-radius:22px;padding:20px;background:rgba(58,62,63,.55);backdrop-filter:blur(22px) saturate(1.2);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 50px rgba(0,0,0,.5);{{ nudgeAnim }}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:{{ nudge.iconBg }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ nudge.icon }}</div>
+            <span style="color:#fff;font-size:19px;font-weight:500;line-height:1.2;">{{ nudge.title }}</span>
+          </div>
+          <div onClick="{{ dismissNudge }}" style="cursor:pointer;padding:2px;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#e6e8e9" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        </div>
+        <p style="color:#eef0f0;font-size:16px;line-height:1.5;margin:12px 0 18px;">{{ nudge.body }}</p>
+        <div style="display:flex;gap:12px;">
+          <div onClick="{{ nudgeYes }}" style="cursor:pointer;flex:1;height:52px;border-radius:26px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:500;">{{ nudge.yes }}</div>
+          <div onClick="{{ dismissNudge }}" style="cursor:pointer;flex:1;height:52px;border-radius:26px;background:rgba(120,126,127,.5);display:flex;align-items:center;justify-content:center;color:#eef0f0;font-size:17px;">{{ nudge.no }}</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ CELEBRATE ============ -->
+    <sc-if value="{{ celebrate }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:28px;">
+        <div style="width:100%;border-radius:26px;background:rgba(20,24,25,.86);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);padding:34px 26px;text-align:center;">
+          <div style="width:74px;height:74px;border-radius:50%;margin:0 auto 20px;background:#154B4C;display:flex;align-items:center;justify-content:center;position:relative;">
+            <div style="position:absolute;inset:0;border-radius:50%;border:2px solid #FA8815;animation:paceRing 1.6s ease-out infinite;"></div>
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M6 18l7 7L28 9" stroke="#4DD5D0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="color:#fff;font-size:26px;font-weight:500;">Nice work.</div>
+          <p style="color:#B9BFC1;font-size:16px;line-height:1.55;margin:12px 0 26px;">You moved 4 days this week. That's your pace, and it's working.</p>
+          <div onClick="{{ closeCelebrate }}" style="cursor:pointer;height:58px;border-radius:29px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;">Done</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- confirmation toast -->
+    <sc-if value="{{ toastOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:24px;right:24px;bottom:108px;z-index:55;background:rgba(20,24,25,.92);backdrop-filter:blur(14px);border:1px solid #2b3132;border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:12px;{{ toastAnim }}">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="#4DD5D0" stroke-width="1.6"/><path d="M6 11l3.5 3.5L16 8" stroke="#4DD5D0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="color:#fff;font-size:16px;">{{ toastText }}</span>
+      </div>
+    </sc-if>
+
+    <!-- ADD CATEGORY MODAL -->
+    <sc-if value="{{ addCatOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeAddCat }}" style="position:absolute;inset:0;z-index:58;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;">
+        <div onClick="{{ stop }}" style="width:100%;border-radius:26px 26px 0 0;background:rgba(20,24,25,.96);border-top:1px solid rgba(255,255,255,.1);padding:26px 24px 40px;">
+          <div style="width:40px;height:4px;border-radius:2px;background:#3a4041;margin:0 auto 22px;"></div>
+          <div style="color:#fff;font-size:22px;font-weight:500;">Add a category</div>
+          <div style="color:#B9BFC1;font-size:15px;margin-top:6px;">Pick something you do — it joins your list with an icon.</div>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:22px;">
+            <sc-for list="{{ catPresets }}" as="p" hint-placeholder-count="6">
+              <div onClick="{{ p.add }}" style="cursor:pointer;width:88px;height:92px;border-radius:14px;background:#26292a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;">
+                <div style="{{ p.iconStyle }}"></div>
+                <span style="color:#fff;font-size:14px;">{{ p.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- TIME PICKER -->
+    <sc-if value="{{ timePickerOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeTimePicker }}" style="position:absolute;inset:0;z-index:58;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;">
+        <div onClick="{{ stop }}" style="width:100%;max-height:64%;border-radius:26px 26px 0 0;background:rgba(20,24,25,.96);border-top:1px solid rgba(255,255,255,.1);padding:22px 20px 34px;display:flex;flex-direction:column;">
+          <div style="width:40px;height:4px;border-radius:2px;background:#3a4041;margin:0 auto 18px;flex-shrink:0;"></div>
+          <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;flex-shrink:0;">{{ timePickerTitle }}</div>
+          <div class="pace-noscroll" style="overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{ timeList }}" as="t" hint-placeholder-count="8"><div onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}</div></sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div ref="{{ confettiRef }}" style="position:absolute;inset:0;pointer-events:none;z-index:70;overflow:hidden;"></div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:470,&quot;height&quot;:940},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;launchNudge&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;randomNudges&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;splash&quot;,&quot;options&quot;:[&quot;splash&quot;,&quot;onboarding&quot;,&quot;connect&quot;,&quot;home&quot;,&quot;move&quot;,&quot;search&quot;,&quot;progress&quot;,&quot;friend&quot;,&quot;record&quot;,&quot;account&quot;,&quot;notifications&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'home',
+    history: [],
+    detailId: 'total-body',
+    saved: { 'upper-body': true, 'cardio-burst': true, 'total-body': true },
+    searchSaved: { 'standing-abs': true },
+    flip: {},
+    loading: false,
+    // workout
+    exIndex: 0, secondsLeft: 30, running: true, voiceGuide: false,
+    // record
+    cats: ['Walk','Run','Stretch','Gym','Yoga'],
+    customCatType: {},
+    longPressCat: null,
+    addCatOpen: false,
+    scanMode: 'equipment',
+    cat: null, duration: 30, groups: {}, equip: null, intensity: null, focus: {}, distance: 2,
+    sets: 3, reps: 12, weight: 20,
+    // search filter
+    filterOpen: false,
+    filter: { category: 'All', level: 'Any', duration: 60, equip: 'Any' },
+    // progress
+    progMetric: null, progPeriod: 'Day',
+    sessionFilter: 'All', sessionDetailId: null,
+    summaryCards: { steps: true, distance: true, sessions: true, running: false, cycling: false, swimming: false },
+    stepGoal: 5000, distanceGoal: 5.0,
+    sessWeekGoal: 3, runGoal: 10, cycleGoal: 15, swimGoal: 1200,
+    savedEdit: false,
+    // notif
+    freq: 3, tone: 'Encourage',
+    bestStart: '12:00 PM', bestEnd: '6:00 PM', timePicker: null,
+    bestDays: { Mon:true, Tue:true, Wed:true, Thu:true, Fri:true, Sat:false, Sun:false },
+    sameTime: true,
+    dayTimes: { Mon:{start:'12:00 PM',end:'6:00 PM'}, Tue:{start:'12:00 PM',end:'6:00 PM'}, Wed:{start:'12:00 PM',end:'6:00 PM'}, Thu:{start:'12:00 PM',end:'6:00 PM'}, Fri:{start:'12:00 PM',end:'6:00 PM'}, Sat:{start:'9:00 AM',end:'12:00 PM'}, Sun:{start:'9:00 AM',end:'12:00 PM'} },
+    // onboarding
+    onbStep: 0, onbGoal: null, onbLevel: null, onbDays: 4, onbEnjoy: {}, connected: {},
+    triggers: { 'After inactivity': true, 'Goal completions': true, 'Daily coaching': false, 'Activity sharing': true, 'New features': false },
+    // break mode
+    breakMode: false,
+    // shared goal
+    sharedGoalPick: 'Move 4 days/week', invite: { Mia: true, Henry: false, Sarah: false },
+    // social
+    likes: {}, likeBase: { yoga: 3, walk: 5, upper: 3, med: 1 },
+    // overlays
+    nudge: null, celebrate: false,
+    toast: null,
+    scrolled: false,
+  };
+
+  IMG = {
+    'total-body':'assets/w-total-body.jpg','upper-body':'assets/w-upper-body.jpg','squat-leg':'assets/w-squat-leg.jpg',
+    'morning-warmup':'assets/w-morning-warmup.jpg','cardio-burst':'assets/w-cardio-burst.jpg','full-body':'assets/w-full-body.jpg',
+    'jump-rope':'assets/w-jump-rope.jpg','fat-burn':'assets/w-fat-burn.jpg','hip-dips':'assets/w-hip-dips.jpg',
+    'standing-abs':'assets/w-standing-abs.jpg','med-ball':'assets/w-med-ball.jpg'
+  };
+  WK = {
+    'total-body':{title:'Total Body Torcher',tag:'Pilates',min:'30 min',level:'Moderate',sets:'6 sets',cal:'200 cal',equip:'Mat',desc:"The Total Body Torcher blends compound strength moves like squats and push-ups with steady circuit work. Thirty focused minutes, at whatever intensity your day allows — no keeping up with anyone."},
+    'upper-body':{title:'Upper Body',tag:'Strength',min:'15 min',level:'Easy',sets:'4 sets',cal:'120 cal',equip:'Mat',desc:"A short, controlled upper-body session for arms, shoulders and back. Easy to fit between other things, and easy to stop early if today calls for it."},
+    'squat-leg':{title:'Squat & Leg',tag:'Strength',min:'10 min',level:'Hard',sets:'5 sets',cal:'160 cal',equip:'Mat',desc:"Ten minutes of lower-body strength — squats, lunges and holds. Short on time but honest work for your legs."},
+    'morning-warmup':{title:'Morning Warm-up',tag:'Yoga',min:'10 min',level:'Easy',sets:'3 sets',cal:'60 cal',equip:'Mat',desc:"Gentle stretches to loosen up and start the day. No pressure, no pace to match — just movement that meets you where you are."},
+    'cardio-burst':{title:'Quick Cardio Burst',tag:'Cardio',min:'10 min',level:'Moderate',sets:'4 sets',cal:'110 cal',equip:'Mat',desc:"A quick round of cardio to get the blood moving. Ideal for a busy day when a full session isn't happening."},
+    'full-body':{title:'Full Body',tag:'Strength',min:'40 min',level:'Hard',sets:'8 sets',cal:'320 cal',equip:'Dumbbell',desc:"A longer, full-body strength circuit for the days you've got the time and energy. Work through it at your own tempo."},
+    'jump-rope':{title:'Jump Rope HIIT',tag:'HIIT',min:'20 min',level:'Easy',sets:'5 sets',cal:'220 cal',equip:'Jump rope',desc:"Interval jump-rope work with generous rests. Steady, repeatable, and easy to scale back on a low day."},
+    'fat-burn':{title:'Fat Burn',tag:'Cardio',min:'30 min',level:'Moderate',sets:'6 sets',cal:'260 cal',equip:'Mat',desc:"A moderate cardio flow built to be sustainable. The point isn't to overdo it — it's to keep showing up."},
+    'hip-dips':{title:'Hip Dips Fix',tag:'Resistance Band',min:'15 min',level:'Moderate',sets:'4 sets',cal:'130 cal',equip:'Resistance band',desc:"Banded glute and hip work to build steady lower-body strength. Controlled reps over speed."},
+    'standing-abs':{title:'Standing Abs',tag:'Strength',min:'20 min',level:'Hard',sets:'5 sets',cal:'150 cal',equip:'Mat, dumbbell',desc:"Core work you can do standing — no floor required. A solid option when you want something quick and effective."},
+    'med-ball':{title:'Med Ball Core Power',tag:'Strength',min:'10 min',level:'Hard',sets:'4 sets',cal:'120 cal',equip:'Medicine ball',desc:"Ten minutes of med-ball core work. Short, focused, and done before you've had time to talk yourself out of it."}
+  };
+  EXS = ['Bodyweight Fly','Push-Up','Squat Pulse','Mountain Climber','Plank Reach','Glute Bridge'];
+  EXIMG = ['assets/w-active.jpg','assets/w-full-body.jpg','assets/w-squat-leg.jpg','assets/w-cardio-burst.jpg','assets/w-total-body.jpg','assets/w-hip-dips.jpg'];
+  CUES = [
+    ['Feet shoulder-width, arms open wide','Squeeze your chest, bring hands together','Open slowly, feel the stretch','Keep the movement smooth and controlled'],
+    ['Hands under shoulders, body in a line','Lower your chest toward the floor','Press back up, core tight','Keep breathing — steady reps'],
+    ['Feet just past shoulder-width','Sit back and down into the squat','Pulse at the bottom','Chest up, weight in your heels'],
+    ['Start in a high plank','Drive one knee toward your chest','Switch fast, keep your hips low','Keep a quick, steady pace'],
+    ['Forearm plank, body in a straight line','Reach one arm out in front','Hold — keep your hips square','Return and switch sides'],
+    ['Lie back, knees bent, feet flat','Drive through your heels','Lift your hips into a bridge','Squeeze your glutes at the top']
+  ];
+  CATFILE = { Walk:'walk', Run:'run', Stretch:'stretch', Gym:'gym', Yoga:'yoga', Swim:'run', Dance:'yoga', Badminton:'run', Cycling:'run' };
+  CATTYPE = { Walk:'distance', Run:'distance', Stretch:'flex', Yoga:'flex', Gym:'strength' };
+  RECORDED = [
+    { id:'r1', cat:'Run', name:'Evening Run', dateLabel:'Today', date:'Jul 2', span:'6:10 PM – 6:42 PM', time:'32 min', cal:'318 cal', distance:'3.4 mi', intensity:'Moderate', equip:'None', note:'Felt good. Kept it easy the last mile.' },
+    { id:'r2', cat:'Gym', name:'Leg Day', dateLabel:'Today', date:'Jul 2', span:'10:00 AM – 10:46 AM', time:'46 min', cal:'284 cal', sets:'5 sets', reps:'12 reps', weight:'40 lbs', equip:'Leg press, Squat rack', intensity:'Hard', note:'New squat PR. Slow and controlled.' },
+    { id:'r3', cat:'Yoga', name:'Morning Yoga', dateLabel:'Yesterday', date:'Jul 1', span:'7:30 AM – 7:50 AM', time:'20 min', cal:'56 cal', intensity:'Gentle', equip:'Mat', note:'Focus on hips and shoulders.' },
+    { id:'r4', cat:'Walk', name:'Walk to campus', dateLabel:'Yesterday', date:'Jul 1', span:'8:40 AM – 8:59 AM', time:'19 min', cal:'42 cal', distance:'0.9 mi', intensity:'Easy', equip:'None', note:'Logged automatically.' },
+    { id:'r5', cat:'Gym', name:'Chest & Arms', dateLabel:'Jun 29', date:'Jun 29', span:'6:20 PM – 6:58 PM', time:'38 min', cal:'240 cal', sets:'4 sets', reps:'10 reps', weight:'30 lbs', equip:'Bench press, Dumbbells', intensity:'Moderate', note:'' },
+    { id:'r6', cat:'Stretch', name:'Evening Stretch', dateLabel:'Jun 29', date:'Jun 29', span:'9:15 PM – 9:27 PM', time:'12 min', cal:'28 cal', intensity:'Gentle', equip:'Mat', note:'Wind-down before bed.' }
+  ];
+  PERIOD_DATA = {
+    Day:   { labels:['6a','9a','12p','3p','6p','9p'], vals:[.2,.55,.85,1,.7,.4], caption:'Hourly · Today', steps:{value:'2,847',note:'Today'}, distance:{value:'5.4',note:'Today'} },
+    Week:  { labels:['M','T','W','T','F','S','S'], vals:[.6,.9,.7,1,.5,.35,.8], caption:'Daily average · This week', steps:{value:'6,120',note:'Daily avg'}, distance:{value:'4.2',note:'Daily avg'} },
+    Month: { labels:['W1','W2','W3','W4'], vals:[.7,.85,.6,1], caption:'Weekly average · This month', steps:{value:'5,740',note:'Daily avg'}, distance:{value:'3.9',note:'Daily avg'} },
+    Year:  { labels:['J','F','M','A','M','J','J','A','S','O','N','D'], vals:[.5,.6,.7,.55,.8,.9,.75,.85,1,.7,.6,.65], caption:'Monthly average · This year', steps:{value:'6,480',note:'Daily avg'}, distance:{value:'4.6',note:'Daily avg'} }
+  };
+  CATPRESETS = [
+    { label:'Swim', icon:'swim' }, { label:'Cycling', icon:'cycling' }, { label:'Badminton', icon:'badminton' },
+    { label:'Hiking', icon:'hiking' }, { label:'Tennis', icon:'tennis' }, { label:'Basketball', icon:'basketball' },
+    { label:'Boxing', icon:'boxing' }, { label:'Pilates', icon:'pilates' }
+  ];
+  NUDGES = {
+    coffee:{ iconBg:'#4DD5D0', icon:'☕', title:'Coffee time! Your moment to move', body:'While your coffee brews, try 10 standing calf raises. Take less than a minute.', yes:"Let's do it", no:'Remind me later' },
+    activity:{ iconBg:'#4DD5D0', icon:'🏋', title:'Activity detected', body:'Looks like you went to the gym on your leg day for about 20 minutes. Does that sound right?', yes:'Yes, record it', no:'Not quite' },
+    desk:{ iconBg:'#4DD5D0', icon:'⏸', title:"You've been at your desk for 45 min!", body:'Try 10 shoulder rolls to stretch your body.', yes:"Let's do it", no:'Remind me later' }
+  };
+
+  componentDidMount() {
+    if (typeof window!=='undefined' && !window.PACE_ICONS) { setTimeout(() => this.forceUpdate(), 60); }
+    this._onScroll = (e) => {
+      const st = (e.target && e.target.scrollTop) || 0;
+      const on = st > 12;
+      if (on !== this.state.scrolled) this.setState({ scrolled: on });
+    };
+    if (this._screenEl) this._screenEl.addEventListener('scroll', this._onScroll, true);
+    const ss = this.props.startScreen;
+    if (!ss || ss === 'splash') {
+      this.enterSplash();
+    } else if (ss !== 'home') {
+      this.setState({ screen: ss });
+    }
+    if (this.props.launchNudge !== false) {
+      this._nudgeTimer = setTimeout(() => {
+        if (this.state.screen === 'home' && !this.state.nudge) this.setState({ nudge: 'coffee' });
+      }, 1600);
+    }
+    if (this.props.randomNudges !== false) {
+      const pool = ['coffee','activity','desk'];
+      const skip = ['workout','scan','splash','onboarding','connect'];
+      this._randomNudge = setInterval(() => {
+        if (this.state.nudge || this.state.celebrate || skip.includes(this.state.screen)) return;
+        this.setState({ nudge: pool[Math.floor(Math.random()*pool.length)] });
+      }, 120000);
+    }
+    this._timer = setInterval(() => {
+      if (this.state.screen !== 'workout' || !this.state.running) return;
+      this.setState(s => {
+        if (s.secondsLeft > 1) return { secondsLeft: s.secondsLeft - 1 };
+        if (s.exIndex < this.EXS.length - 1) return { exIndex: s.exIndex + 1, secondsLeft: 30 };
+        return { secondsLeft: 0 };
+      }, () => { if (this.state.secondsLeft === 0 && this.state.exIndex === this.EXS.length - 1) this.finishWorkout(); });
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this._timer); clearTimeout(this._nudgeTimer); clearInterval(this._randomNudge); clearTimeout(this._splashTimer); }
+  componentDidUpdate(pp, ps) {
+    if (ps.screen !== this.state.screen && this._screenEl && this.props.reduceMotion !== true) {
+      this._screenEl.animate(
+        [{ opacity: 0, transform: 'translateX(24px)' }, { opacity: 1, transform: 'translateX(0)' }],
+        { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' }
+      );
+    }
+    if (this.state.screen === 'scan' && ps.screen !== 'scan') this.startCamera();
+    if (this.state.screen !== 'scan' && ps.screen === 'scan') this.stopCamera();
+  }
+  startCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => { this._stream = stream; if (this._videoEl) { this._videoEl.srcObject = stream; this._videoEl.play && this._videoEl.play().catch(()=>{}); } })
+      .catch(() => {});
+  }
+  stopCamera() { if (this._stream) { this._stream.getTracks().forEach(t => t.stop()); this._stream = null; } }
+
+  go(next, keepHist) {
+    this.setState(s => ({ screen: next, scrolled: false, addCatOpen: false, timePicker: null, longPressCat: null, savedEdit: false, history: keepHist === false ? s.history : [...s.history, s.screen] }));
+  }
+  back = () => this.setState(s => {
+    const h = [...s.history]; const prev = h.pop();
+    return { screen: prev || 'home', scrolled: false, history: h };
+  });
+  enterSplash = () => {
+    this.setState({ onbStep: 0, onbGoal: null, onbLevel: null, onbDays: 4, onbEnjoy: {}, connected: {} });
+    this.go('splash');
+    clearTimeout(this._splashTimer);
+    this._splashTimer = setTimeout(() => { if (this.state.screen === 'splash') this.go('onboarding', false); }, 2300);
+  };
+  finishOnboarding = (welcome) => {
+    this.setState({ history: [], screen: 'home', scrolled: false });
+    if (welcome) this.showToast("You're all set. Welcome to Pace.");
+  };
+  openDetail(id) { this.go('detail'); this.setState({ detailId: id, loading: false }); }
+  goSearch = () => { this.go('search'); this.setState({ loading: true }); setTimeout(() => this.setState({ loading: false }), 750); };
+
+  startWorkout = () => { this.setState({ exIndex: 0, secondsLeft: 30, running: true, voiceGuide: false }); this.go('workout'); };
+  togglePause = () => this.setState(s => ({ running: !s.running }));
+  nextExercise = () => this.setState(s => {
+    if (s.exIndex < this.EXS.length - 1) return { exIndex: s.exIndex + 1, secondsLeft: 30 };
+    this.finishWorkout(); return {};
+  });
+  finishWorkout() { this.setState({ running: false, celebrate: true, history: [] }); this.fireConfetti(); }
+  closeCelebrate = () => { this.setState({ celebrate: false, screen: 'progress', history: [] }); };
+
+  fireConfetti() {
+    if (this.props.reduceMotion === true) return;
+    const host = this._confettiEl; if (!host) return;
+    const colors = ['#FA8815','#EB6C0B','#4DD5D0','#F6F453','#ffffff'];
+    for (let i = 0; i < 90; i++) {
+      const d = document.createElement('div');
+      const sz = 6 + Math.random() * 8;
+      d.style.cssText = `position:absolute;top:-20px;left:${Math.random()*100}%;width:${sz}px;height:${sz*0.5}px;background:${colors[i%colors.length]};border-radius:2px;opacity:.95;`;
+      host.appendChild(d);
+      const dx = (Math.random() - 0.5) * 220;
+      d.animate([
+        { transform: `translate(0,0) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${dx}px, ${520 + Math.random()*260}px) rotate(${Math.random()*720-360}deg)`, opacity: 1, offset: .85 },
+        { transform: `translate(${dx}px, ${640 + Math.random()*260}px) rotate(${Math.random()*720-360}deg)`, opacity: 0 }
+      ], { duration: 1600 + Math.random()*900, easing: 'cubic-bezier(.2,.6,.4,1)' }).onfinish = () => d.remove();
+    }
+  }
+
+  startCatPress(label) { clearTimeout(this._press); this._press = setTimeout(() => this.setState({ longPressCat: label }), 700); }
+  endCatPress() { clearTimeout(this._press); }
+  removeCat(label) {
+    this.setState(s => {
+      const cats = s.cats.filter(c => c !== label);
+      const cct = { ...s.customCatType }; delete cct[label];
+      return { cats, customCatType: cct, longPressCat: null, cat: s.cat === label ? null : s.cat };
+    });
+    this.showToast(label + ' removed.');
+  }
+  addCatPreset = (label, icon) => {
+    this.setState(s => ({
+      cats: s.cats.includes(label) ? s.cats : [...s.cats, label],
+      customCatType: { ...s.customCatType, [label]: { icon } },
+      addCatOpen: false, cat: label, groups: {}, equip: null, intensity: null, focus: {}
+    }));
+    this.showToast(label + ' added.');
+  };
+  showToast(t) { this.setState({ toast: t }); clearTimeout(this._toast); this._toast = setTimeout(() => this.setState({ toast: null }), 2200); }
+  dismissNudge = () => this.setState({ nudge: null });
+  nudgeYes = () => {
+    const n = this.state.nudge; this.setState({ nudge: null });
+    if (n === 'activity') { this.go('record'); this.setState({ cat: 'Gym' }); }
+    else this.showToast('Added to today. Ready when you are.');
+  };
+
+  render() {} // handled by template
+
+  renderVals() {
+    const s = this.state;
+    const raw = (html) => React.createElement('span', { style: { display:'flex', alignItems:'center', justifyContent:'center' }, dangerouslySetInnerHTML: { __html: html } });
+    const sec = (n) => { const m = Math.floor(n/60); const r = n%60; return m + ':' + (r<10?'0':'') + r; };
+    const chip = (active) => `cursor:pointer;padding:11px 18px;border-radius:22px;font-size:16px;${active?'background:#19B3B0;color:#fff;':'background:#3a4041;color:#dfe2e2;'}`;
+    const slider = 'width:100%;margin-top:14px;height:6px;-webkit-appearance:none;appearance:none;border-radius:3px;background:linear-gradient(#4DD5D0,#4DD5D0) no-repeat;background-color:#3a4041;accent-color:#4DD5D0;';
+    const pct = (v,mn,mx) => Math.round((v-mn)/(mx-mn)*100)+'%';
+    const PI = (typeof window!=='undefined' && window.PACE_ICONS) ? window.PACE_ICONS : {};
+    const mask = (name,color,size) => `width:${size}px;height:${size}px;-webkit-mask:url("${PI[name]||''}") center/contain no-repeat;mask:url("${PI[name]||''}") center/contain no-repeat;background-color:${color};`;
+
+    // already-doing cards
+    const already = [
+      { key:'a', title:'Walk to campus', time:'19 min', value:'584', unit:'steps', arrow:false,
+        numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;',
+        detail:'584 steps · 0.4 mi · 12 min active. Logged from your morning walk.' },
+      { key:'b', title:'Morning Stretch', time:'30 min', value:'30', unit:'% stronger\nmuscle', arrow:true,
+        numStyle:'color:#F1EA2E;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;',
+        detail:'Consistency up 30% vs last week. Steady wins.' }
+    ].map(c => ({ ...c, unit: c.unit.replace('\n',' '),
+      frontOp: s.flip[c.key] ? 0 : 1, backOp: s.flip[c.key] ? 1 : 0,
+      flip: () => this.setState(st => ({ flip: { ...st.flip, [c.key]: !st.flip[c.key] } })),
+      inner: `position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);-webkit-transform-style:preserve-3d;transform-style:preserve-3d;${s.flip[c.key]?'-webkit-transform:rotateY(180deg);transform:rotateY(180deg);':''}` }));
+
+    const card = (id) => { const w = this.WK[id]; return { id, title:w.title, tag:w.tag, min:w.min, level:w.level, img:this.IMG[id], equip:w.equip, open: () => this.openDetail(id) }; };
+    const suggested = ['cardio-burst','upper-body','squat-leg','morning-warmup','total-body'].map(card);
+    const moveSections = [
+      { title:'Best for home', items:['total-body','morning-warmup','full-body'].map(card), seeAll:this.goSearch },
+      { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
+      { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
+    ];
+    const searchResults = ['total-body','standing-abs','upper-body','cardio-burst','med-ball','squat-leg'].map(id => {
+      const c = card(id); c.markFill = s.searchSaved[id] ? '#fff' : 'none'; return c;
+    });
+
+    // detail
+    const dw = this.WK[s.detailId];
+    const detail = { ...dw, img:this.IMG[s.detailId], saveFill: s.saved[s.detailId] ? '#fff' : 'none',
+      saveFillTop: s.saved[s.detailId] };
+    const toggleSave = () => this.setState(st => ({ saved: { ...st.saved, [s.detailId]: !st.saved[s.detailId] } }));
+
+    // workout
+    const segTotal = this.EXS.length;
+    const SET_SECONDS = 30;
+    const ringC = 364.4; // 2 * PI * r(58)
+    const ringFrac = Math.max(0, Math.min(1, s.secondsLeft / SET_SECONDS));
+    const cueLines = this.CUES[s.exIndex] || [];
+    const cueElapsed = SET_SECONDS - s.secondsLeft;
+    const cueActive = cueLines.length ? Math.min(cueLines.length - 1, Math.floor(cueElapsed / (SET_SECONDS / cueLines.length))) : 0;
+    const ex = {
+      name: this.EXS[s.exIndex],
+      img: this.EXIMG[s.exIndex] || 'assets/w-active.jpg',
+      next: this.EXS[Math.min(s.exIndex + 1, segTotal - 1)] + (s.exIndex >= segTotal - 1 ? ' (last)' : ''),
+      setLabel: (s.exIndex + 1) + '/' + segTotal,
+      clock: sec(s.secondsLeft),
+      ringStyle: `stroke-dasharray:${ringC};stroke-dashoffset:${(ringC * (1 - ringFrac)).toFixed(1)};transform:rotate(-90deg);transform-box:fill-box;transform-origin:center;transition:stroke-dashoffset .9s linear;`,
+      pauseIcon: s.running
+        ? 'display:block;width:16px;height:18px;border-left:5px solid #111;border-right:5px solid #111;'
+        : 'display:block;width:0;height:0;border-left:16px solid #111;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px;',
+      segments: this.EXS.map((_, i) => ({ style: `flex:1;height:5px;border-radius:3px;background:${i < s.exIndex ? '#EB6C0B' : i === s.exIndex ? '#FA8815' : '#3a4041'};` })),
+      cues: cueLines.map((t, i) => ({ text: t, style: `font-size:23px;line-height:1.34;transition:color .45s ease,opacity .45s ease;font-weight:${i === cueActive ? '700' : '500'};color:${i === cueActive ? '#fff' : 'rgba(255,255,255,.4)'};` }))
+    };
+
+    // record
+    const catIcons = {
+      Walk:'<svg width="26" height="26" viewBox="0 0 26 26" fill="#fff"><ellipse cx="8" cy="17" rx="4" ry="6" transform="rotate(-18 8 17)"/><ellipse cx="16" cy="15" rx="4" ry="6" transform="rotate(-18 16 15)"/></svg>',
+      Run:'<svg width="26" height="26" viewBox="0 0 26 26" fill="#fff"><circle cx="16" cy="5" r="2.4"/><path d="M14 9l-4 2 -2 4M14 9l3 0 3 3M14 9l-1 4 3 2 1 5M9 15l-2 1-2 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+      Stretch:'<svg width="26" height="26" viewBox="0 0 26 26" fill="#fff"><circle cx="13" cy="5" r="2.4"/><path d="M13 8v6M13 14l-5 6M13 14l5 6M8 10l5 2 5-2" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/></svg>',
+      Gym:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 10v6M7 8v10M19 8v10M22 10v6M7 13h12" stroke="COL" stroke-width="2.4" stroke-linecap="round"/></svg>',
+      Yoga:'<svg width="26" height="26" viewBox="0 0 26 26" fill="#fff"><circle cx="13" cy="5" r="2.4"/><path d="M13 8l0 5M13 13l-7 3M13 13l7 3M6 20l7-4 7 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>'
+    };
+    const iconFor = (label) => this.CATFILE[label] || s.customCatType[label]?.icon || 'run';
+    const categories = s.cats.map(label => {
+      const active = s.cat === label;
+      const col = active ? '#4DD5D0' : '#fff';
+      const showDel = s.longPressCat === label;
+      return { label, showDel,
+        select: () => { if (s.longPressCat) { this.setState({ longPressCat: null }); return; } this.setState({ cat: label, groups: {}, equip: null, intensity: null, focus: {} }); },
+        press: (ev) => this.startCatPress(label, ev),
+        release: () => this.endCatPress(),
+        del: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.removeCat(label); },
+        style: `position:relative;cursor:pointer;flex:none;width:78px;height:88px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#3a4041;${active?'border:1.5px solid #4DD5D0;':'border:1.5px solid transparent;'}`,
+        iconStyle: mask(iconFor(label), col, 30),
+        delStyle: `position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#EB6C0B;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.4);`,
+        labelStyle:`font-size:15px;${active?'color:#4DD5D0;':'color:#fff;'}` };
+    });
+    const addCatBtn = { press:()=>{}, open: () => this.setState({ addCatOpen: true, newCatName: '', newCatIcon: 'run' }) };
+    const catType = s.cat ? (this.CATTYPE[s.cat] || 'simple') : null;
+    const groups = ['Chest','Back','Shoulders','Arms','Legs','Core','Cardio'].map(label => ({
+      label, style: chip(!!s.groups[label]),
+      toggle: () => this.setState(st => ({ groups: { ...st.groups, [label]: !st.groups[label] }, equip: null })) }));
+    const selGroups = Object.keys(s.groups).filter(k => s.groups[k]);
+    const gymHasGroup = selGroups.length > 0;
+    const EQUIP = {
+      Chest:['Bench press','Cable crossover','Chest fly machine','Dumbbells','Other'],
+      Back:['Lat pulldown','Seated row','Pull-up bar','Dumbbells','Other'],
+      Shoulders:['Shoulder press','Lateral raise','Cable','Dumbbells','Other'],
+      Arms:['Dumbbells','Barbell','Cable machine','Preacher bench','Other'],
+      Legs:['Leg press','Squat rack','Leg curl','Dumbbells','Other'],
+      Core:['Mat','Cable','Medicine ball','Ab wheel','Other'],
+      Cardio:['Treadmill','Rower','Bike','Elliptical','Other']
+    };
+    const equipList = gymHasGroup ? (EQUIP[selGroups[selGroups.length-1]] || EQUIP.Chest) : [];
+    const equipment = equipList.map(label => ({ label, style: chip(s.equip === label), select: () => this.setState({ equip: label }) }));
+    const intensity = ['Easy','Moderate','Hard'].map(label => ({ label, style: chip(s.intensity===label), select: () => this.setState({ intensity: label }) }));
+    const focus = ['Full body','Back','Hips','Shoulders','Neck','Legs'].map(label => ({ label, style: chip(!!s.focus[label]), toggle: () => this.setState(st => ({ focus: { ...st.focus, [label]: !st.focus[label] } })) }));
+    const flexIntensity = ['Gentle','Moderate','Deep'].map(label => ({ label, style: chip(s.intensity===label), select: () => this.setState({ intensity: label }) }));
+    const simpleIntensity = ['Easy','Moderate','Hard'].map(label => ({ label, style: chip(s.intensity===label), select: () => this.setState({ intensity: label }) }));
+    let recordEnabled = false;
+    if (catType==='strength') recordEnabled = gymHasGroup && !!s.equip;
+    else if (catType==='distance') recordEnabled = !!s.intensity;
+    else if (catType==='flex') recordEnabled = Object.values(s.focus).some(Boolean) && !!s.intensity;
+    else if (catType==='simple') recordEnabled = !!s.intensity;
+    const recordBtnStyle = recordEnabled
+      ? 'cursor:pointer;margin-top:32px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);'
+      : 'margin-top:32px;height:62px;border-radius:32px;background:#2a2f30;display:flex;align-items:center;justify-content:center;color:#6b7172;font-size:20px;font-weight:500;';
+    const doRecord = () => { this.showToast('Logged. That counts — nice.'); this.go('progress'); this.setState({ cat: null, groups: {}, equip: null, intensity: null, focus: {} }); };
+    const recordTap = recordEnabled ? doRecord : () => {};
+    const rec = { duration:s.duration, sets:s.sets, reps:s.reps, weight:s.weight, distance:s.distance.toFixed(1),
+      durPct:pct(s.duration,5,120), setsPct:pct(s.sets,1,10), repsPct:pct(s.reps,1,30), weightPct:pct(s.weight,0,100), distPct:pct(s.distance,0,10) };
+
+    // progress
+    const barVals = [.55,.85,1,.75,.4,.34,.34];
+    const barColor = (i) => (i===1||i===2||i===3)?'#FA8815':(i===0?'#FCA33B':'#FEDFAA');
+    const barsA = barVals.slice(0,6).map((v,i) => ({ style:`width:9px;border-radius:3px;height:${Math.round(18+v*48)}px;background:${barColor(i)};` }));
+    const barsB = [.5,.9,1,.7,.36,.32].map((v,i) => ({ style:`width:9px;border-radius:3px;height:${Math.round(18+v*48)}px;background:${barColor(i)};` }));
+    const sessIcon = (file) => mask(file, '#4DD5D0', 26);
+    const sessions = [
+      { name:'Running', cal:'84 cal', date:'Today', iconStyle:sessIcon('run') },
+      { name:'Yoga', cal:'56 cal', date:'7/1/26', iconStyle:sessIcon('yoga') },
+      { name:'Chest', cal:'64 cal', date:'6/29/26', iconStyle:sessIcon('gym') }
+    ];
+
+    // friend
+    const heart = (k) => (s.likes[k] ? '#FA8815' : 'none');
+    const heartS = (k) => (s.likes[k] ? '#FA8815' : '#B9BFC1');
+    const likeN = (k) => s.likeBase[k] + (s.likes[k] ? 1 : 0);
+    const mk = (k, o) => ({ ...o, like: () => this.setState(st => ({ likes: { ...st.likes, [k]: !st.likes[k] } })), heartFill:heart(k), heartStroke:heartS(k), likes:likeN(k) });
+    const feed = [
+      mk('yoga', { name:'Jolyne', title:'Morning Yoga', ago:'12m ago', min:'20 min', text:'Fresh morning 🧘', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:2, hasImg:false, img:'' }),
+      mk('walk', { name:'Mia', title:'Walking to the shed', ago:'3h ago', min:'10 min', text:'Nice weather today. Good for a walk!', avatar:'assets/avatar-yellow.png', avatarBg:'#F6F453', comments:3, hasImg:true, img:'assets/post-walk.jpg' }),
+      mk('upper', { name:'Dee', title:'Upper Body', ago:'1d ago', min:'20 min', text:'So relaxing… no more stress.', avatar:'assets/avatar-orange.png', avatarBg:'#FA8815', comments:1, hasImg:false, img:'' }),
+      mk('med', { name:'Sam', title:'Med Ball Core Power', ago:'7/1/26', min:'30 min', text:'Quick one before dinner. Counts.', avatar:'assets/avatar-yellow2.png', avatarBg:'#F6F453', comments:0, hasImg:false, img:'' })
+    ];
+
+    // account
+    const accountRows = ['Notifications','Break mode','Saved Workout','Health details','Units of measure','Health data','Apps & devices','Privacy','Help'].map(label => ({
+      label,
+      tap: label === 'Notifications' ? () => this.go('notifications')
+         : label === 'Break mode' ? () => this.go('breakMode')
+         : label === 'Saved Workout' ? () => this.go('savedWorkouts')
+         : () => this.showToast(label + ' — coming soon') }));
+
+    // notifications
+    const tones = ['Encourage','Gentle','Informational','Strict'].map(label => ({
+      label, style: chip(s.tone === label), select: () => this.setState({ tone: label }) }));
+    const triggers = Object.keys(s.triggers).map(label => {
+      const on = s.triggers[label];
+      return { label,
+        toggle: () => this.setState(st => ({ triggers: { ...st.triggers, [label]: !st.triggers[label] } })),
+        trackStyle: `cursor:pointer;width:56px;height:30px;border-radius:16px;padding:3px;display:flex;transition:background .2s;${on?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
+        knobStyle: 'width:24px;height:24px;border-radius:50%;background:#fff;' };
+    });
+    const freqDesc = `${s.freq}× a day — ${s.freq<=2?'just a couple of gentle check-ins':s.freq<=4?'a few light nudges spread across the day':s.freq<=6?'regular reminders through your active hours':'frequent prompts to keep you moving'}, only during the days and hours you set below.`;
+    // best-time day picker
+    const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const bestDays = dayKeys.map(k => { const on = !!s.bestDays[k]; return { key:k, label:k[0], on,
+      toggle: () => this.setState(st => ({ bestDays: { ...st.bestDays, [k]: !st.bestDays[k] } })),
+      style: `cursor:pointer;flex:1;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;transition:all .18s;${on?'background:#EB6C0B;color:#fff;':'background:#26292a;color:#8b9092;'}` }; });
+    const selDays = dayKeys.filter(k => s.bestDays[k]);
+    const bestDaysSummary = selDays.length===0 ? 'No days selected — nudges are paused'
+      : selDays.length===7 ? 'Every day'
+      : (selDays.join(',')==='Mon,Tue,Wed,Thu,Fri' ? 'Weekdays' : selDays.join(', '));
+
+    // onboarding flow
+    const onbSteps = [
+      { key:'goal', label:'STEP 1 OF 4', title:'What brings you to Pace?', subtitle:'Pick the goal that matters most right now.',
+        opts:['Move more often','Build strength','Improve endurance','Sleep & stress','Stay consistent'] },
+      { key:'level', label:'STEP 2 OF 4', title:'How active are you today?', subtitle:'This just sets a starting point — it adapts as you go.',
+        opts:['Just getting started','Active now and then','Fairly active','Very active'] },
+      { key:'days', label:'STEP 3 OF 4', title:'How many days a week?', subtitle:"We'll aim for a pace that's realistic, never punishing.", days:true },
+      { key:'enjoy', label:'STEP 4 OF 4', title:'What do you enjoy?', subtitle:"Choose as many as you like — we'll suggest more of these.", multi:true,
+        opts:['Walking','Running','Yoga','Strength','Cycling','Pilates','HIIT','Stretching','Swimming','Hiking','Tennis','Basketball'] }
+    ];
+    const oStep = onbSteps[s.onbStep] || onbSteps[0];
+    const optBase = (active) => `cursor:pointer;min-height:60px;border-radius:16px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;font-size:17px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`;
+    let onbOptions = [];
+    let enjoyOptions = [];
+    if (oStep.opts && oStep.key !== 'enjoy') {
+      onbOptions = oStep.opts.map(label => {
+        const active = oStep.key==='goal' ? s.onbGoal===label : s.onbLevel===label;
+        return { label, checked: active, style: optBase(active),
+          select: () => this.setState(oStep.key==='goal' ? { onbGoal: label } : { onbLevel: label }) };
+      });
+    }
+    if (oStep.key === 'enjoy') {
+      const enjoyIcons = { Walking:'walk', Running:'run', Yoga:'yoga', Strength:'gym', Cycling:'cycling', Pilates:'pilates', HIIT:'boxing', Stretching:'stretch', Swimming:'swim', Hiking:'hiking', Tennis:'tennis', Basketball:'basketball' };
+      enjoyOptions = oStep.opts.map(label => {
+        const active = !!s.onbEnjoy[label];
+        return { label, active,
+          iconStyle: mask(enjoyIcons[label] || 'run', active ? '#4DD5D0' : '#fff', 30),
+          style: `cursor:pointer;border-radius:16px;padding:18px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;font-size:15px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
+          select: () => this.setState(st => ({ onbEnjoy: { ...st.onbEnjoy, [label]: !st.onbEnjoy[label] } })) };
+      });
+    }
+    const dayChoices = [1,2,3,4,5,6,7].map(n => ({ label:String(n), select:()=>this.setState({ onbDays:n }),
+      style:`cursor:pointer;flex:1;height:74px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500;transition:all .16s;${s.onbDays===n?'background:#EB6C0B;color:#fff;':'background:#1E1F20;color:#8b9092;border:1.5px solid #2b3132;'}` }));
+    const oAnswered = oStep.days ? true : oStep.multi ? Object.values(s.onbEnjoy).some(Boolean) : (oStep.key==='goal' ? !!s.onbGoal : !!s.onbLevel);
+    const oLast = s.onbStep === onbSteps.length-1;
+    const onb = {
+      stepLabel: oStep.label, title: oStep.title, subtitle: oStep.subtitle,
+      options: onbOptions, isDays: !!oStep.days, dayChoices,
+      isEnjoy: oStep.key==='enjoy', enjoy: enjoyOptions,
+      showBack: s.onbStep>0,
+      back: () => this.setState(st => ({ onbStep: Math.max(0, st.onbStep-1) })),
+      skip: () => this.go('connect'),
+      progressStyle: `height:100%;width:${Math.round((s.onbStep+1)/onbSteps.length*100)}%;background:#FA8815;border-radius:3px;transition:width .3s;`,
+      nextLabel: oLast ? 'Continue' : 'Next',
+      nextStyle: oAnswered
+        ? 'cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);'
+        : 'height:60px;border-radius:30px;background:#2a2f30;display:flex;align-items:center;justify-content:center;color:#6b7172;font-size:19px;font-weight:500;',
+      next: oAnswered ? (oLast ? () => this.go('connect') : () => this.setState(st => ({ onbStep: st.onbStep+1 }))) : () => {}
+    };
+
+    // health data / device integration
+    const deviceDefs = [
+      { key:'appleHealth', name:'Apple Health', sub:'Steps, workouts & heart rate', img:'assets/logo-apple-health.svg', bg:'#2b3132' },
+      { key:'appleWatch', name:'Apple Watch', sub:'Activity rings & live sessions', img:'assets/logo-apple-watch.svg', bg:'#2b3132' },
+      { key:'googleFit', name:'Google Fit', sub:'Move Minutes & Heart Points', img:'assets/logo-google-fit.svg', bg:'#2b3132' },
+      { key:'fitbit', name:'Fitbit', sub:'Sleep, steps & resting HR', img:'assets/logo-fitbit.svg', bg:'#2b3132' },
+      { key:'garmin', name:'Garmin', sub:'Runs, rides & recovery', img:'assets/logo-garmin.svg', bg:'#2b3132' }
+    ];
+    const devices = deviceDefs.map(d => { const conn = !!s.connected[d.key]; return { name:d.name, sub:d.sub, connected:conn,
+      img: d.img, tileStyle:`width:48px;height:48px;border-radius:13px;background:${d.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
+      btnLabel: conn ? 'Connected' : 'Connect',
+      btnStyle: conn
+        ? 'cursor:pointer;height:40px;padding:0 14px;border-radius:20px;display:flex;align-items:center;gap:6px;background:rgba(77,213,208,.14);color:#4DD5D0;font-size:15px;font-weight:500;flex-shrink:0;'
+        : 'cursor:pointer;height:40px;padding:0 20px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:#EB6C0B;color:#fff;font-size:15px;font-weight:500;flex-shrink:0;',
+      toggle: () => this.setState(st => ({ connected: { ...st.connected, [d.key]: !st.connected[d.key] } })) }; });
+    const anyConnected = Object.values(s.connected).some(Boolean);
+    const connectCta = anyConnected ? 'Continue' : 'Get started';
+
+    // nav
+    const on = '#FA8815', off = '#fff';
+    const nav = {
+      home: s.screen==='home'?on:off, move: s.screen==='move'?on:off,
+      record: s.screen==='record'?on:off, progress: s.screen==='progress'?on:off, friend: s.screen==='friend'?on:off,
+      recordCircle: `width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:${s.screen==='record'?'#FA8815':'#fff'};`,
+      recordPlus: s.screen==='record'?'#fff':'#111'
+    };
+    const navStyles = {
+      home: mask('home', nav.home, 27), move: mask('move', nav.move, 27), record: mask('record', nav.record, 29),
+      progress: mask('progress', nav.progress, 26), friend: mask('friend', nav.friend, 27)
+    };
+    const editIconStyle = mask('edit', '#fff', 20);
+    const addFriendStyle = mask('add-friend', '#fff', 23);
+    const goalStyle = mask('goal', '#fff', 22);
+
+    const nud = s.nudge ? this.NUDGES[s.nudge] : null;
+    const nudgeIcon = nud ? { coffee:'<span style="font-size:15px;">☕</span>', activity:'<span style="font-size:14px;">🏋</span>', desk:'<span style="display:block;width:9px;height:11px;border-left:3px solid #0a2b2b;border-right:3px solid #0a2b2b;"></span>' }[s.nudge] : '';
+    const nudge = nud ? { ...nud, icon: raw(nudgeIcon) } : { iconBg:'#4DD5D0', icon:raw(''), title:'', body:'', yes:'', no:'' };
+
+    // saved workouts
+    const savedIds = Object.keys(s.saved).filter(k => s.saved[k]);
+    const removeSaved = (id) => this.setState(st => ({ saved: { ...st.saved, [id]: false } }));
+    const savedCards = savedIds.map(id => { const c = card(id); c.remove = (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); removeSaved(id); }; return c; });
+    const hasSaved = savedCards.length > 0;
+
+    // search filter
+    const filterCat = ['All','Strength','Cardio','Yoga','Pilates','HIIT'].map(label => ({ label, style: chip(s.filter.category===label), select: () => this.setState({ filter: { ...s.filter, category: label } }) }));
+    const filterLevel = ['Any','Easy','Moderate','Hard'].map(label => ({ label, style: chip(s.filter.level===label), select: () => this.setState({ filter: { ...s.filter, level: label } }) }));
+    const filterEquip = ['Any','None','Mat','Dumbbell','Band','Machine'].map(label => ({ label, style: chip(s.filter.equip===label), select: () => this.setState({ filter: { ...s.filter, equip: label } }) }));
+    const filterVals = { duration: s.filter.duration, durPct: pct(s.filter.duration,10,90) };
+
+    // progress metric detail
+    const pm = s.progMetric;
+    const pdCur = this.PERIOD_DATA[s.progPeriod];
+    const isDist = pm==='distance';
+    const mSlice = isDist ? pdCur.distance : pdCur.steps;
+    const metricMeta = isDist
+      ? { title:'Distance', value: mSlice.value, unit:'mi', goal: s.distanceGoal.toFixed(1)+' mi', note: mSlice.note, accent:'#FA8815' }
+      : { title:'Step Count', value: mSlice.value, unit:'steps', goal: s.stepGoal.toLocaleString(), note: mSlice.note, accent:'#FA8815' };
+    const periods = ['Day','Week','Month','Year'].map(label => ({ label, active: s.progPeriod===label,
+      style:`cursor:pointer;flex:1;text-align:center;padding:9px 0;border-radius:10px;font-size:14px;${s.progPeriod===label?'background:#EB6C0B;color:#fff;':'color:#B9BFC1;'}`,
+      select: () => this.setState({ progPeriod: label }) }));
+    const pd = this.PERIOD_DATA[s.progPeriod];
+    const chartMax = Math.max(...pd.vals);
+    const chartBars = pd.vals.map((v,i) => ({
+      barStyle:`width:100%;border-radius:5px 5px 0 0;height:${Math.round(12+v*150)}px;background:${v>=chartMax?metricMeta.accent:'#3a4041'};transition:height .4s cubic-bezier(.4,.2,.2,1);`,
+      label: pd.labels[i], labelStyle:'color:#737A7B;font-size:11px;margin-top:8px;text-align:center;' }));
+    const chartCaption = pd.caption;
+
+    // sessions list
+    const sessCats = ['All', ...Array.from(new Set(this.RECORDED.map(r => r.cat)))].map(label => ({ label, style: chip(s.sessionFilter===label), select: () => this.setState({ sessionFilter: label }) }));
+    const shown = this.RECORDED.filter(r => s.sessionFilter==='All' || r.cat===s.sessionFilter);
+    const grouped = [];
+    shown.forEach(r => { let g = grouped.find(x => x.date===r.dateLabel); if(!g){ g={date:r.dateLabel, items:[]}; grouped.push(g); } g.items.push({ ...r, iconStyle: mask(iconFor(r.cat), '#4DD5D0', 24), open: () => { this.setState({ sessionDetailId: r.id }); this.go('sessionDetail'); } }); });
+    const sessionGroups = grouped;
+
+    // session detail
+    const sd = this.RECORDED.find(r => r.id === s.sessionDetailId) || this.RECORDED[0];
+    const sdRows = [
+      { k:'Workout time', v: sd.time }, { k:'Calories', v: sd.cal },
+      sd.distance ? { k:'Distance', v: sd.distance } : null,
+      sd.sets ? { k:'Sets', v: sd.sets } : null,
+      sd.reps ? { k:'Reps', v: sd.reps } : null,
+      sd.weight ? { k:'Weight', v: sd.weight } : null,
+      { k:'Intensity', v: sd.intensity }, { k:'Equipment', v: sd.equip }
+    ].filter(Boolean);
+    const sessDetail = { name: sd.name, cat: sd.cat, date: sd.date, span: sd.span, note: sd.note, hasNote: !!sd.note, rows: sdRows, iconStyle: mask(iconFor(sd.cat), '#4DD5D0', 28) };
+
+    // edit summary — each card has a toggle + (when on) an inline goal slider
+    const setGoal = (k) => (e) => this.setState({ [k]: +e.target.value });
+    const summaryCards = [
+      { key:'steps',    label:'Step Count', goalKey:'stepGoal',     goalLabel:'Daily steps',     val:s.stepGoal,     disp:s.stepGoal.toLocaleString(),     min:2000, max:12000, step:500,  pctv:pct(s.stepGoal,2000,12000) },
+      { key:'distance', label:'Distance',   goalKey:'distanceGoal', goalLabel:'Daily distance',  val:s.distanceGoal, disp:s.distanceGoal.toFixed(1)+' mi',  min:1,    max:10,    step:0.5,  pctv:pct(s.distanceGoal,1,10) },
+      { key:'sessions', label:'Sessions',   goalKey:'sessWeekGoal', goalLabel:'Sessions / week', val:s.sessWeekGoal, disp:s.sessWeekGoal+'× / week',        min:1,    max:7,     step:1,    pctv:pct(s.sessWeekGoal,1,7) },
+      { key:'running',  label:'Running',    goalKey:'runGoal',      goalLabel:'Weekly distance', val:s.runGoal,      disp:s.runGoal+' mi',                  min:2,    max:40,    step:1,    pctv:pct(s.runGoal,2,40) },
+      { key:'cycling',  label:'Cycling',    goalKey:'cycleGoal',    goalLabel:'Weekly distance', val:s.cycleGoal,    disp:s.cycleGoal+' mi',                min:5,    max:80,    step:5,    pctv:pct(s.cycleGoal,5,80) },
+      { key:'swimming', label:'Swimming',   goalKey:'swimGoal',     goalLabel:'Weekly distance', val:s.swimGoal,     disp:s.swimGoal.toLocaleString()+' m', min:200,  max:3000,  step:100,  pctv:pct(s.swimGoal,200,3000) }
+    ].map(o => { const on = s.summaryCards[o.key];
+      return { ...o, on,
+        toggle: () => this.setState(st => ({ summaryCards: { ...st.summaryCards, [o.key]: !st.summaryCards[o.key] } })),
+        setGoal: setGoal(o.goalKey),
+        trackStyle:`cursor:pointer;width:56px;height:30px;border-radius:16px;padding:3px;display:flex;transition:background .2s;${on?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
+        knobStyle:'width:24px;height:24px;border-radius:50%;background:#fff;' }; });
+
+    // best time picker (supports a global window + per-weekday windows)
+    const dayFull = { Mon:'Monday', Tue:'Tuesday', Wed:'Wednesday', Thu:'Thursday', Fri:'Friday', Sat:'Saturday', Sun:'Sunday' };
+    const dtFor = (k) => s.dayTimes[k] || { start: s.bestStart, end: s.bestEnd };
+    const timeOptions = ['6:00 AM','7:00 AM','8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM'];
+    const pickTime = (v) => this.setState(st => {
+      const tp = st.timePicker; if (!tp) return { timePicker: null };
+      if (tp.day === 'all') return tp.which === 'start' ? { bestStart: v, timePicker: null } : { bestEnd: v, timePicker: null };
+      const cur = st.dayTimes[tp.day] || { start: st.bestStart, end: st.bestEnd };
+      return { dayTimes: { ...st.dayTimes, [tp.day]: { ...cur, [tp.which]: v } }, timePicker: null };
+    });
+    const tp = s.timePicker;
+    const curTimeVal = tp ? (tp.day === 'all' ? (tp.which === 'start' ? s.bestStart : s.bestEnd) : dtFor(tp.day)[tp.which]) : null;
+    const timeList = timeOptions.map(v => ({ label:v, select: () => pickTime(v),
+      style:`cursor:pointer;padding:14px 18px;border-radius:12px;font-size:17px;color:#fff;${(curTimeVal===v)?'background:#154B4C;':'background:#26292a;'}` }));
+    const sameTime = s.sameTime !== false;
+    const segStyle = (active) => `cursor:pointer;flex:1;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;transition:all .18s;${active?'background:#154B4C;color:#fff;':'color:#8b9092;'}`;
+    const timeMode = [
+      { label:'Same every day', style: segStyle(sameTime), select: () => this.setState({ sameTime: true, timePicker: null }) },
+      { label:'Custom per day', style: segStyle(!sameTime), select: () => this.setState({ sameTime: false, timePicker: null }) }
+    ];
+    const dayTimeRows = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].filter(k => s.bestDays[k]).map(k => {
+      const d = dtFor(k);
+      return { key:k, name: dayFull[k], start: d.start, end: d.end,
+        openStart: () => this.setState({ timePicker: { day:k, which:'start' } }),
+        openEnd: () => this.setState({ timePicker: { day:k, which:'end' } }) };
+    });
+
+    // break mode features
+    const breakFeatures = [
+      { t:'Goals pause', d:"Daily targets stop counting, so a rest day never breaks a streak." },
+      { t:'Streak frozen', d:'Your current streak is held right where it is until you return.' },
+      { t:'Gentle suggestions', d:'One light, optional idea every 2 days — nothing more.' },
+      { t:'Quieter notifications', d:'Nudges pause automatically while break mode is on.' }
+    ];
+
+    // add-friend QR (deterministic pseudo-QR) as inline SVG
+    let qr = '<svg xmlns="http://www.w3.org/2000/svg" width="170" height="170" viewBox="0 0 25 25" shape-rendering="crispEdges" style="display:block;">';
+    const seed = [1,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,0,1,0,1,1,1,0,0,1];
+    for (let y=0;y<25;y++) for (let x=0;x<25;x++){ if(((seed[(x*3+y*7)%25]+x*y+x+y)%3)===0){ qr += '<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="#0a0d0d"/>'; } }
+    const finder = (ox,oy) => { qr += '<rect x="'+ox+'" y="'+oy+'" width="7" height="7" fill="#0a0d0d"/><rect x="'+(ox+1)+'" y="'+(oy+1)+'" width="5" height="5" fill="#fff"/><rect x="'+(ox+2)+'" y="'+(oy+2)+'" width="3" height="3" fill="#0a0d0d"/>'; };
+    finder(0,0); finder(18,0); finder(0,18);
+    qr += '</svg>';
+    const qrEl = raw(qr);
+    const myCode = 'PACE-4827-JW';
+
+    // shared goal
+    const goalTemplates = [
+      { label:'Move 4 days/week', sub:'Steady and sustainable' },
+      { label:'Walk 20,000 steps', sub:'Over the weekend' },
+      { label:'3 workouts together', sub:'This week' }
+    ].map(g => ({ ...g, select: () => this.setState({ sharedGoalPick: g.label }),
+      style:`cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:16px 18px;border-radius:14px;color:#fff;${s.sharedGoalPick===g.label?'background:#154B4C;border:1.5px solid #4DD5D0;':'background:#1E1F20;border:1.5px solid transparent;'}` }));
+    const inviteFriends = [
+      { name:'Mia', avatar:'assets/avatar-yellow.png', bg:'#F6F453' },
+      { name:'Henry', avatar:'assets/avatar-orange.png', bg:'#FA8815' },
+      { name:'Sarah', avatar:'assets/avatar-yellow2.png', bg:'#F6F453' }
+    ].map(f => { const on = !!s.invite[f.name];
+      return { ...f, on, toggle: () => this.setState(st => ({ invite: { ...st.invite, [f.name]: !st.invite[f.name] } })),
+        checkStyle:`width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;${on?'background:#EB6C0B;':'border:1.5px solid #737A7B;'}` }; });
+
+    // break mode blurb
+    const breakBlurb = s.breakMode
+      ? "Break mode is on. Take the time you need — your streak and goals are safe until you're ready."
+      : 'Life gets busy. Turn this on and Pace eases off without erasing the progress you\u2019ve made.';
+    const noSaved = !hasSaved;
+
+    return {
+      isHome: s.screen==='home', isMove: s.screen==='move', isSearch: s.screen==='search',
+      isDetail: s.screen==='detail', isWorkout: s.screen==='workout', isRecord: s.screen==='record',
+      isProgress: s.screen==='progress', isFriend: s.screen==='friend', isAccount: s.screen==='account', isNotif: s.screen==='notifications',
+      isScan: s.screen==='scan', isFilter: s.screen==='filter', isMetric: s.screen==='metric',
+      isSplash: s.screen==='splash', isOnboarding: s.screen==='onboarding', isConnect: s.screen==='connect',
+      onb, devices, connectCta,
+      finishOnboarding: () => this.finishOnboarding(true), skipConnect: () => this.finishOnboarding(false),
+      isSessionsList: s.screen==='sessionsList', isSessionDetail: s.screen==='sessionDetail', isEditSummary: s.screen==='editSummary',
+      isSavedWorkouts: s.screen==='savedWorkouts', isAddFriend: s.screen==='addFriend', isSharedGoal: s.screen==='sharedGoal', isBreakMode: s.screen==='breakMode',
+      showNav: ['home','move','search','record','progress','friend'].includes(s.screen),
+      screenRef: (el) => { this._screenEl = el; }, confettiRef: (el) => { this._confettiEl = el; },
+      back: this.back,
+      goHome: () => this.go('home'), goMove: () => this.go('move'), goRecord: () => this.go('record'),
+      goProgress: () => this.go('progress'), goFriend: () => this.go('friend'), goAccount: () => this.go('account'),
+      goSearch: this.goSearch,
+      already, suggested, moveSections, searchResults,
+      loading: s.loading, notLoading: !s.loading,
+      detail, toggleSave,
+      ex, startWorkout: this.startWorkout, togglePause: this.togglePause, nextExercise: this.nextExercise,
+      voiceOn: s.voiceGuide, voiceOff: !s.voiceGuide,
+      toggleVoice: () => this.setState(st => ({ voiceGuide: !st.voiceGuide })),
+      headphoneStyle: `cursor:pointer;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s;background:${s.voiceGuide ? '#F1EA2E' : 'rgba(255,255,255,.62)'};`,
+      categories, addCatBtn, groups, equipment, intensity, focus, flexIntensity, simpleIntensity, rec, sliderStyle: slider,
+      noCat: !s.cat, hasCat: !!s.cat,
+      isStrength: catType==='strength', isDistance: catType==='distance', isFlex: catType==='flex', isSimple: catType==='simple', gymHasGroup,
+      catLabel: s.cat || '',
+      addCatOpen: s.addCatOpen, closeAddCat: () => this.setState({ addCatOpen: false }),
+      catPresets: this.CATPRESETS.filter(p => !s.cats.includes(p.label)).map(p => ({
+        label: p.label, iconStyle: mask(p.icon, '#fff', 26), add: () => this.addCatPreset(p.label, p.icon) })),
+      openScan: () => { this.setState({ scanMode: 'equipment' }); this.go('scan'); },
+      openScanFriend: () => { this.setState({ scanMode: 'friend' }); this.go('scan'); },
+      scanTitle: s.scanMode==='friend' ? "Scan QR code" : 'Scan equipment',
+      scanHint: s.scanMode==='friend' ? "Point at your friend's Pace QR code" : 'Point at a machine to identify it',
+      scanButton: s.scanMode==='friend' ? 'Connect' : 'Scan',
+      videoRef: (el) => { this._videoEl = el; },
+      scanRecognize: () => {
+        if (this.state.scanMode==='friend') { this.showToast('Friend request sent.'); }
+        else { this.setState({ equip: 'Leg press' }); this.showToast('Recognized: Leg press'); }
+        this.back();
+      },
+      setDuration: (e) => this.setState({ duration: +e.target.value }),
+      setDistance: (e) => this.setState({ distance: +e.target.value }),
+      setSets: (e) => this.setState({ sets: +e.target.value }),
+      setReps: (e) => this.setState({ reps: +e.target.value }),
+      setWeight: (e) => this.setState({ weight: +e.target.value }),
+      recordTap, recordBtnStyle,
+      barsA, barsB, sessions, feed, accountRows,
+      // saved workouts
+      savedCards, hasSaved, goAccountSaved: () => this.go('savedWorkouts'),
+      savedEdit: s.savedEdit, notSavedEdit: !s.savedEdit,
+      toggleSavedEdit: () => this.setState(st => ({ savedEdit: !st.savedEdit })),
+      // filter
+      openFilter: () => this.go('filter'), filterCat, filterLevel, filterEquip, filterVals,
+      setFilterDuration: (e) => this.setState({ filter: { ...s.filter, duration: +e.target.value } }),
+      applyFilter: () => { this.back(); this.setState({ loading: true }); setTimeout(() => this.setState({ loading: false }), 600); this.showToast('Filters applied.'); },
+      resetFilter: () => this.setState({ filter: { category:'All', level:'Any', duration:60, equip:'Any' } }),
+      // progress metric
+      openMetric: (m) => { this.setState({ progMetric: m, progPeriod: 'Day' }); this.go('metric'); },
+      openStep: () => { this.setState({ progMetric: 'steps', progPeriod: 'Day' }); this.go('metric'); },
+      openDist: () => { this.setState({ progMetric: 'distance', progPeriod: 'Day' }); this.go('metric'); },
+      metricMeta, periods, chartBars, chartCaption,
+      // sessions
+      openSessions: () => this.go('sessionsList'),
+      sessCats, sessionGroups, sessDetail,
+      // edit summary
+      openEditSummary: () => this.go('editSummary'),
+      summaryCards,
+      saveSummary: () => { this.back(); this.showToast('Summary updated.'); },
+      cardSteps: s.summaryCards.steps, cardDistance: s.summaryCards.distance, cardSessions: s.summaryCards.sessions,
+      extraCards: [
+        s.summaryCards.running  ? { name:'Running',  value:'8.6', unit:' mi', goal:s.runGoal+' mi',              vals:[.5,.8,.6,1,.4,.7] } : null,
+        s.summaryCards.cycling  ? { name:'Cycling',  value:'14.2',unit:' mi', goal:s.cycleGoal+' mi',            vals:[.6,.9,.7,.5,1,.8] } : null,
+        s.summaryCards.swimming ? { name:'Swimming', value:'1,200',unit:' m', goal:s.swimGoal.toLocaleString()+' m', vals:[.4,.7,1,.6,.8,.5] } : null
+      ].filter(Boolean).map(c => ({ ...c, bars: c.vals.map((v,i) => ({ style:`width:9px;border-radius:3px;height:${Math.round(18+v*48)}px;background:${(v>=Math.max(...c.vals))?'#FA8815':(i===0?'#FCA33B':'#FEDFAA')};` })) })),
+      stepGoalLabel: s.stepGoal.toLocaleString(), distGoalLabel: s.distanceGoal.toFixed(1),
+      // notifications time
+      notif: { freq: s.freq, freqPct: pct(s.freq,1,8), freqDesc }, setFreq: (e) => this.setState({ freq: +e.target.value }),
+      bestDays, bestDaysSummary,
+      bestStart: s.bestStart, bestEnd: s.bestEnd,
+      sameTime, customTime: !sameTime, timeMode, dayTimeRows,
+      openTimeStart: () => this.setState({ timePicker: { day:'all', which:'start' } }), openTimeEnd: () => this.setState({ timePicker: { day:'all', which:'end' } }),
+      timePickerOpen: !!s.timePicker,
+      timePickerTitle: tp ? ((tp.day==='all'?'':dayFull[tp.day]+' · ') + (tp.which==='start'?'Start time':'End time')) : '',
+      timeList, closeTimePicker: () => this.setState({ timePicker: null }),
+      tones, triggers,
+      // friend
+      openAddFriend: () => this.go('addFriend'), openSharedGoal: () => this.go('sharedGoal'),
+      myCode, qrEl, goalTemplates, inviteFriends,
+      createGoal: () => { this.back(); this.showToast('Shared goal created. Invites sent.'); },
+      sendRequest: () => this.showToast('Friend request sent.'),
+      copyCode: () => { try { navigator.clipboard && navigator.clipboard.writeText(myCode); } catch(e){} this.showToast('Code copied.'); },
+      // saved empty
+      noSaved,
+      // break blurb
+      breakBlurb,
+      stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+      // break mode
+      breakMode: s.breakMode, breakFeatures,
+      toggleBreak: () => this.setState(st => ({ breakMode: !st.breakMode })),
+      breakTrackStyle: `cursor:pointer;width:60px;height:34px;border-radius:18px;padding:4px;display:flex;transition:background .25s;${s.breakMode?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
+      breakKnobStyle: 'width:26px;height:26px;border-radius:50%;background:#fff;transition:all .2s;',
+      nav, navStyles, editIconStyle, addFriendStyle, goalStyle,
+      nudgeOpen: !!s.nudge, nudge,
+      nudgeAnim: this.props.reduceMotion===true ? '' : 'animation:none;',
+      dismissNudge: this.dismissNudge, nudgeYes: this.nudgeYes,
+      celebrate: s.celebrate, closeCelebrate: this.closeCelebrate,
+      toastOpen: !!s.toast, toastText: s.toast || '', toastAnim: '',
+      scrimStyle: `position:absolute;top:0;left:0;right:0;height:100px;z-index:36;pointer-events:none;opacity:${s.scrolled?1:0};transition:opacity .3s ease;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.42) 55%,rgba(0,0,0,0) 100%);-webkit-mask:linear-gradient(180deg,#000 62%,transparent 100%);mask:linear-gradient(180deg,#000 62%,transparent 100%);`,
+    };
+  }
+}
+</script>
+</body>
+</html>
