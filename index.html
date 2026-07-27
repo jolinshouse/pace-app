@@ -191,33 +191,24 @@
 
           <div style="display:flex;align-items:center;justify-content:space-between;padding:36px 20px 14px;">
             <span style="color:#fff;font-size:20px;font-weight:500;">You're already doing</span>
-            <div onClick="{{ goProgress }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
+            <div onClick="{{ openSessions }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
               <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
           <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;">
-            <sc-for list="{{ already }}" as="c" hint-placeholder-count="2">
-              <div onClick="{{ c.flip }}" style="cursor:pointer;flex:none;width:216px;height:153px;perspective:900px;">
-                <div style="{{ c.inner }}">
-                  <div style="position:absolute;inset:0;border-radius:16px;background:#1E1F20;padding:16px 18px;-webkit-backface-visibility:hidden;backface-visibility:hidden;opacity:{{ c.frontOp }};transition:opacity .28s ease;display:flex;flex-direction:column;justify-content:space-between;">
-                    <div>
-                      <div style="color:#fff;font-size:16px;font-weight:500;margin-bottom:5px;">{{ c.title }}</div>
-                      <div style="display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">
-                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.7" stroke="#B9BFC1" stroke-width="1.1"/><path d="M6.5 3.4V6.7l2.3 1.3" stroke="#B9BFC1" stroke-width="1.1" stroke-linecap="round"/></svg>
-                        {{ c.time }}
-                      </div>
-                    </div>
-                    <div style="display:flex;align-items:flex-end;gap:6px;">
-                      <sc-if value="{{ c.arrow }}" hint-placeholder-val="{{ true }}"><svg width="18" height="34" viewBox="0 0 18 34" fill="none" style="display:block;margin-bottom:2px;flex-shrink:0;"><path d="M9 33V4M9 4L3 11M9 4l6 7" stroke="#F1EA2E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
-                      <span style="{{ c.numStyle }}">{{ c.value }}</span>
-                      <span style="color:#fff;font-size:15px;font-weight:500;line-height:1.05;padding-bottom:4px;">{{ c.unit }}</span>
-                    </div>
+            <sc-for list="{{ already }}" as="c" hint-placeholder-count="3">
+              <div onClick="{{ c.open }}" style="cursor:pointer;flex:none;width:216px;height:153px;border-radius:16px;background:#1E1F20;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div>
+                  <div style="color:#fff;font-size:16px;font-weight:500;margin-bottom:5px;">{{ c.title }}</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.7" stroke="#B9BFC1" stroke-width="1.1"/><path d="M6.5 3.4V6.7l2.3 1.3" stroke="#B9BFC1" stroke-width="1.1" stroke-linecap="round"/></svg>
+                    {{ c.time }}
                   </div>
-                  <div style="position:absolute;inset:0;border-radius:16px;background:#1E1F20;border:1px solid #2f3536;padding:16px 18px;-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform:rotateY(180deg);transform:rotateY(180deg);opacity:{{ c.backOp }};transition:opacity .28s ease;display:flex;flex-direction:column;justify-content:center;gap:10px;">
-                    <div style="color:#B9BFC1;font-size:13px;">Today's breakdown</div>
-                    <div style="color:#fff;font-size:15px;line-height:1.5;">{{ c.detail }}</div>
-                    <div style="color:#FA8815;font-size:13px;">Tap to flip back</div>
-                  </div>
+                </div>
+                <div style="display:flex;align-items:flex-end;gap:6px;">
+                  <sc-if value="{{ c.arrow }}" hint-placeholder-val="{{ true }}"><svg width="18" height="34" viewBox="0 0 18 34" fill="none" style="display:block;margin-bottom:2px;flex-shrink:0;"><path d="M9 33V4M9 4L3 11M9 4l6 7" stroke="#F1EA2E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                  <span style="{{ c.numStyle }}">{{ c.value }}</span>
+                  <span style="color:#fff;font-size:15px;font-weight:500;line-height:1.05;padding-bottom:4px;">{{ c.unit }}</span>
                 </div>
               </div>
             </sc-for>
@@ -1096,7 +1087,7 @@ class Component extends DCLogic {
     screen: 'home',
     history: [],
     detailId: 'total-body',
-    saved: { 'upper-body': true, 'cardio-burst': true, 'total-body': true },
+    saved: { 'hip-dips': true, 'fat-burn': true, 'full-body': true },
     searchSaved: { 'standing-abs': true },
     flip: {},
     loading: false,
@@ -1339,16 +1330,13 @@ class Component extends DCLogic {
 
     // already-doing cards
     const already = [
-      { key:'a', title:'Walk to campus', time:'19 min', value:'584', unit:'steps', arrow:false,
-        numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;',
-        detail:'584 steps · 0.4 mi · 12 min active. Logged from your morning walk.' },
-      { key:'b', title:'Morning Stretch', time:'30 min', value:'30', unit:'% stronger\nmuscle', arrow:true,
-        numStyle:'color:#F1EA2E;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;',
-        detail:'Consistency up 30% vs last week. Steady wins.' }
-    ].map(c => ({ ...c, unit: c.unit.replace('\n',' '),
-      frontOp: s.flip[c.key] ? 0 : 1, backOp: s.flip[c.key] ? 1 : 0,
-      flip: () => this.setState(st => ({ flip: { ...st.flip, [c.key]: !st.flip[c.key] } })),
-      inner: `position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);-webkit-transform-style:preserve-3d;transform-style:preserve-3d;${s.flip[c.key]?'-webkit-transform:rotateY(180deg);transform:rotateY(180deg);':''}` }));
+      { key:'a', title:'Walk to campus', time:'19 min', value:'584', unit:'steps', arrow:false, sess:'r4',
+        numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' },
+      { key:'b', title:'Morning Stretch', time:'12 min', value:'30', unit:'% stronger muscle', arrow:true, sess:'r6',
+        numStyle:'color:#F1EA2E;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' },
+      { key:'c', title:'Evening Run', time:'32 min', value:'3.4', unit:'mi', arrow:true, sess:'r1',
+        numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' }
+    ].map(c => ({ ...c, open: () => { this.setState({ sessionDetailId: c.sess }); this.go('sessionDetail'); } }));
 
     const card = (id) => { const w = this.WK[id]; return { id, title:w.title, tag:w.tag, min:w.min, level:w.level, img:this.IMG[id], equip:w.equip, open: () => this.openDetail(id) }; };
     const suggested = ['cardio-burst','upper-body','squat-leg','morning-warmup','total-body'].map(card);
