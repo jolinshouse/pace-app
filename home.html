@@ -91,14 +91,24 @@
               </div>
             </sc-if>
             <sc-if value="{{ onb.isEnjoy }}" hint-placeholder-val="{{ false }}">
-              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px;">
-                <sc-for list="{{ onb.enjoy }}" as="o" hint-placeholder-count="6">
-                  <div onClick="{{ o.select }}" style="{{ o.style }}">
-                    <div style="{{ o.iconStyle }}"></div>
-                    <span>{{ o.label }}</span>
+              <div style="display:flex;gap:10px;margin-top:30px;">
+                <sc-for list="{{ onb.themes }}" as="t" hint-placeholder-count="3">
+                  <div onClick="{{ t.select }}" style="{{ t.style }}">
+                    <div style="{{ t.iconStyle }}"></div>
+                    <span>{{ t.label }}</span>
                   </div>
                 </sc-for>
               </div>
+              <sc-if value="{{ onb.hasTheme }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;">
+                  <sc-for list="{{ onb.enjoy }}" as="o" hint-placeholder-count="6">
+                    <div onClick="{{ o.select }}" style="{{ o.style }}">
+                      <div style="{{ o.iconStyle }}"></div>
+                      <span>{{ o.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
             </sc-if>
           </div>
           <div style="padding:16px 24px 40px;">
@@ -116,13 +126,43 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:12px;padding:28px 20px 0;">
             <sc-for list="{{ devices }}" as="d" hint-placeholder-count="5">
+              <div onClick="{{ d.toggle }}" style="{{ d.rowStyle }}">
+                <div style="{{ d.tileStyle }}"><img src="{{ d.img }}" alt="{{ d.name }}" style="width:28px;height:28px;object-fit:contain;"/></div>
+                <div style="flex:1;min-width:0;">
+                  <div style="color:#fff;font-size:17px;font-weight:500;">{{ d.name }}</div>
+                  <div style="color:#8b9092;font-size:13px;margin-top:2px;">{{ d.sub }}</div>
+                </div>
+                <div style="{{ d.checkStyle }}"><sc-if value="{{ d.picked }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex:1;min-height:24px;"></div>
+          <div style="padding:24px 24px 0;display:flex;flex-direction:column;gap:16px;">
+            <div onClick="{{ connectContinue }}" style="cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">{{ connectCta }}</div>
+            <div onClick="{{ skipConnect }}" style="cursor:pointer;text-align:center;color:#8b9092;font-size:15px;">Not now</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CONNECT SPECIFIC APPS ============ -->
+      <sc-if value="{{ isConnectApps }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 28%);display:flex;flex-direction:column;padding-bottom:40px;">
+          <div style="padding:62px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;width:40px;height:40px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="10" height="16" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div style="padding:22px 24px 0;">
+            <div style="color:#fff;font-size:28px;font-weight:500;line-height:1.2;">Connect your apps</div>
+            <div style="color:#B9BFC1;font-size:16px;line-height:1.5;margin-top:10px;">Sign in to each service to finish linking your data.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;padding:28px 20px 0;">
+            <sc-for list="{{ connectAppRows }}" as="d" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:14px;background:#16191a;border:1px solid #2b3132;border-radius:16px;padding:14px 16px;">
                 <div style="{{ d.tileStyle }}"><img src="{{ d.img }}" alt="{{ d.name }}" style="width:28px;height:28px;object-fit:contain;"/></div>
                 <div style="flex:1;min-width:0;">
                   <div style="color:#fff;font-size:17px;font-weight:500;">{{ d.name }}</div>
                   <div style="color:#8b9092;font-size:13px;margin-top:2px;">{{ d.sub }}</div>
                 </div>
-                <div onClick="{{ d.toggle }}" style="{{ d.btnStyle }}">
+                <div onClick="{{ d.connect }}" style="{{ d.btnStyle }}">
                   <sc-if value="{{ d.connected }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
                   {{ d.btnLabel }}
                 </div>
@@ -130,9 +170,8 @@
             </sc-for>
           </div>
           <div style="flex:1;min-height:24px;"></div>
-          <div style="padding:24px 24px 0;display:flex;flex-direction:column;gap:16px;">
-            <div onClick="{{ finishOnboarding }}" style="cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">{{ connectCta }}</div>
-            <div onClick="{{ skipConnect }}" style="cursor:pointer;text-align:center;color:#8b9092;font-size:15px;">Not now</div>
+          <div style="padding:24px 24px 0;">
+            <div onClick="{{ connectDone }}" style="cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Done</div>
           </div>
         </div>
       </sc-if>
@@ -578,6 +617,10 @@
               <div style="flex:1;"><div style="color:#fff;font-size:22px;font-weight:500;">Jolyne Wu</div><div style="color:#B9BFC1;font-size:15px;margin-top:3px;">cholwu20@student.scad.edu</div></div>
               <svg width="8" height="15" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
+            <div style="background:#1E1F20;border-radius:18px;padding:20px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="flex:1;padding-right:16px;"><div style="color:#fff;font-size:18px;">Show Friends tab</div><div style="color:#8b9092;font-size:13px;margin-top:3px;line-height:1.4;">Social feed, circles and shared goals.</div></div>
+              <div onClick="{{ toggleFriendTab }}" style="{{ friendTrackStyle }}"><div style="{{ friendKnobStyle }}"></div></div>
+            </div>
             <div style="background:#1E1F20;border-radius:18px;padding:8px 18px;margin-top:22px;">
               <sc-for list="{{ accountRows }}" as="r" hint-placeholder-count="8">
                 <div onClick="{{ r.tap }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:18px 2px;border-bottom:1px solid #2b3132;">
@@ -960,10 +1003,12 @@
           <div style="{{ navStyles.progress }}"></div>
           <span style="color:{{ nav.progress }};font-size:12px;">Progress</span>
         </div>
+        <sc-if value="{{ social }}" hint-placeholder-val="{{ true }}">
         <div onClick="{{ goFriend }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;">
           <div style="{{ navStyles.friend }}"></div>
           <span style="color:{{ nav.friend }};font-size:12px;">Friend</span>
         </div>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -1082,7 +1127,7 @@ class Component extends DCLogic {
     sameTime: true,
     dayTimes: { Mon:{start:'12:00 PM',end:'6:00 PM'}, Tue:{start:'12:00 PM',end:'6:00 PM'}, Wed:{start:'12:00 PM',end:'6:00 PM'}, Thu:{start:'12:00 PM',end:'6:00 PM'}, Fri:{start:'12:00 PM',end:'6:00 PM'}, Sat:{start:'9:00 AM',end:'12:00 PM'}, Sun:{start:'9:00 AM',end:'12:00 PM'} },
     // onboarding
-    onbStep: 0, onbGoal: null, onbLevel: null, onbDays: 4, onbEnjoy: {}, connected: {},
+    onbStep: 0, onbGoal: {}, onbLevel: null, onbDays: 4, onbTheme: {}, onbEnjoy: {}, social: true, socialSet: false, connectPick: {}, connected: {},
     triggers: { 'After inactivity': true, 'Goal completions': true, 'Daily coaching': false, 'Activity sharing': true, 'New features': false },
     // break mode
     breakMode: false,
@@ -1215,7 +1260,7 @@ class Component extends DCLogic {
     return { screen: prev || 'home', scrolled: false, history: h };
   });
   enterSplash = () => {
-    this.setState({ onbStep: 0, onbGoal: null, onbLevel: null, onbDays: 4, onbEnjoy: {}, connected: {} });
+    this.setState({ onbStep: 0, onbGoal: {}, onbLevel: null, onbDays: 4, onbTheme: {}, onbEnjoy: {}, socialSet: false, connectPick: {}, connected: {} });
     this.go('splash');
     clearTimeout(this._splashTimer);
     this._splashTimer = setTimeout(() => { if (this.state.screen === 'splash') this.go('onboarding', false); }, 2300);
@@ -1457,43 +1502,71 @@ class Component extends DCLogic {
 
     // onboarding flow
     const onbSteps = [
-      { key:'goal', label:'STEP 1 OF 4', title:'What brings you to Pace?', subtitle:'Pick the goal that matters most right now.',
-        opts:['Move more often','Build strength','Improve endurance','Sleep & stress','Stay consistent'] },
-      { key:'level', label:'STEP 2 OF 4', title:'How active are you today?', subtitle:'This just sets a starting point — it adapts as you go.',
+      { key:'goal', label:'STEP 1 OF 5', title:'What brings you to Pace?', subtitle:'Choose as many as feel right — this shapes what we suggest.', multi:true,
+        opts:['Move more often','Lose weight','Build strength','Improve endurance','Feel more energized','Sleep & stress','Stay consistent'] },
+      { key:'level', label:'STEP 2 OF 5', title:'How active are you today?', subtitle:'This just sets a starting point — it adapts as you go.',
         opts:['Just getting started','Active now and then','Fairly active','Very active'] },
-      { key:'days', label:'STEP 3 OF 4', title:'How many days a week?', subtitle:"We'll aim for a pace that's realistic, never punishing.", days:true },
-      { key:'enjoy', label:'STEP 4 OF 4', title:'What do you enjoy?', subtitle:"Choose as many as you like — we'll suggest more of these.", multi:true,
-        opts:['Walking','Running','Yoga','Strength','Cycling','Pilates','HIIT','Stretching','Swimming','Hiking','Tennis','Basketball'] }
+      { key:'days', label:'STEP 3 OF 5', title:'How many days a week?', subtitle:"We'll aim for a pace that's realistic, never punishing.", days:true },
+      { key:'enjoy', label:'STEP 4 OF 5', title:'What do you enjoy?', subtitle:"Pick a style, then the activities you like — we'll suggest more.", enjoy:true },
+      { key:'social', label:'STEP 5 OF 5', title:'How do you like to move?', subtitle:'No right answer — just what feels good. Pace tailors the app to you.',
+        opts:['With friends','On my own'] }
     ];
     const oStep = onbSteps[s.onbStep] || onbSteps[0];
     const optBase = (active) => `cursor:pointer;min-height:60px;border-radius:16px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;font-size:17px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`;
     let onbOptions = [];
+    let enjoyThemes = [];
     let enjoyOptions = [];
-    if (oStep.opts && oStep.key !== 'enjoy') {
+    if (oStep.opts) {
       onbOptions = oStep.opts.map(label => {
-        const active = oStep.key==='goal' ? s.onbGoal===label : s.onbLevel===label;
+        let active;
+        if (oStep.key==='goal') active = !!s.onbGoal[label];
+        else if (oStep.key==='social') active = s.socialSet && (s.social === (label==='With friends'));
+        else active = s.onbLevel===label;
         return { label, checked: active, style: optBase(active),
-          select: () => this.setState(oStep.key==='goal' ? { onbGoal: label } : { onbLevel: label }) };
+          select: () => {
+            if (oStep.key==='goal') this.setState(st => ({ onbGoal: { ...st.onbGoal, [label]: !st.onbGoal[label] } }));
+            else if (oStep.key==='social') this.setState({ social: label==='With friends', socialSet: true });
+            else this.setState({ onbLevel: label });
+          } };
       });
     }
-    if (oStep.key === 'enjoy') {
-      const enjoyIcons = { Walking:'walk', Running:'run', Yoga:'yoga', Strength:'gym', Cycling:'cycling', Pilates:'pilates', HIIT:'boxing', Stretching:'stretch', Swimming:'swim', Hiking:'hiking', Tennis:'tennis', Basketball:'basketball' };
-      enjoyOptions = oStep.opts.map(label => {
+    if (oStep.enjoy) {
+      const THEMES = {
+        'Home exercise':['Yoga','Pilates','Stretching','HIIT','Bodyweight'],
+        'Gym':['Strength','Weightlifting','Machines','Cardio'],
+        'Outdoor':['Walking','Running','Hiking','Cycling','Tennis','Basketball']
+      };
+      const themeIcon = { 'Home exercise':'yoga', 'Gym':'gym', 'Outdoor':'hiking' };
+      enjoyThemes = Object.keys(THEMES).map(t => {
+        const active = !!s.onbTheme[t];
+        return { label:t, active,
+          iconStyle: mask(themeIcon[t] || 'run', active ? '#4DD5D0' : '#fff', 26),
+          style: `cursor:pointer;flex:1;border-radius:14px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font-size:13px;text-align:center;line-height:1.15;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
+          select: () => this.setState(st => ({ onbTheme: { ...st.onbTheme, [t]: !st.onbTheme[t] } })) };
+      });
+      const enjoyIcons = { Walking:'walk', Running:'run', Yoga:'yoga', Strength:'gym', Weightlifting:'gym', Machines:'gym', Cardio:'run', Cycling:'cycling', Pilates:'pilates', HIIT:'boxing', Bodyweight:'stretch', Stretching:'stretch', Swimming:'swim', Hiking:'hiking', Tennis:'tennis', Basketball:'basketball' };
+      const specifics = [];
+      Object.keys(THEMES).forEach(t => { if (s.onbTheme[t]) THEMES[t].forEach(a => { if (!specifics.includes(a)) specifics.push(a); }); });
+      enjoyOptions = specifics.map(label => {
         const active = !!s.onbEnjoy[label];
         return { label, active,
-          iconStyle: mask(enjoyIcons[label] || 'run', active ? '#4DD5D0' : '#fff', 30),
-          style: `cursor:pointer;border-radius:16px;padding:18px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;font-size:15px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
+          iconStyle: mask(enjoyIcons[label] || 'run', active ? '#4DD5D0' : '#fff', 28),
+          style: `cursor:pointer;border-radius:16px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:14px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
           select: () => this.setState(st => ({ onbEnjoy: { ...st.onbEnjoy, [label]: !st.onbEnjoy[label] } })) };
       });
     }
     const dayChoices = [1,2,3,4,5,6,7].map(n => ({ label:String(n), select:()=>this.setState({ onbDays:n }),
       style:`cursor:pointer;flex:1;height:74px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500;transition:all .16s;${s.onbDays===n?'background:#EB6C0B;color:#fff;':'background:#1E1F20;color:#8b9092;border:1.5px solid #2b3132;'}` }));
-    const oAnswered = oStep.days ? true : oStep.multi ? Object.values(s.onbEnjoy).some(Boolean) : (oStep.key==='goal' ? !!s.onbGoal : !!s.onbLevel);
+    const oAnswered = oStep.days ? true
+      : oStep.enjoy ? Object.values(s.onbEnjoy).some(Boolean)
+      : oStep.key==='goal' ? Object.values(s.onbGoal).some(Boolean)
+      : oStep.key==='social' ? s.socialSet
+      : !!s.onbLevel;
     const oLast = s.onbStep === onbSteps.length-1;
     const onb = {
       stepLabel: oStep.label, title: oStep.title, subtitle: oStep.subtitle,
       options: onbOptions, isDays: !!oStep.days, dayChoices,
-      isEnjoy: oStep.key==='enjoy', enjoy: enjoyOptions,
+      isEnjoy: !!oStep.enjoy, enjoy: enjoyOptions, themes: enjoyThemes, hasTheme: enjoyThemes.some(t => t.active),
       showBack: s.onbStep>0,
       back: () => this.setState(st => ({ onbStep: Math.max(0, st.onbStep-1) })),
       skip: () => this.go('connect'),
@@ -1513,15 +1586,23 @@ class Component extends DCLogic {
       { key:'fitbit', name:'Fitbit', sub:'Sleep, steps & resting HR', img:'assets/logo-fitbit.svg', bg:'#2b3132' },
       { key:'garmin', name:'Garmin', sub:'Runs, rides & recovery', img:'assets/logo-garmin.svg', bg:'#2b3132' }
     ];
-    const devices = deviceDefs.map(d => { const conn = !!s.connected[d.key]; return { name:d.name, sub:d.sub, connected:conn,
+    const devices = deviceDefs.map(d => { const picked = !!s.connectPick[d.key]; return { name:d.name, sub:d.sub, picked,
       img: d.img, tileStyle:`width:48px;height:48px;border-radius:13px;background:${d.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
-      btnLabel: conn ? 'Connected' : 'Connect',
-      btnStyle: conn
-        ? 'cursor:pointer;height:40px;padding:0 14px;border-radius:20px;display:flex;align-items:center;gap:6px;background:rgba(77,213,208,.14);color:#4DD5D0;font-size:15px;font-weight:500;flex-shrink:0;'
-        : 'cursor:pointer;height:40px;padding:0 20px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:#EB6C0B;color:#fff;font-size:15px;font-weight:500;flex-shrink:0;',
-      toggle: () => this.setState(st => ({ connected: { ...st.connected, [d.key]: !st.connected[d.key] } })) }; });
-    const anyConnected = Object.values(s.connected).some(Boolean);
-    const connectCta = anyConnected ? 'Continue' : 'Get started';
+      rowStyle: `cursor:pointer;display:flex;align-items:center;gap:14px;background:#16191a;border-radius:16px;padding:14px 16px;transition:border .16s;${picked?'border:1.5px solid #4DD5D0;':'border:1px solid #2b3132;'}`,
+      checkStyle: `width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;${picked?'background:#EB6C0B;':'border:1.5px solid #737A7B;'}`,
+      toggle: () => this.setState(st => ({ connectPick: { ...st.connectPick, [d.key]: !st.connectPick[d.key] } })) }; });
+    const anyPicked = Object.values(s.connectPick).some(Boolean);
+    const connectCta = anyPicked ? 'Continue' : 'Get started';
+    const pickedDefs = deviceDefs.filter(d => s.connectPick[d.key]);
+    const connectAppRows = pickedDefs.map(d => { const conn = !!s.connected[d.key];
+      return { name:d.name, sub: conn ? 'Connected' : d.sub, img:d.img, connected:conn,
+        tileStyle:`width:48px;height:48px;border-radius:13px;background:#2b3132;display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
+        btnLabel: conn ? 'Connected' : 'Connect',
+        btnStyle: conn
+          ? 'cursor:default;height:40px;padding:0 14px;border-radius:20px;display:flex;align-items:center;gap:6px;background:rgba(77,213,208,.14);color:#4DD5D0;font-size:15px;font-weight:500;flex-shrink:0;'
+          : 'cursor:pointer;height:40px;padding:0 20px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:#EB6C0B;color:#fff;font-size:15px;font-weight:500;flex-shrink:0;',
+        connect: () => { this.setState(st => ({ connected: { ...st.connected, [d.key]: true } })); this.showToast(d.name + ' connected.'); } };
+    });
 
     // nav
     const on = '#FA8815', off = '#fff';
@@ -1679,9 +1760,15 @@ class Component extends DCLogic {
       isDetail: s.screen==='detail', isWorkout: s.screen==='workout', isRecord: s.screen==='record',
       isProgress: s.screen==='progress', isFriend: s.screen==='friend', isAccount: s.screen==='account', isNotif: s.screen==='notifications',
       isScan: s.screen==='scan', isFilter: s.screen==='filter', isMetric: s.screen==='metric',
-      isSplash: s.screen==='splash', isOnboarding: s.screen==='onboarding', isConnect: s.screen==='connect',
-      onb, devices, connectCta,
+      isSplash: s.screen==='splash', isOnboarding: s.screen==='onboarding', isConnect: s.screen==='connect', isConnectApps: s.screen==='connectApps',
+      onb, devices, connectCta, connectAppRows,
+      connectContinue: () => (anyPicked ? this.go('connectApps') : this.finishOnboarding(true)),
+      connectDone: () => this.finishOnboarding(true),
       finishOnboarding: () => this.finishOnboarding(true), skipConnect: () => this.finishOnboarding(false),
+      social: s.social,
+      toggleFriendTab: () => this.setState(st => ({ social: !st.social, socialSet: true })),
+      friendTrackStyle: `cursor:pointer;width:56px;height:30px;border-radius:16px;padding:3px;display:flex;transition:background .2s;${s.social?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
+      friendKnobStyle: 'width:24px;height:24px;border-radius:50%;background:#fff;',
       isSessionsList: s.screen==='sessionsList', isSessionDetail: s.screen==='sessionDetail', isEditSummary: s.screen==='editSummary',
       isSavedWorkouts: s.screen==='savedWorkouts', isAddFriend: s.screen==='addFriend', isSharedGoal: s.screen==='sharedGoal', isBreakMode: s.screen==='breakMode',
       showNav: ['home','move','search','record','progress','friend'].includes(s.screen),
