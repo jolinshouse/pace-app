@@ -512,7 +512,10 @@
               <span style="color:#FED18D;font-size:14px;">Thursday, July 2</span>
               <span style="color:#fff;font-size:24px;font-weight:500;">Summary</span>
             </div>
-            <div onClick="{{ openEditSummary }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ editIconStyle }}"></div></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div onClick="{{ openCalendar }}" style="cursor:pointer;display:flex;align-items:center;gap:6px;height:48px;padding:0 15px;border-radius:24px;background:#1E1F20;"><div style="{{ fireIconStyle }}"></div><span style="color:#fff;font-size:17px;font-weight:500;">20</span></div>
+              <div onClick="{{ openEditSummary }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ editIconStyle }}"></div></div>
+            </div>
           </div>
           <div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:18px;">
             <sc-if value="{{ cardSteps }}" hint-placeholder-val="{{ true }}">
@@ -787,6 +790,7 @@
             <div style="display:flex;background:#1E1F20;border-radius:14px;padding:5px;gap:4px;"><sc-for list="{{ periods }}" as="p" hint-placeholder-count="4"><div onClick="{{ p.select }}" style="{{ p.style }}">{{ p.label }}</div></sc-for></div>
             <div style="display:flex;align-items:baseline;gap:8px;margin:26px 0 4px;"><span style="color:{{ metricMeta.accent }};font-size:48px;font-weight:500;letter-spacing:-1px;">{{ metricMeta.value }}</span><span style="color:#fff;font-size:20px;font-weight:500;">{{ metricMeta.unit }} / {{ metricMeta.goal }}</span></div>
             <div style="color:#737A7B;font-size:15px;">{{ chartCaption }}</div>
+            <div style="display:flex;align-items:center;margin-top:16px;background:#1E1F20;border-radius:12px;padding:14px 16px;"><span style="color:#B9BFC1;font-size:15px;">{{ metricMeta.totalLabel }}</span><span style="color:#fff;font-size:18px;font-weight:500;margin-left:auto;">{{ metricMeta.total }}</span></div>
             <div style="display:flex;align-items:flex-end;gap:8px;height:200px;margin-top:26px;padding:0 2px;">
               <sc-for list="{{ chartBars }}" as="b" hint-placeholder-count="6">
                 <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
@@ -891,12 +895,13 @@
             <span style="color:#fff;font-size:24px;font-weight:500;">Edit summary</span>
           </div>
           <div style="padding:30px 20px 0;">
-            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Show cards</div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="color:#fff;font-size:20px;font-weight:500;">Show cards</span><span style="color:#737A7B;font-size:14px;">Drag to reorder</span></div>
+            <div onPointerUp="{{ endDrag }}" onPointerLeave="{{ endDrag }}" style="display:flex;flex-direction:column;gap:12px;">
               <sc-for list="{{ summaryCards }}" as="t" hint-placeholder-count="3">
-                <div style="border:1px solid #2b3132;border-radius:14px;overflow:hidden;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 18px;">
-                    <span style="color:#fff;font-size:19px;">{{ t.label }}</span>
+                <div onPointerEnter="{{ t.dragEnter }}" style="{{ t.wrapStyle }}">
+                  <div style="display:flex;align-items:center;gap:12px;height:60px;padding:0 18px;">
+                    <div onPointerDown="{{ t.dragStart }}" style="cursor:grab;padding:6px;margin-left:-6px;touch-action:none;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h12" stroke="#737A7B" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+                    <span style="flex:1;color:#fff;font-size:19px;">{{ t.label }}</span>
                     <div onClick="{{ t.toggle }}" style="{{ t.trackStyle }}"><div style="{{ t.knobStyle }}"></div></div>
                   </div>
                   <sc-if value="{{ t.on }}" hint-placeholder-val="{{ false }}">
@@ -909,6 +914,43 @@
               </sc-for>
             </div>
             <div onClick="{{ saveSummary }}" style="cursor:pointer;margin-top:26px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Save</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ACTIVE DAYS CALENDAR ============ -->
+      <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Active days</span>
+          </div>
+          <div style="padding:24px 20px 0;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;">
+              <div style="{{ fireIconStyle }}"></div>
+              <span style="color:#fff;font-size:34px;font-weight:500;">20</span>
+              <span style="color:#B9BFC1;font-size:16px;">active days with Pace</span>
+            </div>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">July 2026</div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:8px;">
+              <div style="text-align:center;color:#737A7B;font-size:13px;">S</div><div style="text-align:center;color:#737A7B;font-size:13px;">M</div><div style="text-align:center;color:#737A7B;font-size:13px;">T</div><div style="text-align:center;color:#737A7B;font-size:13px;">W</div><div style="text-align:center;color:#737A7B;font-size:13px;">T</div><div style="text-align:center;color:#737A7B;font-size:13px;">F</div><div style="text-align:center;color:#737A7B;font-size:13px;">S</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;">
+              <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="31">
+                <sc-if value="{{ c.blank }}" hint-placeholder-val="{{ false }}"><div></div></sc-if>
+                <sc-if value="{{ c.notBlank }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ c.cellStyle }}">
+                    <span style="color:#fff;font-size:13px;">{{ c.day }}</span>
+                    <sc-if value="{{ c.hasMode }}" hint-placeholder-val="{{ true }}"><div style="{{ c.iconStyle }}"></div></sc-if>
+                  </div>
+                </sc-if>
+              </sc-for>
+            </div>
+            <div style="margin-top:28px;background:#1E1F20;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ calLegend }}" as="l" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:12px;"><div style="{{ l.iconStyle }}"></div><span style="color:#B9BFC1;font-size:16px;">{{ l.label }}</span></div>
+              </sc-for>
+            </div>
           </div>
         </div>
       </sc-if>
@@ -1250,6 +1292,7 @@ class Component extends DCLogic {
     sessionFilter: 'All', sessionDetailId: null,
     recordEdits: {}, editDraft: { name: '', note: '', intensity: '' },
     summaryCards: { steps: true, distance: true, sessions: true, running: false, cycling: false, swimming: false },
+    cardOrder: ['steps','distance','sessions','running','cycling','swimming'], dragIdx: null,
     stepGoal: 5000, distanceGoal: 5.0,
     sessWeekGoal: 3, runGoal: 10, cycleGoal: 15, swimGoal: 1200,
     savedEdit: false,
@@ -1323,10 +1366,10 @@ class Component extends DCLogic {
     { id:'r6', cat:'Stretch', name:'Evening Stretch', dateLabel:'Jun 29', date:'Jun 29', span:'9:15 PM – 9:27 PM', time:'12 min', cal:'28 cal', intensity:'Gentle', equip:'Mat', note:'Wind-down before bed.' }
   ];
   PERIOD_DATA = {
-    Day:   { labels:['6a','9a','12p','3p','6p','9p'], vals:[.2,.55,.85,1,.7,.4], caption:'Hourly · Today', steps:{value:'2,847',note:'Today'}, distance:{value:'5.4',note:'Today'} },
-    Week:  { labels:['M','T','W','T','F','S','S'], vals:[.6,.9,.7,1,.5,.35,.8], caption:'Daily average · This week', steps:{value:'6,120',note:'Daily avg'}, distance:{value:'4.2',note:'Daily avg'} },
-    Month: { labels:['W1','W2','W3','W4'], vals:[.7,.85,.6,1], caption:'Weekly average · This month', steps:{value:'5,740',note:'Daily avg'}, distance:{value:'3.9',note:'Daily avg'} },
-    Year:  { labels:['J','F','M','A','M','J','J','A','S','O','N','D'], vals:[.5,.6,.7,.55,.8,.9,.75,.85,1,.7,.6,.65], caption:'Monthly average · This year', steps:{value:'6,480',note:'Daily avg'}, distance:{value:'4.6',note:'Daily avg'} }
+    Day:   { labels:['6a','9a','12p','3p','6p','9p'], vals:[.2,.55,.85,1,.7,.4], caption:'Hourly · Today', steps:{value:'2,847',note:'Today',total:'2,847'}, distance:{value:'5.4',note:'Today',total:'5.4'} },
+    Week:  { labels:['M','T','W','T','F','S','S'], vals:[.6,.9,.7,1,.5,.35,.8], caption:'Daily average · This week', steps:{value:'6,120',note:'Daily avg',total:'42,840'}, distance:{value:'4.2',note:'Daily avg',total:'29.4'} },
+    Month: { labels:['W1','W2','W3','W4'], vals:[.7,.85,.6,1], caption:'Weekly average · This month', steps:{value:'5,740',note:'Daily avg',total:'172,200'}, distance:{value:'3.9',note:'Daily avg',total:'117'} },
+    Year:  { labels:['J','F','M','A','M','J','J','A','S','O','N','D'], vals:[.5,.6,.7,.55,.8,.9,.75,.85,1,.7,.6,.65], caption:'Monthly average · This year', steps:{value:'6,480',note:'Daily avg',total:'2,365,200'}, distance:{value:'4.6',note:'Daily avg',total:'1,679'} }
   };
   CATPRESETS = [
     { label:'Swim', icon:'swim' }, { label:'Cycling', icon:'cycling' }, { label:'Badminton', icon:'badminton' },
@@ -1836,6 +1879,8 @@ class Component extends DCLogic {
     const metricMeta = isDist
       ? { title:'Distance', value: mSlice.value, unit:'mi', goal: s.distanceGoal.toFixed(1)+' mi', note: mSlice.note, accent:'#F1EA2E' }
       : { title:'Step Count', value: mSlice.value, unit:'steps', goal: s.stepGoal.toLocaleString(), note: mSlice.note, accent:'#FA8815' };
+    metricMeta.total = isDist ? (mSlice.total+' mi') : (mSlice.total+' steps');
+    metricMeta.totalLabel = { Day:'Total today', Week:'Total this week', Month:'Total this month', Year:'Total this year' }[s.progPeriod];
     const periods = ['Day','Week','Month','Year'].map(label => ({ label, active: s.progPeriod===label,
       style:`cursor:pointer;flex:1;text-align:center;padding:9px 0;border-radius:10px;font-size:14px;${s.progPeriod===label?'background:#EB6C0B;color:#fff;':'color:#B9BFC1;'}`,
       select: () => this.setState({ progPeriod: label }) }));
@@ -1870,17 +1915,23 @@ class Component extends DCLogic {
 
     // edit summary — each card has a toggle + (when on) an inline goal slider
     const setGoal = (k) => (e) => this.setState({ [k]: +e.target.value });
-    const summaryCards = [
+    const summaryDefs = [
       { key:'steps',    label:'Step Count', goalKey:'stepGoal',     goalLabel:'Daily steps',     val:s.stepGoal,     disp:s.stepGoal.toLocaleString(),     min:2000, max:12000, step:500,  pctv:pct(s.stepGoal,2000,12000) },
       { key:'distance', label:'Distance',   goalKey:'distanceGoal', goalLabel:'Daily distance',  val:s.distanceGoal, disp:s.distanceGoal.toFixed(1)+' mi',  min:1,    max:10,    step:0.5,  pctv:pct(s.distanceGoal,1,10) },
       { key:'sessions', label:'Sessions',   goalKey:'sessWeekGoal', goalLabel:'Sessions / week', val:s.sessWeekGoal, disp:s.sessWeekGoal+'× / week',        min:1,    max:7,     step:1,    pctv:pct(s.sessWeekGoal,1,7) },
       { key:'running',  label:'Running',    goalKey:'runGoal',      goalLabel:'Weekly distance', val:s.runGoal,      disp:s.runGoal+' mi',                  min:2,    max:40,    step:1,    pctv:pct(s.runGoal,2,40) },
       { key:'cycling',  label:'Cycling',    goalKey:'cycleGoal',    goalLabel:'Weekly distance', val:s.cycleGoal,    disp:s.cycleGoal+' mi',                min:5,    max:80,    step:5,    pctv:pct(s.cycleGoal,5,80) },
       { key:'swimming', label:'Swimming',   goalKey:'swimGoal',     goalLabel:'Weekly distance', val:s.swimGoal,     disp:s.swimGoal.toLocaleString()+' m', min:200,  max:3000,  step:100,  pctv:pct(s.swimGoal,200,3000) }
-    ].map(o => { const on = s.summaryCards[o.key];
-      return { ...o, on,
-        toggle: () => this.setState(st => ({ summaryCards: { ...st.summaryCards, [o.key]: !st.summaryCards[o.key] } })),
+    ];
+    const byKey = {}; summaryDefs.forEach(o => byKey[o.key] = o);
+    const goalIconSm = mask('goal', '#8b9092', 15);
+    const summaryCards = s.cardOrder.map((key, i) => { const o = byKey[key]; const on = s.summaryCards[key];
+      return { ...o, on, goalIconStyle: goalIconSm,
+        toggle: () => this.setState(st => ({ summaryCards: { ...st.summaryCards, [key]: !st.summaryCards[key] } })),
         setGoal: setGoal(o.goalKey),
+        dragStart: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState({ dragIdx: i }); },
+        dragEnter: () => this.setState(st => { if(st.dragIdx===null||st.dragIdx===i) return {}; const arr=[...st.cardOrder]; const [m]=arr.splice(st.dragIdx,1); arr.splice(i,0,m); return { cardOrder:arr, dragIdx:i }; }),
+        wrapStyle: `border:1.5px solid ${s.dragIdx===i?'#4DD5D0':'#2b3132'};border-radius:14px;overflow:hidden;background:${s.dragIdx===i?'rgba(21,75,76,.5)':'transparent'};transition:all .12s;`,
         trackStyle:`cursor:pointer;width:56px;height:30px;border-radius:16px;padding:3px;display:flex;transition:background .2s;${on?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
         knobStyle:'width:24px;height:24px;border-radius:50%;background:#fff;' }; });
 
@@ -1970,6 +2021,18 @@ class Component extends DCLogic {
     const setModeStartLabel = fmtD(s.modeStartOff);
     const setModeEndLabel = fmtD(s.modeEndOff);
     const activeModeIconStyle = mask(activeMode.icon, activeMode.color, 26);
+
+    // active-days calendar (Apple Fitness style)
+    const MODEMETA = { Active:{icon:'fire',color:'#FA8815'}, Balance:{icon:'walk',color:'#4DD5D0'}, Break:{icon:'recover',color:'#F1EA2E'}, Sick:{icon:'thermometer',color:'#5FE0DB'}, Injured:{icon:'bandaid',color:'#EB6C0B'} };
+    const dayModes = ['Active','Active','Balance','Active','Active','Break','Active','Balance','Active','Active','Active','Sick','Sick','Active','Balance','Active','Active','Active','Injured','Active','Balance','Active','Active','Active','Break','Active','Balance'];
+    const calStartWk = new Date(2026,6,1).getDay();
+    const calCells = [];
+    for (let i=0;i<calStartWk;i++) calCells.push({ blank:true, notBlank:false, key:'b'+i });
+    for (let d=1;d<=31;d++){ const m = dayModes[d-1]; const meta = m?MODEMETA[m]:null; const today = d===2;
+      calCells.push({ blank:false, notBlank:true, key:'d'+d, day:String(d), hasMode:!!meta, iconStyle: meta?mask(meta.icon, meta.color, 15):'',
+        cellStyle:`aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${today?'background:#154B4C;border:1.5px solid #4DD5D0;':'background:#1E1F20;'}` }); }
+    const calLegend = Object.keys(MODEMETA).map(k => ({ label:k, iconStyle: mask(MODEMETA[k].icon, MODEMETA[k].color, 17) }));
+    const fireIconStyle = mask('fire', '#FA8815', 20);
 
     const aiMsgsView = s.aiMsgs.map(m => ({
       text: m.text, hasCards: !!(m.cardIds && m.cardIds.length),
@@ -2064,6 +2127,8 @@ class Component extends DCLogic {
       barsBY, goalMiniStyle,
       // edit summary
       openEditSummary: () => this.go('editSummary'),
+      openCalendar: () => this.go('calendar'), isCalendar: s.screen==='calendar', calCells, calLegend, fireIconStyle,
+      endDrag: () => this.setState({ dragIdx: null }),
       summaryCards,
       saveSummary: () => { this.back(); this.showToast('Summary updated.'); },
       cardSteps: s.summaryCards.steps, cardDistance: s.summaryCards.distance, cardSessions: s.summaryCards.sessions,
