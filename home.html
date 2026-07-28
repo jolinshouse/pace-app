@@ -609,7 +609,7 @@
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <span style="color:#fff;font-size:24px;font-weight:500;">Account</span>
-            <div style="width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 2a6 6 0 016 6c0 5 2 7 2 7H2s2-2 2-7a6 6 0 016-6z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 19a2 2 0 004 0" stroke="#fff" stroke-width="1.5"/></svg></div>
+            <div onClick="{{ openNotifList }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 2a6 6 0 016 6c0 5 2 7 2 7H2s2-2 2-7a6 6 0 016-6z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 19a2 2 0 004 0" stroke="#fff" stroke-width="1.5"/></svg></div>
           </div>
           <div style="padding:26px 20px 0;">
             <div style="background:#1E1F20;border-radius:18px;padding:20px;display:flex;align-items:center;gap:18px;">
@@ -638,7 +638,7 @@
         <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 60px;">
           <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <span style="color:#fff;font-size:24px;font-weight:500;">Notifications</span>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Notification setting</span>
           </div>
           <div style="padding:34px 20px 0;">
             <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:20px;font-weight:500;">Frequency</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ notif.freq }}x</span></div>
@@ -695,6 +695,26 @@
                 </div>
               </sc-for>
             </div>
+            <div onClick="{{ saveNotif }}" style="cursor:pointer;margin-top:30px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Confirm</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ NOTIFICATIONS LIST ============ -->
+      <sc-if value="{{ isNotifList }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Notifications</span>
+          </div>
+          <div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ notifItems }}" as="n" hint-placeholder-count="4">
+              <div style="display:flex;gap:14px;background:#1E1F20;border-radius:16px;padding:16px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:{{ n.bg }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ n.iconEl }}</div>
+                <div style="flex:1;min-width:0;"><div style="color:#fff;font-size:17px;font-weight:500;">{{ n.title }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:3px;line-height:1.4;">{{ n.body }}</div></div>
+                <span style="color:#737A7B;font-size:13px;flex-shrink:0;">{{ n.time }}</span>
+              </div>
+            </sc-for>
           </div>
         </div>
       </sc-if>
@@ -779,6 +799,7 @@
           <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <span style="color:#fff;font-size:24px;font-weight:500;">Recorded sessions</span>
+            <div onClick="{{ goRecord }}" style="cursor:pointer;position:absolute;right:20px;width:44px;height:44px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg></div>
           </div>
           <div class="pace-noscroll" style="display:flex;gap:10px;overflow-x:auto;padding:22px 20px 4px;">
             <sc-for list="{{ sessCats }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for>
@@ -959,29 +980,57 @@
         </div>
       </sc-if>
 
-      <!-- ============ BREAK MODE ============ -->
+      <!-- ============ SET MODE ============ -->
       <sc-if value="{{ isBreakMode }}" hint-placeholder-val="{{ false }}">
         <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 24%);padding:60px 0 40px;">
           <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <span style="color:#fff;font-size:24px;font-weight:500;">Break mode</span>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Set mode</span>
           </div>
-          <div style="padding:26px 20px 0;">
-            <div style="background:#1E1F20;border-radius:20px;padding:22px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="flex:1;padding-right:16px;"><div style="color:#fff;font-size:20px;font-weight:500;">Break mode</div><div style="color:#B9BFC1;font-size:15px;margin-top:5px;line-height:1.45;">Ease off without losing your progress.</div></div>
-              <div onClick="{{ toggleBreak }}" style="{{ breakTrackStyle }}"><div style="{{ breakKnobStyle }}"></div></div>
+          <sc-if value="{{ isModePhaseMode }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:22px 20px 0;">
+              <div style="color:#B9BFC1;font-size:16px;line-height:1.5;margin-bottom:18px;">Choose how you'd like Pace to pace you right now. There's no wrong choice.</div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <sc-for list="{{ modeCards }}" as="m" hint-placeholder-count="5">
+                  <div onClick="{{ m.select }}" style="{{ m.style }}">
+                    <div style="{{ m.dotStyle }}"><div style="{{ m.iconStyle }}"></div></div>
+                    <div style="flex:1;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ m.key }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:3px;line-height:1.4;">{{ m.desc }}</div></div>
+                    <sc-if value="{{ m.active }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <div onClick="{{ setModeContinue }}" style="cursor:pointer;margin-top:28px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Continue</div>
             </div>
-            <p style="color:#fff;font-size:17px;line-height:1.6;margin:24px 4px 0;">{{ breakBlurb }}</p>
-            <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">What changes</div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <sc-for list="{{ breakFeatures }}" as="f" hint-placeholder-count="4">
-                <div style="display:flex;gap:14px;background:#1E1F20;border-radius:16px;padding:18px;">
-                  <div style="width:32px;height:32px;border-radius:50%;background:#154B4C;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="width:8px;height:8px;border-radius:50%;background:#4DD5D0;"></div></div>
-                  <div style="flex:1;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ f.t }}</div><div style="color:#B9BFC1;font-size:15px;margin-top:4px;line-height:1.45;">{{ f.d }}</div></div>
+          </sc-if>
+          <sc-if value="{{ isModePhaseDates }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:22px 20px 0;">
+              <div style="display:flex;align-items:center;gap:14px;background:#1E1F20;border-radius:16px;padding:16px;margin-bottom:26px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:rgba(77,213,208,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="{{ activeModeIconStyle }}"></div></div>
+                <div style="flex:1;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ activeModeName }} mode</div><div style="color:#B9BFC1;font-size:14px;margin-top:3px;line-height:1.4;">{{ activeModeDesc }}</div></div>
+                <div onClick="{{ setModeBack }}" style="cursor:pointer;color:#4DD5D0;font-size:15px;flex-shrink:0;">Change</div>
+              </div>
+              <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Duration</div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;background:#1E1F20;border-radius:16px;padding:16px 18px;">
+                  <span style="color:#B9BFC1;font-size:16px;">Start</span>
+                  <div style="display:flex;align-items:center;gap:14px;">
+                    <div onClick="{{ startMinus }}" style="{{ stepStyle }}"><svg width="14" height="2" viewBox="0 0 14 2" fill="none"><path d="M1 1h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <span style="color:#fff;font-size:16px;font-weight:500;width:118px;text-align:center;">{{ setModeStartLabel }}</span>
+                    <div onClick="{{ startPlus }}" style="{{ stepStyle }}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+                  </div>
                 </div>
-              </sc-for>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:#1E1F20;border-radius:16px;padding:16px 18px;">
+                  <span style="color:#B9BFC1;font-size:16px;">End</span>
+                  <div style="display:flex;align-items:center;gap:14px;">
+                    <div onClick="{{ endMinus }}" style="{{ stepStyle }}"><svg width="14" height="2" viewBox="0 0 14 2" fill="none"><path d="M1 1h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <span style="color:#fff;font-size:16px;font-weight:500;width:118px;text-align:center;">{{ setModeEndLabel }}</span>
+                    <div onClick="{{ endPlus }}" style="{{ stepStyle }}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+                  </div>
+                </div>
+              </div>
+              <div onClick="{{ saveSetMode }}" style="cursor:pointer;margin-top:28px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Set mode</div>
             </div>
-          </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -1180,8 +1229,9 @@ class Component extends DCLogic {
     // onboarding
     onbStep: 0, onbGoal: {}, onbLevel: null, onbDays: 4, onbTheme: {}, onbEnjoy: {}, social: true, socialSet: false, connectPick: {}, connected: {},
     triggers: { 'After inactivity': true, 'Goal completions': true, 'Daily coaching': false, 'Activity sharing': true, 'New features': false },
-    // break mode
+    // break mode / set mode
     breakMode: false,
+    setMode: 'Active', setPhase: 'mode', modeStartOff: 0, modeEndOff: 7,
     // shared goal
     sharedGoalPick: 'Move 4 days/week', invite: { Mia: true, Henry: false, Sarah: false },
     // social
@@ -1229,7 +1279,7 @@ class Component extends DCLogic {
     ['Forearm plank, body in a straight line','Reach one arm out in front','Hold — keep your hips square','Return and switch sides'],
     ['Lie back, knees bent, feet flat','Drive through your heels','Lift your hips into a bridge','Squeeze your glutes at the top']
   ];
-  CATFILE = { Walk:'walk', Run:'run', Stretch:'stretch', Gym:'gym', Yoga:'yoga', Swim:'run', Dance:'yoga', Badminton:'run', Cycling:'run' };
+  CATFILE = { Walk:'walk', Run:'run', Stretch:'stretch', Gym:'gym', Yoga:'yoga', Swim:'run', Dance:'yoga', Dancing:'dancing', Badminton:'run', Cycling:'run' };
   CATTYPE = { Walk:'distance', Run:'distance', Stretch:'flex', Yoga:'flex', Gym:'strength' };
   RECORDED = [
     { id:'r1', cat:'Run', name:'Evening Run', dateLabel:'Today', date:'Jul 2', span:'6:10 PM – 6:42 PM', time:'32 min', cal:'318 cal', distance:'3.4 mi', intensity:'Moderate', equip:'None', note:'Felt good. Kept it easy the last mile.' },
@@ -1248,13 +1298,20 @@ class Component extends DCLogic {
   CATPRESETS = [
     { label:'Swim', icon:'swim' }, { label:'Cycling', icon:'cycling' }, { label:'Badminton', icon:'badminton' },
     { label:'Hiking', icon:'hiking' }, { label:'Tennis', icon:'tennis' }, { label:'Basketball', icon:'basketball' },
-    { label:'Boxing', icon:'boxing' }, { label:'Pilates', icon:'pilates' }
+    { label:'Boxing', icon:'boxing' }, { label:'Pilates', icon:'pilates' }, { label:'Dancing', icon:'dancing' }
   ];
   NUDGES = {
     coffee:{ iconBg:'#4DD5D0', icon:'☕', title:'Coffee time! Your moment to move', body:'While your coffee brews, try 10 standing calf raises. Take less than a minute.', yes:"Let's do it", no:'Remind me later' },
     activity:{ iconBg:'#4DD5D0', icon:'🏋', title:'Activity detected', body:'Looks like you went to the gym on your leg day for about 20 minutes. Does that sound right?', yes:'Yes, record it', no:'Not quite' },
     desk:{ iconBg:'#4DD5D0', icon:'⏸', title:"You've been at your desk for 45 min!", body:'Try 10 shoulder rolls to stretch your body.', yes:"Let's do it", no:'Remind me later' }
   };
+  NOTIFLIST = [
+    { icon:'☕', bg:'#4DD5D0', title:'Coffee time! Your moment to move', body:'While your coffee brews, try 10 standing calf raises.', time:'2h ago' },
+    { icon:'🏋', bg:'#4DD5D0', title:'Activity detected', body:'Looks like a ~20 min leg session. Want to record it?', time:'4h ago' },
+    { icon:'⏸', bg:'#4DD5D0', title:"You've been at your desk for 45 min", body:'Try 10 shoulder rolls to stretch your body.', time:'Yesterday' },
+    { icon:'🎉', bg:'#FA8815', title:'Goal reached', body:'You moved 4 days this week. Nice pace!', time:'Yesterday' },
+    { icon:'👟', bg:'#4DD5D0', title:'Almost at your step goal', body:"You're 300 steps away — a short walk will do it.", time:'2d ago' }
+  ];
 
   componentDidMount() {
     if (typeof window!=='undefined' && !window.PACE_ICONS) { setTimeout(() => this.forceUpdate(), 60); }
@@ -1277,11 +1334,11 @@ class Component extends DCLogic {
     }
     if (this.props.randomNudges !== false) {
       const pool = ['coffee','activity','desk'];
-      const skip = ['workout','scan','splash','onboarding','connect'];
+      const skip = ['workout','scan','splash','onboarding','connect','connectApps'];
       this._randomNudge = setInterval(() => {
         if (this.state.nudge || this.state.celebrate || skip.includes(this.state.screen)) return;
         this.setState({ nudge: pool[Math.floor(Math.random()*pool.length)] });
-      }, 120000);
+      }, 180000);
     }
     this._timer = setInterval(() => {
       if (this.state.screen !== 'workout' || !this.state.running) return;
@@ -1389,7 +1446,7 @@ class Component extends DCLogic {
   dismissNudge = () => this.setState({ nudge: null });
   nudgeYes = () => {
     const n = this.state.nudge; this.setState({ nudge: null });
-    if (n === 'activity') { this.go('record'); this.setState({ cat: 'Gym' }); }
+    if (n === 'activity') { this.go('record'); this.setState({ cat: 'Gym', groups: { Legs: true }, equip: null, intensity: null, duration: 20 }); }
     else this.showToast('Added to today. Ready when you are.');
   };
 
@@ -1568,12 +1625,13 @@ class Component extends DCLogic {
     ];
 
     // account
-    const accountRows = ['Notifications','Break mode','Saved Workout','Health details','Units of measure','Health data','Apps & devices','Privacy','Help'].map(label => ({
+    const accountRows = ['Notification setting','Set mode','Saved Workout','Health details','Units of measure','Health data','Apps & devices','Privacy','Help'].map(label => ({
       label,
-      tap: label === 'Notifications' ? () => this.go('notifications')
-         : label === 'Break mode' ? () => this.go('breakMode')
+      tap: label === 'Notification setting' ? () => this.go('notifications')
+         : label === 'Set mode' ? () => { this.setState({ setPhase:'mode' }); this.go('breakMode'); }
          : label === 'Saved Workout' ? () => this.go('savedWorkouts')
          : () => this.showToast(label + ' — coming soon') }));
+    const notifItems = this.NOTIFLIST.map(n => ({ ...n, iconEl: raw('<span style="font-size:15px;">'+n.icon+'</span>') }));
 
     // notifications
     const tones = ['Encourage','Gentle','Informational','Strict'].map(label => ({
@@ -1853,6 +1911,27 @@ class Component extends DCLogic {
       : 'Life gets busy. Turn this on and Pace eases off without erasing the progress you\u2019ve made.';
     const noSaved = !hasSaved;
 
+    // set mode
+    const MODES = [
+      { key:'Active', icon:'fire', color:'#FA8815', desc:'Full speed. Goals and streaks count as normal.' },
+      { key:'Balance', icon:'walk', color:'#4DD5D0', desc:'Keeping physical wellness manageable to avoid burnout.' },
+      { key:'Break', icon:'recover', color:'#F1EA2E', desc:'Taking a few days off to recover, or just too busy.' },
+      { key:'Sick', icon:'thermometer', color:'#5FE0DB', desc:'Need rest to get well.' },
+      { key:'Injured', icon:'bandaid', color:'#EB6C0B', desc:'Need time to heal.' }
+    ];
+    const activeMode = MODES.find(m => m.key===s.setMode) || MODES[0];
+    const baseDate = new Date(2026,6,2);
+    const fmtD = (off) => { const d = new Date(baseDate); d.setDate(baseDate.getDate()+off); return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); };
+    const step = `cursor:pointer;width:40px;height:40px;border-radius:50%;background:#26292a;display:flex;align-items:center;justify-content:center;flex-shrink:0;`;
+    const modeCards = MODES.map(m => { const on = s.setMode===m.key; return { key:m.key, desc:m.desc, active:on,
+      iconStyle: mask(m.icon, on ? m.color : '#9aa0a1', 26),
+      dotStyle: `width:44px;height:44px;border-radius:50%;background:${on?'rgba(77,213,208,.14)':'#26292a'};display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
+      style: `cursor:pointer;display:flex;align-items:center;gap:14px;background:#1E1F20;border-radius:16px;padding:16px;transition:border .16s;${on?'border:1.5px solid #4DD5D0;':'border:1.5px solid transparent;'}`,
+      select: () => this.setState({ setMode: m.key }) }; });
+    const setModeStartLabel = fmtD(s.modeStartOff);
+    const setModeEndLabel = fmtD(s.modeEndOff);
+    const activeModeIconStyle = mask(activeMode.icon, activeMode.color, 26);
+
     const aiMsgsView = s.aiMsgs.map(m => ({
       text: m.text, hasCards: !!(m.cardIds && m.cardIds.length),
       cards: (m.cardIds||[]).map(id => { const c = card(id); const orig = c.open; c.open = () => { this.setState({ aiOpen:false }); orig(); }; return c; }),
@@ -1877,6 +1956,8 @@ class Component extends DCLogic {
       friendTrackStyle: `cursor:pointer;width:56px;height:30px;border-radius:16px;padding:3px;display:flex;transition:background .2s;${s.social?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
       friendKnobStyle: 'width:24px;height:24px;border-radius:50%;background:#fff;',
       isSessionsList: s.screen==='sessionsList', isSessionDetail: s.screen==='sessionDetail', isEditSummary: s.screen==='editSummary',
+      isNotifList: s.screen==='notifList', openNotifList: () => this.go('notifList'), notifItems,
+      saveNotif: () => { this.back(); this.showToast('Notification settings saved.'); },
       isSavedWorkouts: s.screen==='savedWorkouts', isAddFriend: s.screen==='addFriend', isSharedGoal: s.screen==='sharedGoal', isBreakMode: s.screen==='breakMode',
       showNav: ['home','move','search','record','progress','friend'].includes(s.screen),
       screenRef: (el) => { this._screenEl = el; }, confettiRef: (el) => { this._confettiEl = el; },
@@ -1967,6 +2048,17 @@ class Component extends DCLogic {
       // break blurb
       breakBlurb,
       stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+      // set mode
+      modeCards, isModePhaseMode: s.setPhase==='mode', isModePhaseDates: s.setPhase==='dates',
+      setModeContinue: () => this.setState({ setPhase:'dates' }),
+      setModeBack: () => this.setState({ setPhase:'mode' }),
+      activeModeName: activeMode.key, activeModeDesc: activeMode.desc, activeModeIconStyle,
+      setModeStartLabel, setModeEndLabel, stepStyle: step,
+      startMinus: () => this.setState(st => ({ modeStartOff: Math.max(0, st.modeStartOff-1) })),
+      startPlus: () => this.setState(st => ({ modeStartOff: st.modeStartOff+1, modeEndOff: Math.max(st.modeEndOff, st.modeStartOff+2) })),
+      endMinus: () => this.setState(st => ({ modeEndOff: Math.max(st.modeStartOff+1, st.modeEndOff-1) })),
+      endPlus: () => this.setState(st => ({ modeEndOff: st.modeEndOff+1 })),
+      saveSetMode: () => { this.back(); this.setState({ setPhase:'mode' }); this.showToast(activeMode.key+' mode set · '+setModeStartLabel+' – '+setModeEndLabel+'.'); },
       // break mode
       breakMode: s.breakMode, breakFeatures,
       toggleBreak: () => this.setState(st => ({ breakMode: !st.breakMode })),
