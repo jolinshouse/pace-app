@@ -25,6 +25,11 @@
   input[type=range].pace-slider::-moz-range-thumb{width:22px;height:22px;border:3px solid #4DD5D0;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:pointer;}
   input[type=range].pace-slider::-moz-range-track{height:6px;border-radius:3px;background:#3a4041;}
   input[type=range].pace-slider::-moz-range-progress{height:6px;border-radius:3px;background:#4DD5D0;}
+  input[type=range].pace-range2{position:absolute;top:0;left:0;width:100%;height:22px;margin:0;-webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;}
+  input[type=range].pace-range2::-webkit-slider-runnable-track{background:transparent;border:none;}
+  input[type=range].pace-range2::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #4DD5D0;box-shadow:0 1px 4px rgba(0,0,0,.45);pointer-events:auto;cursor:pointer;margin-top:0;}
+  input[type=range].pace-range2::-moz-range-track{background:transparent;}
+  input[type=range].pace-range2::-moz-range-thumb{width:22px;height:22px;border:3px solid #4DD5D0;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.45);pointer-events:auto;cursor:pointer;}
 </style>
 <script src="icon-data.js"></script>
 </helmet>
@@ -91,24 +96,26 @@
               </div>
             </sc-if>
             <sc-if value="{{ onb.isEnjoy }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;gap:10px;margin-top:30px;">
+              <div style="display:flex;flex-direction:column;gap:14px;margin-top:30px;">
                 <sc-for list="{{ onb.themes }}" as="t" hint-placeholder-count="3">
                   <div onClick="{{ t.select }}" style="{{ t.style }}">
                     <div style="{{ t.iconStyle }}"></div>
-                    <span>{{ t.label }}</span>
+                    <span style="flex:1;">{{ t.label }}</span>
+                    <sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
                   </div>
                 </sc-for>
               </div>
-              <sc-if value="{{ onb.hasTheme }}" hint-placeholder-val="{{ false }}">
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;">
-                  <sc-for list="{{ onb.enjoy }}" as="o" hint-placeholder-count="6">
-                    <div onClick="{{ o.select }}" style="{{ o.style }}">
-                      <div style="{{ o.iconStyle }}"></div>
-                      <span>{{ o.label }}</span>
-                    </div>
-                  </sc-for>
-                </div>
-              </sc-if>
+            </sc-if>
+            <sc-if value="{{ onb.isSocial }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:14px;margin-top:30px;">
+                <sc-for list="{{ onb.socialOpts }}" as="o" hint-placeholder-count="2">
+                  <div onClick="{{ o.select }}" style="{{ o.style }}">
+                    {{ o.iconEl }}
+                    <span style="flex:1;">{{ o.label }}</span>
+                    <sc-if value="{{ o.active }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                  </div>
+                </sc-for>
+              </div>
             </sc-if>
           </div>
           <div style="padding:16px 24px 40px;">
@@ -144,35 +151,40 @@
         </div>
       </sc-if>
 
-      <!-- ============ CONNECT SPECIFIC APPS ============ -->
+      <!-- ============ CONNECT SPECIFIC APPS (auto sequence) ============ -->
       <sc-if value="{{ isConnectApps }}" hint-placeholder-val="{{ false }}">
-        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 28%);display:flex;flex-direction:column;padding-bottom:40px;">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 30%);display:flex;flex-direction:column;padding-bottom:40px;">
           <div style="padding:62px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;width:40px;height:40px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="10" height="16" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
-          <div style="padding:22px 24px 0;">
-            <div style="color:#fff;font-size:28px;font-weight:500;line-height:1.2;">Connect your apps</div>
-            <div style="color:#B9BFC1;font-size:16px;line-height:1.5;margin-top:10px;">Sign in to each service to finish linking your data.</div>
+          <div style="padding:30px 24px 0;text-align:center;">
+            <div style="color:#fff;font-size:26px;font-weight:500;">{{ connectTitle }}</div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:12px;padding:28px 20px 0;">
+          <div style="display:flex;align-items:center;justify-content:center;padding:40px 0 36px;">
+            <div style="width:78px;height:78px;border-radius:20px;background:#154B4C;display:flex;align-items:center;justify-content:center;padding:15px;flex-shrink:0;"><img src="assets/pace-logo.svg" alt="Pace" style="width:100%;object-fit:contain;"/></div>
+            <div style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;margin:0 6px;flex-shrink:0;">
+              <sc-if value="{{ cxConnecting }}" hint-placeholder-val="{{ true }}"><svg width="46" height="46" viewBox="0 0 44 44" fill="none" style="animation:paceSpin 1s linear infinite;"><path d="M8 22a14 14 0 0121-12" stroke="#4DD5D0" stroke-width="3" stroke-linecap="round"/><path d="M30 4.5V11h-6.5" stroke="#4DD5D0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M36 22a14 14 0 01-21 12" stroke="#4DD5D0" stroke-width="3" stroke-linecap="round"/><path d="M14 39.5V33h6.5" stroke="#4DD5D0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+              <sc-if value="{{ cxAllDone }}" hint-placeholder-val="{{ false }}"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M6 18l7 7L28 9" stroke="#4DD5D0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+            </div>
+            <div style="width:78px;height:78px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;padding:14px;flex-shrink:0;"><img src="{{ cxCurrentImg }}" alt="app" style="width:100%;height:100%;object-fit:contain;"/></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;padding:0 20px;">
             <sc-for list="{{ connectAppRows }}" as="d" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:14px;background:#16191a;border:1px solid #2b3132;border-radius:16px;padding:14px 16px;">
-                <div style="{{ d.tileStyle }}"><img src="{{ d.img }}" alt="{{ d.name }}" style="width:28px;height:28px;object-fit:contain;"/></div>
-                <div style="flex:1;min-width:0;">
-                  <div style="color:#fff;font-size:17px;font-weight:500;">{{ d.name }}</div>
-                  <div style="color:#8b9092;font-size:13px;margin-top:2px;">{{ d.sub }}</div>
-                </div>
-                <div onClick="{{ d.connect }}" style="{{ d.btnStyle }}">
-                  <sc-if value="{{ d.connected }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
-                  {{ d.btnLabel }}
-                </div>
+                <div style="{{ d.tileStyle }}"><img src="{{ d.img }}" alt="{{ d.name }}" style="width:26px;height:26px;object-fit:contain;"/></div>
+                <span style="flex:1;color:#fff;font-size:17px;font-weight:500;">{{ d.name }}</span>
+                <sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;color:#4DD5D0;font-size:14px;"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Connected</span></sc-if>
+                <sc-if value="{{ d.connecting }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;gap:8px;color:#B9BFC1;font-size:14px;"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #2b3132;border-top-color:#4DD5D0;animation:paceSpin .8s linear infinite;display:inline-block;"></span>Connecting</span></sc-if>
+                <sc-if value="{{ d.pending }}" hint-placeholder-val="{{ false }}"><span style="color:#737A7B;font-size:14px;">Waiting</span></sc-if>
               </div>
             </sc-for>
           </div>
           <div style="flex:1;min-height:24px;"></div>
-          <div style="padding:24px 24px 0;">
-            <div onClick="{{ connectDone }}" style="cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Done</div>
-          </div>
+          <sc-if value="{{ cxAllDone }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:24px 24px 0;">
+              <div onClick="{{ connectDone }}" style="cursor:pointer;height:60px;border-radius:30px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Done</div>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -206,7 +218,7 @@
                   </div>
                 </div>
                 <div style="display:flex;align-items:flex-end;gap:6px;">
-                  <sc-if value="{{ c.arrow }}" hint-placeholder-val="{{ true }}"><svg width="18" height="34" viewBox="0 0 18 34" fill="none" style="display:block;margin-bottom:2px;flex-shrink:0;"><path d="M9 33V4M9 4L3 11M9 4l6 7" stroke="#F1EA2E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                  <sc-if value="{{ c.arrow }}" hint-placeholder-val="{{ true }}"><svg width="18" height="34" viewBox="0 0 18 34" fill="none" style="display:block;margin-bottom:2px;flex-shrink:0;"><path d="M9 33V4M9 4L3 11M9 4l6 7" stroke="{{ c.arrowColor }}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
                   <span style="{{ c.numStyle }}">{{ c.value }}</span>
                   <span style="color:#fff;font-size:15px;font-weight:500;line-height:1.05;padding-bottom:4px;">{{ c.unit }}</span>
                 </div>
@@ -376,7 +388,7 @@
               <div onClick="{{ back }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;">
                 <svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
-              <div style="text-align:right;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ ex.progressTime }} <span style="color:#8b9092;font-size:15px;font-weight:400;">/ {{ ex.totalTime }}</span></div><div style="color:#8b9092;font-size:12px;">elapsed / total</div></div>
+              <div style="text-align:right;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ ex.progressTime }} <span style="color:#8b9092;font-size:15px;font-weight:400;">/ {{ ex.totalTime }}</span></div></div>
             </div>
             <div style="color:#B9BFC1;font-size:20px;margin:22px 0 12px;">Up next: {{ ex.next }}</div>
             <div style="display:flex;gap:8px;padding-bottom:22px;">
@@ -429,7 +441,6 @@
         <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 130px;">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
             <span style="color:#fff;font-size:30px;font-weight:500;">Add an activity</span>
-            <div onClick="{{ addCatBtn.open }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg></div>
           </div>
           <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:26px 20px 10px;">
             <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
@@ -524,7 +535,7 @@
               <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:22px;">
                 <div>
                   <span style="color:#FA8815;font-size:52px;font-weight:500;letter-spacing:-1px;">2,847</span>
-                  <div style="display:flex;align-items:center;gap:6px;margin-top:2px;"><div style="{{ goalMiniStyle }}"></div><span style="color:#8b9092;font-size:15px;font-weight:500;">{{ stepGoalLabel }}</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:5px;"><div style="{{ goalCardStyle }}"></div><span style="color:#fff;font-size:17px;font-weight:500;">{{ stepGoalLabel }}</span></div>
                 </div>
                 <div style="display:flex;align-items:flex-end;gap:6px;height:70px;">
                   <sc-for list="{{ barsA }}" as="b" hint-placeholder-count="6"><div style="{{ b.style }}"></div></sc-for>
@@ -538,7 +549,7 @@
               <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:22px;">
                 <div>
                   <div style="display:flex;align-items:baseline;"><span style="color:#F1EA2E;font-size:52px;font-weight:500;letter-spacing:-1px;">5.4</span><span style="color:#F1EA2E;font-size:22px;font-weight:500;margin-left:7px;">mi</span></div>
-                  <div style="display:flex;align-items:center;gap:6px;margin-top:2px;"><div style="{{ goalMiniStyle }}"></div><span style="color:#8b9092;font-size:15px;font-weight:500;">{{ distGoalLabel }} mi</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:5px;"><div style="{{ goalCardStyle }}"></div><span style="color:#fff;font-size:17px;font-weight:500;">{{ distGoalLabel }} mi</span></div>
                 </div>
                 <div style="display:flex;align-items:flex-end;gap:6px;height:70px;">
                   <sc-for list="{{ barsBY }}" as="b" hint-placeholder-count="6"><div style="{{ b.style }}"></div></sc-for>
@@ -772,10 +783,12 @@
             <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Level</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterLevel }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 0;"><span style="color:#fff;font-size:20px;font-weight:500;">Duration</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ filterVals.durMin }}–{{ filterVals.durMax }} min</span></div>
-            <div style="color:#8b9092;font-size:14px;margin-top:10px;">Minimum</div>
-            <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMin }}" onInput="{{ setFilterDurMin }}" class="pace-slider" style="--pct:{{ filterVals.minPct }};margin-top:6px;"/>
-            <div style="color:#8b9092;font-size:14px;margin-top:16px;">Maximum</div>
-            <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMax }}" onInput="{{ setFilterDurMax }}" class="pace-slider" style="--pct:{{ filterVals.maxPct }};margin-top:6px;"/>
+            <div style="position:relative;height:22px;margin-top:18px;">
+              <div style="position:absolute;top:8px;left:0;right:0;height:6px;border-radius:3px;background:#3a4041;"></div>
+              <div style="position:absolute;top:8px;height:6px;border-radius:3px;background:#4DD5D0;left:{{ filterVals.minPct }};right:{{ filterVals.maxRight }};"></div>
+              <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMin }}" onInput="{{ setFilterDurMin }}" class="pace-range2" style="z-index:3;"/>
+              <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMax }}" onInput="{{ setFilterDurMax }}" class="pace-range2" style="z-index:4;"/>
+            </div>
             <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Equipment</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterEquip }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
             <div onClick="{{ applyFilter }}" style="cursor:pointer;margin-top:34px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Show results</div>
@@ -813,7 +826,7 @@
           <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <span style="color:#fff;font-size:24px;font-weight:500;">Recorded sessions</span>
-            <div onClick="{{ goRecord }}" style="cursor:pointer;position:absolute;right:20px;width:44px;height:44px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div onClick="{{ goRecord }}" style="cursor:pointer;position:absolute;right:20px;width:44px;height:44px;border-radius:50%;background:#EB6C0B;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
           </div>
           <div class="pace-noscroll" style="display:flex;gap:10px;overflow-x:auto;padding:22px 20px 4px;">
             <sc-for list="{{ sessCats }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for>
@@ -885,7 +898,7 @@
             <div style="color:#fff;font-size:16px;font-weight:500;margin:24px 0 12px;">Intensity</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ editIntensity }}" as="i" hint-placeholder-count="4"><div onClick="{{ i.select }}" style="{{ i.style }}">{{ i.label }}</div></sc-for></div>
             <div style="color:#fff;font-size:16px;font-weight:500;margin:24px 0 10px;">Notes</div>
-            <textarea onInput="{{ setEditNote }}" placeholder="Add a note…" style="width:100%;min-height:120px;border-radius:12px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:14px 16px;line-height:1.5;resize:none;">{{ editDraft.note }}</textarea>
+            <textarea value="{{ editDraft.note }}" onInput="{{ setEditNote }}" placeholder="Add a note…" style="width:100%;min-height:120px;border-radius:12px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:14px 16px;line-height:1.5;resize:none;"></textarea>
             <div onClick="{{ saveSessionEdit }}" style="cursor:pointer;margin-top:26px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Save changes</div>
           </div>
         </div>
@@ -900,9 +913,9 @@
           </div>
           <div style="padding:30px 20px 0;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="color:#fff;font-size:20px;font-weight:500;">Show cards</span><span style="color:#737A7B;font-size:14px;">Drag to reorder</span></div>
-            <div onPointerUp="{{ endDrag }}" onPointerLeave="{{ endDrag }}" style="display:flex;flex-direction:column;gap:12px;">
+            <div ref="{{ listRef }}" onPointerMove="{{ onDragMove }}" onPointerUp="{{ endDrag }}" onPointerCancel="{{ endDrag }}" style="display:flex;flex-direction:column;gap:12px;">
               <sc-for list="{{ summaryCards }}" as="t" hint-placeholder-count="3">
-                <div onPointerEnter="{{ t.dragEnter }}" style="{{ t.wrapStyle }}">
+                <div style="{{ t.wrapStyle }}">
                   <div style="display:flex;align-items:center;gap:12px;height:60px;padding:0 18px;">
                     <div onPointerDown="{{ t.dragStart }}" style="cursor:grab;padding:6px;margin-left:-6px;touch-action:none;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h12" stroke="#737A7B" stroke-width="1.6" stroke-linecap="round"/></svg></div>
                     <span style="flex:1;color:#fff;font-size:19px;">{{ t.label }}</span>
@@ -924,37 +937,37 @@
 
       <!-- ============ ACTIVE DAYS CALENDAR ============ -->
       <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
-        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
-          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
-            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,#154B4C 0%,#000 22%);display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:78px 20px 0;flex-shrink:0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;top:74px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <span style="color:#fff;font-size:24px;font-weight:500;">Active days</span>
+            <div onClick="{{ openCalLegend }}" style="cursor:pointer;position:absolute;right:20px;top:74px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="#fff" stroke-width="1.6"/><path d="M12 11v5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.15" fill="#fff"/></svg></div>
           </div>
-          <div style="padding:24px 20px 0;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;">
-              <div style="{{ fireIconStyle }}"></div>
-              <span style="color:#fff;font-size:34px;font-weight:500;">20</span>
-              <span style="color:#B9BFC1;font-size:16px;">active days with Pace</span>
-            </div>
-            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">July 2026</div>
-            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:8px;">
-              <div style="text-align:center;color:#737A7B;font-size:13px;">S</div><div style="text-align:center;color:#737A7B;font-size:13px;">M</div><div style="text-align:center;color:#737A7B;font-size:13px;">T</div><div style="text-align:center;color:#737A7B;font-size:13px;">W</div><div style="text-align:center;color:#737A7B;font-size:13px;">T</div><div style="text-align:center;color:#737A7B;font-size:13px;">F</div><div style="text-align:center;color:#737A7B;font-size:13px;">S</div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;">
-              <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="31">
-                <sc-if value="{{ c.blank }}" hint-placeholder-val="{{ false }}"><div></div></sc-if>
-                <sc-if value="{{ c.notBlank }}" hint-placeholder-val="{{ true }}">
-                  <div style="{{ c.cellStyle }}">
-                    <span style="color:#fff;font-size:13px;">{{ c.day }}</span>
-                    <sc-if value="{{ c.hasMode }}" hint-placeholder-val="{{ true }}"><div style="{{ c.iconStyle }}"></div></sc-if>
-                  </div>
-                </sc-if>
-              </sc-for>
-            </div>
-            <div style="margin-top:28px;background:#1E1F20;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;">
-              <sc-for list="{{ calLegend }}" as="l" hint-placeholder-count="5">
-                <div style="display:flex;align-items:center;gap:12px;"><div style="{{ l.iconStyle }}"></div><span style="color:#B9BFC1;font-size:16px;">{{ l.label }}</span></div>
-              </sc-for>
-            </div>
+          <div style="padding:18px 20px 4px;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <div style="{{ fireIconStyle }}"></div>
+            <span style="color:#fff;font-size:34px;font-weight:500;">20</span>
+            <span style="color:#B9BFC1;font-size:16px;">active days with Pace</span>
+          </div>
+          <div ref="{{ calScrollRef }}" class="pace-noscroll" style="flex:1;overflow-y:auto;padding:14px 20px 30px;">
+            <sc-for list="{{ calMonths }}" as="mth" hint-placeholder-count="2">
+              <div style="margin-bottom:26px;">
+                <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">{{ mth.label }}</div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:8px;">
+                  <div style="text-align:center;color:#737A7B;font-size:13px;">S</div><div style="text-align:center;color:#737A7B;font-size:13px;">M</div><div style="text-align:center;color:#737A7B;font-size:13px;">T</div><div style="text-align:center;color:#737A7B;font-size:13px;">W</div><div style="text-align:center;color:#737A7B;font-size:13px;">T</div><div style="text-align:center;color:#737A7B;font-size:13px;">F</div><div style="text-align:center;color:#737A7B;font-size:13px;">S</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;">
+                  <sc-for list="{{ mth.cells }}" as="c" hint-placeholder-count="31">
+                    <sc-if value="{{ c.blank }}" hint-placeholder-val="{{ false }}"><div></div></sc-if>
+                    <sc-if value="{{ c.notBlank }}" hint-placeholder-val="{{ true }}">
+                      <div style="{{ c.cellStyle }}">
+                        <span style="color:#fff;font-size:13px;">{{ c.day }}</span>
+                        <sc-if value="{{ c.hasMode }}" hint-placeholder-val="{{ true }}"><div style="{{ c.iconStyle }}"></div></sc-if>
+                      </div>
+                    </sc-if>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
           </div>
         </div>
       </sc-if>
@@ -1298,7 +1311,12 @@
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;gap:10px;align-items:center;padding:12px 16px 24px;border-top:1px solid #2b3132;flex-shrink:0;">
+          <div class="pace-noscroll" style="display:flex;gap:8px;overflow-x:auto;padding:12px 16px 0;flex-shrink:0;">
+            <sc-for list="{{ aiPromptChips }}" as="c" hint-placeholder-count="4">
+              <div onClick="{{ c.send }}" style="cursor:pointer;flex:none;padding:9px 14px;border-radius:18px;background:#26292a;border:1px solid #2b3132;color:#dfe2e2;font-size:14px;white-space:nowrap;">{{ c.label }}</div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;padding:12px 16px 24px;flex-shrink:0;">
             <input type="text" value="{{ aiInput }}" onInput="{{ setAiInput }}" placeholder="Ask Pace AI…" style="flex:1;height:48px;border-radius:24px;background:#26292a;border:none;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:0 18px;"/>
             <div onClick="{{ sendAi }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#EB6C0B;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12h15M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
@@ -1319,7 +1337,19 @@
         <div onClick="{{ stop }}" style="width:100%;border-radius:26px 26px 0 0;background:rgba(20,24,25,.98);border-top:1px solid rgba(255,255,255,.1);padding:22px 20px 30px;">
           <div style="width:40px;height:4px;border-radius:2px;background:#3a4041;margin:0 auto 18px;"></div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="color:#fff;font-size:20px;font-weight:500;">New post</span><div onClick="{{ closeCompose }}" style="cursor:pointer;padding:4px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#e6e8e9" stroke-width="1.6" stroke-linecap="round"/></svg></div></div>
-          <textarea onInput="{{ setCompose }}" placeholder="Share an update with your circle…" style="width:100%;min-height:120px;border-radius:14px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:14px 16px;line-height:1.5;resize:none;">{{ composeText }}</textarea>
+          <textarea value="{{ composeText }}" onInput="{{ setCompose }}" placeholder="Tell your friends what you did..." style="width:100%;min-height:120px;border-radius:14px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:14px 16px;line-height:1.5;resize:none;"></textarea>
+          <sc-if value="{{ composeImg }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative;margin-top:14px;border-radius:14px;overflow:hidden;">
+              <img src="assets/post-walk.jpg" alt="upload" style="width:100%;max-height:200px;object-fit:cover;display:block;"/>
+              <div onClick="{{ removeComposeImg }}" style="cursor:pointer;position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noComposeImg }}" hint-placeholder-val="{{ true }}">
+            <div onClick="{{ addComposeImg }}" style="cursor:pointer;margin-top:14px;height:92px;border-radius:14px;border:1.5px dashed #44494A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="4.5" width="19" height="15" rx="3" stroke="#8b9092" stroke-width="1.6"/><circle cx="8" cy="10" r="1.8" stroke="#8b9092" stroke-width="1.6"/><path d="M4 18l5-5 4 3 3-2 4 4" stroke="#8b9092" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="color:#8b9092;font-size:14px;">Add a photo</span>
+            </div>
+          </sc-if>
           <div onClick="{{ postCompose }}" style="cursor:pointer;margin-top:16px;height:56px;border-radius:28px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:500;">Post</div>
         </div>
       </div>
@@ -1401,6 +1431,20 @@
       </div>
     </sc-if>
 
+    <!-- CALENDAR LEGEND POPUP -->
+    <sc-if value="{{ calLegendOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeCalLegend }}" style="position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:28px;">
+        <div onClick="{{ stop }}" style="width:100%;border-radius:22px;background:rgba(20,24,25,.98);border:1px solid rgba(255,255,255,.1);padding:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><span style="color:#fff;font-size:20px;font-weight:500;">What the icons mean</span><div onClick="{{ closeCalLegend }}" style="cursor:pointer;padding:4px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#e6e8e9" stroke-width="1.6" stroke-linecap="round"/></svg></div></div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <sc-for list="{{ calLegend }}" as="l" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:14px;"><div style="{{ l.iconStyle }}"></div><span style="color:#B9BFC1;font-size:16px;">{{ l.label }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
     <div ref="{{ confettiRef }}" style="position:absolute;inset:0;pointer-events:none;z-index:70;overflow:hidden;"></div>
 
   </div>
@@ -1446,10 +1490,10 @@ class Component extends DCLogic {
     sameTime: true,
     dayTimes: { Mon:{start:'12:00 PM',end:'6:00 PM'}, Tue:{start:'12:00 PM',end:'6:00 PM'}, Wed:{start:'12:00 PM',end:'6:00 PM'}, Thu:{start:'12:00 PM',end:'6:00 PM'}, Fri:{start:'12:00 PM',end:'6:00 PM'}, Sat:{start:'9:00 AM',end:'12:00 PM'}, Sun:{start:'9:00 AM',end:'12:00 PM'} },
     // onboarding
-    onbStep: 0, onbGoal: {}, onbLevel: null, onbDays: 4, onbTheme: {}, onbEnjoy: {}, social: true, socialSet: false, connectPick: {}, connected: {},
+    onbStep: 0, onbGoal: {}, onbLevel: null, onbDays: 4, onbTheme: {}, onbEnjoy: {}, social: true, socialSet: false, connectPick: {}, connected: {}, cxIdx: -1,
     triggers: { 'After inactivity': true, 'Goal completions': true, 'Daily coaching': false, 'Activity sharing': true, 'New features': false },
     // break mode / set mode
-    breakMode: false,
+    breakMode: false, calLegendOpen: false,
     setMode: 'Active', setPhase: 'mode', modeStartOff: 0, modeEndOff: 7,
     // shared goal
     sharedGoalPick: 'Move 4 days/week', invite: { Mia: true, Henry: false, Sarah: false },
@@ -1460,7 +1504,7 @@ class Component extends DCLogic {
       { id:'g3', title:'3 workouts together', sub:'with Mia', status:'past', progress:'Completed', pct:1 }
     ],
     goalDraft: { name:'', target:20, unit:'days/week' },
-    composeOpen: false, composeText: '', myPosts: [],
+    composeOpen: false, composeText: '', composeImg: false, myPosts: [],
     // social
     likes: {}, likeBase: { yoga: 3, walk: 5, upper: 3, med: 1 },
     // overlays
@@ -1514,7 +1558,8 @@ class Component extends DCLogic {
     { id:'r3', cat:'Yoga', name:'Morning Yoga', dateLabel:'Yesterday', date:'Jul 1', span:'7:30 AM – 7:50 AM', time:'20 min', cal:'56 cal', intensity:'Gentle', equip:'Mat', note:'Focus on hips and shoulders.' },
     { id:'r4', cat:'Walk', name:'Walk to campus', dateLabel:'Yesterday', date:'Jul 1', span:'8:40 AM – 8:59 AM', time:'19 min', cal:'42 cal', distance:'0.9 mi', intensity:'Easy', equip:'None', note:'Logged automatically.' },
     { id:'r5', cat:'Gym', name:'Chest & Arms', dateLabel:'Jun 29', date:'Jun 29', span:'6:20 PM – 6:58 PM', time:'38 min', cal:'240 cal', sets:'4 sets', reps:'10 reps', weight:'30 lbs', equip:'Bench press, Dumbbells', intensity:'Moderate', note:'' },
-    { id:'r6', cat:'Stretch', name:'Evening Stretch', dateLabel:'Jun 29', date:'Jun 29', span:'9:15 PM – 9:27 PM', time:'12 min', cal:'28 cal', intensity:'Gentle', equip:'Mat', note:'Wind-down before bed.' }
+    { id:'r6', cat:'Stretch', name:'Evening Stretch', dateLabel:'Jun 29', date:'Jun 29', span:'9:15 PM – 9:27 PM', time:'12 min', cal:'28 cal', intensity:'Gentle', equip:'Mat', note:'Wind-down before bed.' },
+    { id:'r7', cat:'Stretch', name:'Morning Stretch', dateLabel:'Today', date:'Jul 2', span:'7:05 AM – 7:17 AM', time:'12 min', cal:'34 cal', intensity:'Gentle', equip:'Mat', note:'Loosened up before the day.' }
   ];
   PERIOD_DATA = {
     Day:   { labels:['6a','9a','12p','3p','6p','9p'], vals:[.2,.55,.85,1,.7,.4], caption:'Hourly · Today', steps:{value:'2,847',note:'Today',total:'2,847'}, distance:{value:'5.4',note:'Today',total:'5.4'} },
@@ -1543,6 +1588,13 @@ class Component extends DCLogic {
     { icon:'⏸', bg:'#4DD5D0', title:"You've been at your desk for 45 min", body:'Try 10 shoulder rolls to stretch your body.', time:'Yesterday' },
     { icon:'🎉', bg:'#FA8815', title:'Goal reached', body:'You moved 4 days this week. Nice pace!', time:'Yesterday' },
     { icon:'👟', bg:'#4DD5D0', title:'Almost at your step goal', body:"You're 300 steps away — a short walk will do it.", time:'2d ago' }
+  ];
+  DEVICES = [
+    { key:'appleHealth', name:'Apple Health', sub:'Steps, workouts & heart rate', img:'assets/logo-apple-health.svg', bg:'#2b3132' },
+    { key:'appleWatch', name:'Apple Watch', sub:'Activity rings & live sessions', img:'assets/logo-apple-watch.svg', bg:'#2b3132' },
+    { key:'googleFit', name:'Google Fit', sub:'Move Minutes & Heart Points', img:'assets/logo-google-fit.svg', bg:'#2b3132' },
+    { key:'fitbit', name:'Fitbit', sub:'Sleep, steps & resting HR', img:'assets/logo-fitbit.svg', bg:'#2b3132' },
+    { key:'garmin', name:'Garmin', sub:'Runs, rides & recovery', img:'assets/logo-garmin.svg', bg:'#2b3132' }
   ];
 
   componentDidMount() {
@@ -1581,7 +1633,7 @@ class Component extends DCLogic {
       }, () => { if (this.state.secondsLeft === 0 && this.state.exIndex === this.EXS.length - 1) this.finishWorkout(); });
     }, 1000);
   }
-  componentWillUnmount() { clearInterval(this._timer); clearTimeout(this._nudgeTimer); clearInterval(this._randomNudge); clearTimeout(this._splashTimer); }
+  componentWillUnmount() { clearInterval(this._timer); clearTimeout(this._nudgeTimer); clearInterval(this._randomNudge); clearTimeout(this._splashTimer); clearTimeout(this._cxTimer); }
   componentDidUpdate(pp, ps) {
     if (ps.screen !== this.state.screen && this._screenEl && this.props.reduceMotion !== true) {
       this._screenEl.animate(
@@ -1591,6 +1643,7 @@ class Component extends DCLogic {
     }
     if (this.state.screen === 'scan' && ps.screen !== 'scan') this.startCamera();
     if (this.state.screen !== 'scan' && ps.screen === 'scan') this.stopCamera();
+    if (this.state.screen === 'calendar' && ps.screen !== 'calendar' && this._calEl) { const el = this._calEl; setTimeout(() => { if (el) el.scrollTop = el.scrollHeight; }, 40); }
   }
   startCamera() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
@@ -1614,8 +1667,24 @@ class Component extends DCLogic {
     this._splashTimer = setTimeout(() => { if (this.state.screen === 'splash') this.go('onboarding', false); }, 2300);
   };
   finishOnboarding = (welcome) => {
+    clearTimeout(this._cxTimer);
     this.setState({ history: [], screen: 'home', scrolled: false });
     if (welcome) this.showToast("You're all set. Welcome to Pace.");
+  };
+  startConnectSeq = () => {
+    const picked = this.DEVICES.filter(d => this.state.connectPick[d.key]);
+    clearTimeout(this._cxTimer);
+    if (!picked.length) { this.setState({ cxIdx: 0 }); return; }
+    this.setState({ cxIdx: 0, connected: {} });
+    const step = (i) => {
+      if (i >= picked.length) { this.setState({ cxIdx: picked.length }); return; }
+      this.setState({ cxIdx: i });
+      this._cxTimer = setTimeout(() => {
+        this.setState(st => ({ connected: { ...st.connected, [picked[i].key]: true } }));
+        step(i + 1);
+      }, 3000);
+    };
+    step(0);
   };
   openDetail(id) { this.go('detail'); this.setState({ detailId: id, loading: false }); }
   goSearch = () => { this.go('search'); this.setState({ loading: true }); setTimeout(() => this.setState({ loading: false }), 750); };
@@ -1634,8 +1703,7 @@ class Component extends DCLogic {
     const catMap = { Pilates:'Yoga', Strength:'Gym', Yoga:'Yoga', Cardio:'Run', HIIT:'Run', 'Resistance Band':'Gym', Stretch:'Stretch', Chore:'Walk', Errand:'Walk' };
     const id = 'w' + Date.now();
     const rec = { id, cat: catMap[w.tag] || 'Gym', name: w.title, dateLabel:'Today', date:'Jul 2', span:'Just now', time: w.min, cal: w.cal, sets: w.sets, intensity: w.level, equip: w.equip, note:'' };
-    this.setState(st => ({ myRecords: [rec, ...st.myRecords], celebrate:false, sessionDetailId:id, history:[] }));
-    this.go('sessionDetail');
+    this.setState(st => ({ myRecords: [rec, ...st.myRecords], celebrate:false, sessionDetailId:id, screen:'sessionDetail', history:['sessionsList'], scrolled:false }));
   };
 
   fireConfetti() {
@@ -1675,6 +1743,19 @@ class Component extends DCLogic {
     this.showToast(label + ' added.');
   };
   showToast(t) { this.setState({ toast: t }); clearTimeout(this._toast); this._toast = setTimeout(() => this.setState({ toast: null }), 2200); }
+  askAi = (q) => {
+    q = (q||'').trim(); if (!q) return;
+    const lower = q.toLowerCase();
+    const wantsCards = /suggest|recommend|idea|workout|activity|exercise|quick|short|strength|strong|muscle|cardio|run|relax|stress|calm|yoga|stretch|move|energ|sweat|tired|sleep|busy|what should|help me|give me|something/.test(lower);
+    let ids = ['cardio-burst','upper-body','morning-warmup'];
+    let reply = 'Here are a few that could fit. Tap one to open it.';
+    if (/strength|strong|muscle|tone/.test(lower)) { ids = ['full-body','hip-dips','squat-leg']; reply='For building strength, try one of these.'; }
+    else if (/quick|short|busy|desk|sit|min|10|5/.test(lower)) { ids = ['desk-stretch','bathroom-clean','cardio-burst']; reply='Short on time? These take under 10 minutes.'; }
+    else if (/cardio|run|endur|sweat|energ/.test(lower)) { ids = ['jump-rope','cardio-burst','fat-burn']; reply='Get your heart rate up with these.'; }
+    else if (/relax|stress|calm|yoga|stretch|tired|sleep/.test(lower)) { ids = ['morning-warmup','desk-stretch','trash-run']; reply='Something gentle to unwind. Try one of these.'; }
+    if (wantsCards) this.setState(st => ({ aiInput:'', aiMsgs:[...st.aiMsgs, {role:'user',text:q}, {role:'ai',text:reply,cardIds:ids}] }));
+    else this.setState(st => ({ aiInput:'', aiMsgs:[...st.aiMsgs, {role:'user',text:q}, {role:'ai',text:"I'm here to help you find the right activity. Ask me for a suggestion, or tell me how you're feeling and how much time you have."}] }));
+  };
   dismissNudge = () => this.setState({ nudge: null });
   nudgeYes = () => {
     const n = this.state.nudge; this.setState({ nudge: null });
@@ -1699,9 +1780,9 @@ class Component extends DCLogic {
     const already = [
       { key:'a', title:'Walk to campus', time:'19 min', value:'584', unit:'steps', arrow:false, sess:'r4',
         numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' },
-      { key:'b', title:'Morning Stretch', time:'12 min', value:'30', unit:'% stronger muscle', arrow:true, sess:'r6',
+      { key:'b', title:'Morning Stretch', time:'12 min', value:'30', unit:'% stronger muscle', arrow:true, sess:'r7', arrowColor:'#F1EA2E',
         numStyle:'color:#F1EA2E;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' },
-      { key:'c', title:'Evening Run', time:'32 min', value:'3.4', unit:'mi', arrow:true, sess:'r1',
+      { key:'c', title:'Evening Run', time:'32 min', value:'3.4', unit:'mi', arrow:true, sess:'r1', arrowColor:'#FA8815',
         numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' }
     ].map(c => ({ ...c, open: () => { this.setState({ sessionDetailId: c.sess }); this.go('sessionDetail'); } }));
 
@@ -1710,7 +1791,7 @@ class Component extends DCLogic {
       toggleSave: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState(st => ({ saved: { ...st.saved, [id]: !st.saved[id] } })); this.showToast(s.saved[id] ? 'Removed from saved.' : 'Saved.'); } }; };
     const suggested = ['cardio-burst','upper-body','squat-leg','morning-warmup','total-body'].map(card);
     const moveSections = [
-      { title:'Quick Start', items:['desk-stretch','neck-roll','stair-climb','bathroom-clean','trash-run','cardio-burst'].map(card), seeAll:this.goSearch },
+      { title:'Quick start', items:['desk-stretch','bathroom-clean','trash-run','cardio-burst'].map(card), seeAll:this.goSearch },
       { title:'Best for home', items:['total-body','morning-warmup','full-body'].map(card), seeAll:this.goSearch },
       { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
       { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
@@ -1728,7 +1809,7 @@ class Component extends DCLogic {
     const sq = (s.searchQuery||'').trim().toLowerCase();
     const matchId = (id) => { const w = this.WK[id]; const mins = parseMin(w.min);
       if (mins < s.filter.durMin || mins > s.filter.durMax) return false;
-      if (fCats.length && !fCats.includes(CATBUCKET[w.tag] || w.tag)) return false;
+      if (fCats.length && !fCats.includes(w.tag)) return false;
       if (fLevels.length && !fLevels.includes(w.level)) return false;
       if (fEquip.length && !fEquip.some(e => equipMatch(w, e))) return false;
       if (sq) { const hay = (w.title+' '+w.tag+' '+w.level+' '+w.equip).toLowerCase(); if (!hay.includes(sq)) return false; }
@@ -1844,6 +1925,7 @@ class Component extends DCLogic {
     const barColorY = (i) => (i===1||i===2||i===3)?'#F1EA2E':(i===0?'#F6F453':'#FDF9AE');
     const barsBY = [.5,.9,1,.7,.36,.32].map((v,i) => ({ style:`width:9px;border-radius:3px;height:${Math.round(18+v*48)}px;background:${barColorY(i)};` }));
     const goalMiniStyle = mask('goal', '#8b9092', 15);
+    const goalCardStyle = mask('goal', '#fff', 18);
     const sessIcon = (file) => mask(file, '#4DD5D0', 26);
     const sessions = allRecords.slice(0,3).map(r => ({ name: r.name, cal: r.cal, date: r.dateLabel, iconStyle: sessIcon(iconFor(r.cat)) }));
 
@@ -1853,9 +1935,9 @@ class Component extends DCLogic {
     const likeN = (k) => (s.likeBase[k]||0) + (s.likes[k] ? 1 : 0);
     const mk = (k, o) => ({ ...o, key:k, like: () => this.setState(st => ({ likes: { ...st.likes, [k]: !st.likes[k] } })), heartFill:heart(k), heartStroke:heartS(k), likes:likeN(k) });
     const openProfile = (id) => { this.setState({ profileId: id }); this.go('friendProfile'); };
-    const myFeed = s.myPosts.map((p,i) => mk('mp'+i, { name:'Jolyne', username:'@jolyne', pid:'', title:p.title, ago:'Just now', min:'', text:p.text, avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:0, hasImg:false, img:'', groupIcon:false }));
+    const myFeed = s.myPosts.map((p,i) => mk('mp'+i, { name:'Jolyne', username:'@jolyne', pid:'', title:p.title, ago:'Just now', min:'', text:p.text, avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:0, hasImg:!!p.hasImg, img:p.img||'', groupIcon:false }));
     const baseFeed = [
-      mk('jolyne-goal', { name:'Jolyne', username:'@jolyne', pid:'', title:'Walk 20,000 steps', ago:'Just now', min:'', text:'New shared goal — who’s in? 🎯', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:1, hasImg:false, img:'', groupIcon:true, groupCount:'3' }),
+      mk('jolyne-goal', { name:'Jolyne', username:'@jolyne', pid:'', title:'Walk 20,000 steps', ago:'Just now', min:'', text:'Finally closed out 20,000 steps today and it feels amazing 🎯', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:1, hasImg:false, img:'', groupIcon:true, groupCount:'3' }),
       mk('yoga', { name:'Jolyne', username:'@jolyne', pid:'', title:'Morning Yoga', ago:'12m ago', min:'20 min', text:'Fresh morning 🧘', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:2, hasImg:false, img:'' }),
       mk('walk', { name:'Mia', username:'@miachen', pid:'mia', title:'Walking to the shed', ago:'3h ago', min:'10 min', text:'Nice weather today. Good for a walk!', avatar:'assets/avatar-yellow.png', avatarBg:'#F6F453', comments:3, hasImg:true, img:'assets/post-walk.jpg' }),
       mk('upper', { name:'Henry', username:'@henryross', pid:'henry', title:'Upper Body', ago:'1d ago', min:'20 min', text:'So relaxing… no more stress.', avatar:'assets/avatar-orange.png', avatarBg:'#FA8815', comments:1, hasImg:false, img:'' }),
@@ -1904,13 +1986,13 @@ class Component extends DCLogic {
 
     // onboarding flow
     const onbSteps = [
-      { key:'goal', label:'STEP 1 OF 5', title:'What brings you to Pace?', subtitle:'Choose as many as feel right — this shapes what we suggest.', multi:true,
+      { key:'goal', label:'STEP 1 OF 5', title:'What brings you to Pace?', subtitle:'Choose as many as feel right. This shapes what we suggest.', multi:true,
         opts:['Move more often','Lose weight','Build strength','Improve endurance','Feel more energized','Sleep & stress','Stay consistent'] },
-      { key:'level', label:'STEP 2 OF 5', title:'How active are you today?', subtitle:'This just sets a starting point — it adapts as you go.',
+      { key:'level', label:'STEP 2 OF 5', title:'How active are you today?', subtitle:'This just sets a starting point that adapts as you go.',
         opts:['Just getting started','Active now and then','Fairly active','Very active'] },
       { key:'days', label:'STEP 3 OF 5', title:'How many days a week?', subtitle:"We'll aim for a pace that's realistic, never punishing.", days:true },
-      { key:'enjoy', label:'STEP 4 OF 5', title:'What do you enjoy?', subtitle:"Pick a style, then the activities you like — we'll suggest more.", enjoy:true },
-      { key:'social', label:'STEP 5 OF 5', title:'How do you like to move?', subtitle:'No right answer — just what feels good. Pace tailors the app to you.',
+      { key:'enjoy', label:'STEP 4 OF 5', title:'What do you enjoy?', subtitle:"Pick the setting that fits you best and we'll suggest more like it.", enjoy:true },
+      { key:'social', label:'STEP 5 OF 5', title:'How do you like to move?', subtitle:"There's no right answer, just what feels good. Pace tailors the app to you.",
         opts:['With friends','On my own'] }
     ];
     const oStep = onbSteps[s.onbStep] || onbSteps[0];
@@ -1918,18 +2000,26 @@ class Component extends DCLogic {
     let onbOptions = [];
     let enjoyThemes = [];
     let enjoyOptions = [];
-    if (oStep.opts) {
+    let socialOptions = [];
+    if (oStep.opts && oStep.key!=='social') {
       onbOptions = oStep.opts.map(label => {
-        let active;
-        if (oStep.key==='goal') active = !!s.onbGoal[label];
-        else if (oStep.key==='social') active = s.socialSet && (s.social === (label==='With friends'));
-        else active = s.onbLevel===label;
+        const active = oStep.key==='goal' ? !!s.onbGoal[label] : s.onbLevel===label;
         return { label, checked: active, style: optBase(active),
           select: () => {
             if (oStep.key==='goal') this.setState(st => ({ onbGoal: { ...st.onbGoal, [label]: !st.onbGoal[label] } }));
-            else if (oStep.key==='social') this.setState({ social: label==='With friends', socialSet: true });
             else this.setState({ onbLevel: label });
           } };
+      });
+    }
+    if (oStep.key==='social') {
+      const SOC = {
+        'With friends':'<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.4" stroke="COL" stroke-width="1.8"/><path d="M2.5 20a6.5 6.5 0 0113 0" stroke="COL" stroke-width="1.8" stroke-linecap="round"/><path d="M16.5 5.2a3.4 3.4 0 010 5.6M19.5 20a6.5 6.5 0 00-3.5-5.4" stroke="COL" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        'On my own':'<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7.5" r="3.8" stroke="COL" stroke-width="1.8"/><path d="M5 20a7 7 0 0114 0" stroke="COL" stroke-width="1.8" stroke-linecap="round"/></svg>'
+      };
+      socialOptions = oStep.opts.map(label => { const active = s.socialSet && (s.social===(label==='With friends')); const col = active?'#4DD5D0':'#fff';
+        return { label, active, iconEl: raw((SOC[label]||'').replace(/COL/g,col)),
+          style:`cursor:pointer;display:flex;align-items:center;gap:16px;border-radius:16px;padding:22px 20px;font-size:19px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
+          select: () => this.setState({ social: label==='With friends', socialSet: true }) };
       });
     }
     if (oStep.enjoy) {
@@ -1942,8 +2032,8 @@ class Component extends DCLogic {
       enjoyThemes = Object.keys(THEMES).map(t => {
         const active = !!s.onbTheme[t];
         return { label:t, active,
-          iconStyle: mask(themeIcon[t] || 'run', active ? '#4DD5D0' : '#fff', 26),
-          style: `cursor:pointer;flex:1;border-radius:14px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font-size:13px;text-align:center;line-height:1.15;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
+          iconStyle: mask(themeIcon[t] || 'run', active ? '#4DD5D0' : '#fff', 30),
+          style: `cursor:pointer;display:flex;align-items:center;gap:16px;border-radius:16px;padding:22px 20px;font-size:19px;transition:all .16s;${active?'background:#154B4C;border:1.5px solid #4DD5D0;color:#fff;':'background:#1E1F20;border:1.5px solid #2b3132;color:#dfe2e2;'}`,
           select: () => this.setState(st => ({ onbTheme: { ...st.onbTheme, [t]: !st.onbTheme[t] } })) };
       });
       const enjoyIcons = { Walking:'walk', Running:'run', Yoga:'yoga', Strength:'gym', Weightlifting:'gym', Machines:'gym', Cardio:'run', Cycling:'cycling', Pilates:'pilates', HIIT:'boxing', Bodyweight:'stretch', Stretching:'stretch', Swimming:'swim', Hiking:'hiking', Tennis:'tennis', Basketball:'basketball' };
@@ -1960,7 +2050,7 @@ class Component extends DCLogic {
     const dayChoices = [1,2,3,4,5,6,7].map(n => ({ label:String(n), select:()=>this.setState({ onbDays:n }),
       style:`cursor:pointer;flex:1;height:74px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500;transition:all .16s;${s.onbDays===n?'background:#EB6C0B;color:#fff;':'background:#1E1F20;color:#8b9092;border:1.5px solid #2b3132;'}` }));
     const oAnswered = oStep.days ? true
-      : oStep.enjoy ? Object.values(s.onbEnjoy).some(Boolean)
+      : oStep.enjoy ? Object.values(s.onbTheme).some(Boolean)
       : oStep.key==='goal' ? Object.values(s.onbGoal).some(Boolean)
       : oStep.key==='social' ? s.socialSet
       : !!s.onbLevel;
@@ -1969,6 +2059,7 @@ class Component extends DCLogic {
       stepLabel: oStep.label, title: oStep.title, subtitle: oStep.subtitle,
       options: onbOptions, isDays: !!oStep.days, dayChoices,
       isEnjoy: !!oStep.enjoy, enjoy: enjoyOptions, themes: enjoyThemes, hasTheme: enjoyThemes.some(t => t.active),
+      isSocial: oStep.key==='social', socialOpts: socialOptions,
       showBack: s.onbStep>0,
       back: () => this.setState(st => ({ onbStep: Math.max(0, st.onbStep-1) })),
       skip: () => this.go('connect'),
@@ -1981,13 +2072,7 @@ class Component extends DCLogic {
     };
 
     // health data / device integration
-    const deviceDefs = [
-      { key:'appleHealth', name:'Apple Health', sub:'Steps, workouts & heart rate', img:'assets/logo-apple-health.svg', bg:'#2b3132' },
-      { key:'appleWatch', name:'Apple Watch', sub:'Activity rings & live sessions', img:'assets/logo-apple-watch.svg', bg:'#2b3132' },
-      { key:'googleFit', name:'Google Fit', sub:'Move Minutes & Heart Points', img:'assets/logo-google-fit.svg', bg:'#2b3132' },
-      { key:'fitbit', name:'Fitbit', sub:'Sleep, steps & resting HR', img:'assets/logo-fitbit.svg', bg:'#2b3132' },
-      { key:'garmin', name:'Garmin', sub:'Runs, rides & recovery', img:'assets/logo-garmin.svg', bg:'#2b3132' }
-    ];
+    const deviceDefs = this.DEVICES;
     const devices = deviceDefs.map(d => { const picked = !!s.connectPick[d.key]; return { name:d.name, sub:d.sub, picked,
       img: d.img, tileStyle:`width:48px;height:48px;border-radius:13px;background:${d.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
       rowStyle: `cursor:pointer;display:flex;align-items:center;gap:14px;background:#16191a;border-radius:16px;padding:14px 16px;transition:border .16s;${picked?'border:1.5px solid #4DD5D0;':'border:1px solid #2b3132;'}`,
@@ -1996,15 +2081,13 @@ class Component extends DCLogic {
     const anyPicked = Object.values(s.connectPick).some(Boolean);
     const connectCta = anyPicked ? 'Continue' : 'Get started';
     const pickedDefs = deviceDefs.filter(d => s.connectPick[d.key]);
-    const connectAppRows = pickedDefs.map(d => { const conn = !!s.connected[d.key];
-      return { name:d.name, sub: conn ? 'Connected' : d.sub, img:d.img, connected:conn,
-        tileStyle:`width:48px;height:48px;border-radius:13px;background:#2b3132;display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
-        btnLabel: conn ? 'Connected' : 'Connect',
-        btnStyle: conn
-          ? 'cursor:default;height:40px;padding:0 14px;border-radius:20px;display:flex;align-items:center;gap:6px;background:rgba(77,213,208,.14);color:#4DD5D0;font-size:15px;font-weight:500;flex-shrink:0;'
-          : 'cursor:pointer;height:40px;padding:0 20px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:#EB6C0B;color:#fff;font-size:15px;font-weight:500;flex-shrink:0;',
-        connect: () => { this.setState(st => ({ connected: { ...st.connected, [d.key]: true } })); this.showToast(d.name + ' connected.'); } };
-    });
+    const cxAllDone = pickedDefs.length>0 && s.cxIdx >= pickedDefs.length;
+    const cxCurrent = (s.cxIdx>=0 && s.cxIdx < pickedDefs.length) ? pickedDefs[s.cxIdx] : null;
+    const connectTitle = cxAllDone ? 'All set' : (cxCurrent ? ('Connect ' + cxCurrent.name) : 'Connecting');
+    const cxCurrentImg = cxCurrent ? cxCurrent.img : (pickedDefs[0] ? pickedDefs[0].img : '');
+    const connectAppRows = pickedDefs.map((d,i) => { const done = !!s.connected[d.key]; const connecting = (i===s.cxIdx) && !done;
+      return { name:d.name, img:d.img, done, connecting, pending: !done && !connecting,
+        tileStyle:`width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;` }; });
 
     // nav
     const on = '#FA8815', off = '#fff';
@@ -2035,10 +2118,11 @@ class Component extends DCLogic {
     // search filter
     const multiFilter = (field) => (label) => ({ label, style: chip(!!s.filter[field][label]),
       select: () => this.setState(st => ({ filter: { ...st.filter, [field]: { ...st.filter[field], [label]: !st.filter[field][label] } } })) });
-    const filterCat = ['Strength','Cardio','Yoga','Pilates','HIIT'].map(multiFilter('category'));
+    const filterCat = ['Strength','Cardio','Yoga','Pilates','HIIT','Resistance Band','Stretch','Chore','Errand'].map(multiFilter('category'));
     const filterLevel = ['Easy','Moderate','Hard'].map(multiFilter('level'));
     const filterEquip = ['None','Mat','Dumbbell','Band','Machine'].map(multiFilter('equip'));
-    const filterVals = { durMin: s.filter.durMin, durMax: s.filter.durMax, minPct: pct(s.filter.durMin,10,90), maxPct: pct(s.filter.durMax,10,90) };
+    const pctN = (v,mn,mx) => Math.round((v-mn)/(mx-mn)*100);
+    const filterVals = { durMin: s.filter.durMin, durMax: s.filter.durMax, minPct: pctN(s.filter.durMin,10,90)+'%', maxRight: (100 - pctN(s.filter.durMax,10,90))+'%' };
 
     // progress metric detail
     const pm = s.progMetric;
@@ -2098,8 +2182,7 @@ class Component extends DCLogic {
       return { ...o, on, goalIconStyle: goalIconSm,
         toggle: () => this.setState(st => ({ summaryCards: { ...st.summaryCards, [key]: !st.summaryCards[key] } })),
         setGoal: setGoal(o.goalKey),
-        dragStart: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState({ dragIdx: i }); },
-        dragEnter: () => this.setState(st => { if(st.dragIdx===null||st.dragIdx===i) return {}; const arr=[...st.cardOrder]; const [m]=arr.splice(st.dragIdx,1); arr.splice(i,0,m); return { cardOrder:arr, dragIdx:i }; }),
+        dragStart: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); try { if(this._listEl && ev.pointerId!=null) this._listEl.setPointerCapture(ev.pointerId); } catch(_){}; this.setState({ dragIdx: i }); },
         wrapStyle: `border:1.5px solid ${s.dragIdx===i?'#4DD5D0':'#2b3132'};border-radius:14px;overflow:hidden;background:${s.dragIdx===i?'rgba(21,75,76,.5)':'transparent'};transition:all .12s;`,
         trackStyle:`cursor:pointer;width:56px;height:30px;border-radius:16px;padding:3px;display:flex;transition:background .2s;${on?'background:#EB6C0B;justify-content:flex-end;':'background:#8b9092;justify-content:flex-start;'}`,
         knobStyle:'width:24px;height:24px;border-radius:50%;background:#fff;' }; });
@@ -2172,7 +2255,7 @@ class Component extends DCLogic {
 
     // set mode
     const MODES = [
-      { key:'Active', icon:'fire', color:'#FA8815', desc:'Full speed. Goals and streaks count as normal.' },
+      { key:'Active', icon:'fire', color:'#FA8815', desc:'Full speed. Goals and days count as normal.' },
       { key:'Balance', icon:'walk', color:'#4DD5D0', desc:'Keeping physical wellness manageable to avoid burnout.' },
       { key:'Break', icon:'recover', color:'#F1EA2E', desc:'Taking a few days off to recover, or just too busy.' },
       { key:'Sick', icon:'thermometer', color:'#5FE0DB', desc:'Need rest to get well.' },
@@ -2191,15 +2274,23 @@ class Component extends DCLogic {
     const setModeEndLabel = fmtD(s.modeEndOff);
     const activeModeIconStyle = mask(activeMode.icon, activeMode.color, 26);
 
-    // active-days calendar (Apple Fitness style)
+    // active-days calendar (Apple Fitness style) — June + July, today = Jul 2
     const MODEMETA = { Active:{icon:'fire',color:'#FA8815'}, Balance:{icon:'walk',color:'#4DD5D0'}, Break:{icon:'recover',color:'#F1EA2E'}, Sick:{icon:'thermometer',color:'#5FE0DB'}, Injured:{icon:'bandaid',color:'#EB6C0B'} };
-    const dayModes = ['Active','Active','Balance','Active','Active','Break','Active','Balance','Active','Active','Active','Sick','Sick','Active','Balance','Active','Active','Active','Injured','Active','Balance','Active','Active','Active','Break','Active','Balance'];
-    const calStartWk = new Date(2026,6,1).getDay();
-    const calCells = [];
-    for (let i=0;i<calStartWk;i++) calCells.push({ blank:true, notBlank:false, key:'b'+i });
-    for (let d=1;d<=31;d++){ const m = dayModes[d-1]; const meta = m?MODEMETA[m]:null; const today = d===2;
-      calCells.push({ blank:false, notBlank:true, key:'d'+d, day:String(d), hasMode:!!meta, iconStyle: meta?mask(meta.icon, meta.color, 15):'',
-        cellStyle:`aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${today?'background:#154B4C;border:1.5px solid #4DD5D0;':'background:#1E1F20;'}` }); }
+    const juneModes = ['Active','Balance','Active','Active','Break','Active','Active','Balance','Active','Active','Sick','Active','Active','Balance','Active','Active','Active','Injured','Active','Balance','Active','Active','Active','Break','Active','Active','Balance','Active','Active','Active'];
+    const makeMonth = (monthIdx, label, dayModeFn) => {
+      const startWk = new Date(2026, monthIdx, 1).getDay();
+      const dim = new Date(2026, monthIdx+1, 0).getDate();
+      const cells = [];
+      for (let i=0;i<startWk;i++) cells.push({ blank:true, notBlank:false, key:label+'b'+i });
+      for (let d=1;d<=dim;d++){ const m = dayModeFn(d); const meta = m?MODEMETA[m]:null; const today = (monthIdx===6 && d===2);
+        cells.push({ blank:false, notBlank:true, key:label+'d'+d, day:String(d), hasMode:!!meta, iconStyle: meta?mask(meta.icon, meta.color, 15):'',
+          cellStyle:`aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${today?'background:#154B4C;border:1.5px solid #4DD5D0;':'background:#1E1F20;'}` }); }
+      return { label, cells };
+    };
+    const calMonths = [
+      makeMonth(5, 'June 2026', (d) => juneModes[d-1] || 'Active'),
+      makeMonth(6, 'July 2026', (d) => d===1 ? 'Active' : (d===2 ? 'Active' : null))
+    ];
     const calLegend = Object.keys(MODEMETA).map(k => ({ label:k, iconStyle: mask(MODEMETA[k].icon, MODEMETA[k].color, 17) }));
     const fireIconStyle = mask('fire', '#FA8815', 20);
 
@@ -2218,8 +2309,8 @@ class Component extends DCLogic {
       isProgress: s.screen==='progress', isFriend: s.screen==='friend', isAccount: s.screen==='account', isNotif: s.screen==='notifications',
       isScan: s.screen==='scan', isFilter: s.screen==='filter', isMetric: s.screen==='metric',
       isSplash: s.screen==='splash', isOnboarding: s.screen==='onboarding', isConnect: s.screen==='connect', isConnectApps: s.screen==='connectApps',
-      onb, devices, connectCta, connectAppRows,
-      connectContinue: () => (anyPicked ? this.go('connectApps') : this.finishOnboarding(true)),
+      onb, devices, connectCta, connectAppRows, connectTitle, cxCurrentImg, cxAllDone, cxConnecting: !cxAllDone,
+      connectContinue: () => { if (anyPicked) { this.go('connectApps'); this.startConnectSeq(); } else this.finishOnboarding(true); },
       connectDone: () => this.finishOnboarding(true),
       finishOnboarding: () => this.finishOnboarding(true), skipConnect: () => this.finishOnboarding(false),
       social: s.social,
@@ -2293,11 +2384,21 @@ class Component extends DCLogic {
       setEditName: (e) => this.setState(st => ({ editDraft: { ...st.editDraft, name: e.target.value } })),
       setEditNote: (e) => this.setState(st => ({ editDraft: { ...st.editDraft, note: e.target.value } })),
       saveSessionEdit: () => { const id = s.sessionDetailId; this.setState(st => ({ recordEdits: { ...st.recordEdits, [id]: { ...(st.recordEdits[id]||{}), name: st.editDraft.name, note: st.editDraft.note, intensity: st.editDraft.intensity } } })); this.back(); this.showToast('Session updated.'); },
-      barsBY, goalMiniStyle,
+      barsBY, goalMiniStyle, goalCardStyle,
       // edit summary
       openEditSummary: () => this.go('editSummary'),
-      openCalendar: () => this.go('calendar'), isCalendar: s.screen==='calendar', calCells, calLegend, fireIconStyle,
+      openCalendar: () => this.go('calendar'), isCalendar: s.screen==='calendar', calMonths, calLegend, fireIconStyle,
+      calScrollRef: (el) => { this._calEl = el; },
+      calLegendOpen: s.calLegendOpen, openCalLegend: () => this.setState({ calLegendOpen:true }), closeCalLegend: () => this.setState({ calLegendOpen:false }),
       endDrag: () => this.setState({ dragIdx: null }),
+      listRef: (el) => { this._listEl = el; },
+      onDragMove: (ev) => {
+        if (this.state.dragIdx===null || !this._listEl) return;
+        const kids = Array.prototype.slice.call(this._listEl.children);
+        const y = ev.clientY; let target = kids.length-1;
+        for (let i=0;i<kids.length;i++){ const r = kids[i].getBoundingClientRect(); if (y < r.top + r.height/2){ target = i; break; } }
+        this.setState(st => { if (st.dragIdx===null || st.dragIdx===target) return {}; const arr=[...st.cardOrder]; const [m]=arr.splice(st.dragIdx,1); arr.splice(target,0,m); return { cardOrder:arr, dragIdx:target }; });
+      },
       summaryCards,
       saveSummary: () => { this.back(); this.showToast('Summary updated.'); },
       cardSteps: s.summaryCards.steps, cardDistance: s.summaryCards.distance, cardSessions: s.summaryCards.sessions,
@@ -2338,10 +2439,13 @@ class Component extends DCLogic {
       sendRequest: () => this.showToast('Friend request sent.'),
       copyCode: () => { try { navigator.clipboard && navigator.clipboard.writeText(myCode); } catch(e){} this.showToast('Code copied.'); },
       composeOpen: s.composeOpen, composeText: s.composeText, composeButtonShow: s.screen==='friend' && !s.composeOpen,
-      openCompose: () => this.setState({ composeOpen:true, composeText:'' }),
+      composeImg: s.composeImg, noComposeImg: !s.composeImg,
+      openCompose: () => this.setState({ composeOpen:true, composeText:'', composeImg:false }),
       closeCompose: () => this.setState({ composeOpen:false }),
       setCompose: (e) => this.setState({ composeText: e.target.value }),
-      postCompose: () => { const t=(s.composeText||'').trim(); if(!t){ this.setState({composeOpen:false}); return; } this.setState(st => ({ myPosts:[{ title:'Update', text:t }, ...st.myPosts], composeOpen:false })); this.showToast('Posted to your circle.'); },
+      addComposeImg: () => this.setState({ composeImg:true }),
+      removeComposeImg: () => this.setState({ composeImg:false }),
+      postCompose: () => { const t=(s.composeText||'').trim(); if(!t && !s.composeImg){ this.setState({composeOpen:false}); return; } this.setState(st => ({ myPosts:[{ title:'Update', text:t, hasImg:st.composeImg, img: st.composeImg?'assets/post-walk.jpg':'' }, ...st.myPosts], composeOpen:false })); this.showToast('Posted to your circle.'); },
       // saved empty
       noSaved,
       // break blurb
@@ -2372,20 +2476,11 @@ class Component extends DCLogic {
       aiOpen: s.aiOpen, aiButtonShow: (s.screen==='home'||s.screen==='move') && !s.aiOpen,
       aiMsgs: aiMsgsView, aiInput: s.aiInput,
       aiIconStyle: mask('ai', '#4DD5D0', 18), aiIconStyleLg: mask('ai', '#06312f', 26),
-      openAi: () => this.setState(st => ({ aiOpen:true, aiMsgs: st.aiMsgs.length ? st.aiMsgs : [{ role:'ai', text:"Hi! I'm Pace AI. Tell me how you're feeling or how much time you have, and I'll suggest something.", cardIds:['cardio-burst','upper-body','morning-warmup'] }] })),
+      openAi: () => this.setState(st => ({ aiOpen:true, aiMsgs: st.aiMsgs.length ? st.aiMsgs : [{ role:'ai', text:"Hi! I'm Pace AI. Ask me for a workout suggestion, or tell me how you're feeling and how much time you have." }] })),
       closeAi: () => this.setState({ aiOpen:false }),
       setAiInput: (e) => this.setState({ aiInput: e.target.value }),
-      sendAi: () => {
-        const q = (this.state.aiInput||'').trim(); if(!q) return;
-        const lower = q.toLowerCase();
-        let ids = ['cardio-burst','upper-body','morning-warmup'];
-        let reply = 'Here are a few that could fit — tap one to open it.';
-        if (/strength|strong|muscle|tone/.test(lower)) { ids = ['full-body','hip-dips','squat-leg']; reply='For building strength, try one of these.'; }
-        else if (/quick|short|busy|desk|sit|min|10|5/.test(lower)) { ids = ['desk-stretch','neck-roll','cardio-burst']; reply='Short on time? These take under 10 minutes.'; }
-        else if (/cardio|run|endur|sweat|energ/.test(lower)) { ids = ['jump-rope','cardio-burst','fat-burn']; reply='Get your heart rate up with these.'; }
-        else if (/relax|stress|calm|yoga|stretch|tired|sleep/.test(lower)) { ids = ['morning-warmup','desk-stretch','neck-roll']; reply='Something gentle to unwind — try one of these.'; }
-        this.setState(st => ({ aiInput:'', aiMsgs:[...st.aiMsgs, {role:'user',text:q}, {role:'ai',text:reply,cardIds:ids}] }));
-      },
+      sendAi: () => this.askAi(this.state.aiInput),
+      aiPromptChips: ['Give me a suggestion','Something quick','Help me relax','Build strength'].map(label => ({ label, send: () => this.askAi(label) })),
       toastOpen: !!s.toast, toastText: s.toast || '', toastAnim: '',
       scrimStyle: `position:absolute;top:0;left:0;right:0;height:100px;z-index:36;pointer-events:none;opacity:${s.scrolled?1:0};transition:opacity .3s ease;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.42) 55%,rgba(0,0,0,0) 100%);-webkit-mask:linear-gradient(180deg,#000 62%,transparent 100%);mask:linear-gradient(180deg,#000 62%,transparent 100%);`,
     };
