@@ -1522,7 +1522,8 @@ class Component extends DCLogic {
     'morning-warmup':'assets/w-morning-warmup.jpg','cardio-burst':'assets/w-cardio-burst.jpg','full-body':'assets/w-full-body.jpg',
     'jump-rope':'assets/w-jump-rope.jpg','fat-burn':'assets/w-fat-burn.jpg','hip-dips':'assets/w-hip-dips.jpg',
     'standing-abs':'assets/w-standing-abs.jpg','med-ball':'assets/w-med-ball.jpg',
-    'desk-stretch':'assets/w-desk-stretch.jpg','neck-roll':'assets/w-morning-warmup.jpg','stair-climb':'assets/w-active.jpg','bathroom-clean':'assets/w-total-body.jpg','trash-run':'assets/w-jump-rope.jpg'
+    'desk-stretch':'assets/w-desk-stretch.jpg','neck-roll':'assets/w-morning-warmup.jpg','stair-climb':'assets/w-active.jpg','bathroom-clean':'assets/w-total-body.jpg','trash-run':'assets/w-jump-rope.jpg',
+    'wall-angels':'assets/w-wall-angels.png'
   };
   WK = {
     'total-body':{title:'Total Body Torcher',tag:'Pilates',min:'30 min',level:'Moderate',sets:'6 sets',cal:'200 cal',equip:'Mat',desc:"The Total Body Torcher blends compound strength moves like squats and push-ups with steady circuit work. Thirty focused minutes, at whatever intensity your day allows — no keeping up with anyone."},
@@ -1540,7 +1541,8 @@ class Component extends DCLogic {
     'neck-roll':{title:'Neck & Shoulders',tag:'Stretch',min:'2 min',level:'Easy',sets:'1 set',cal:'8 cal',equip:'None',desc:"Two minutes to loosen a stiff neck and tight shoulders after too long at a screen."},
     'stair-climb':{title:'Take the Stairs',tag:'Cardio',min:'4 min',level:'Easy',sets:'1 set',cal:'30 cal',equip:'None',desc:"Skip the elevator. A few flights of stairs is an easy way to sneak movement into your day."},
     'bathroom-clean':{title:'Clean the Bathroom',tag:'Chore',min:'5 min',level:'Easy',sets:'1 set',cal:'25 cal',equip:'None',desc:"A quick tidy that also gets you up and moving. Everyday tasks count too."},
-    'trash-run':{title:'Take Out the Trash',tag:'Errand',min:'3 min',level:'Easy',sets:'1 set',cal:'15 cal',equip:'None',desc:"A small errand that counts as movement. Every bit of getting up helps."}
+    'trash-run':{title:'Take Out the Trash',tag:'Errand',min:'3 min',level:'Easy',sets:'1 set',cal:'15 cal',equip:'None',desc:"A small errand that counts as movement. Every bit of getting up helps."},
+    'wall-angels':{title:'Wall Angels',tag:'Stretch',min:'4 min',level:'Easy',sets:'1 set',cal:'18 cal',equip:'Wall',desc:"Stand with your back against a wall and slide your arms up and down like a snow angel. A simple reset for tight shoulders and upper-back posture after sitting."}
   };
   EXS = ['Bodyweight Fly','Push-Up','Squat Pulse','Mountain Climber','Plank Reach','Glute Bridge'];
   EXIMG = ['assets/w-active.jpg','assets/w-full-body.jpg','assets/w-squat-leg.jpg','assets/w-cardio-burst.jpg','assets/w-total-body.jpg','assets/w-hip-dips.jpg'];
@@ -1793,7 +1795,7 @@ class Component extends DCLogic {
       toggleSave: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState(st => ({ saved: { ...st.saved, [id]: !st.saved[id] } })); this.showToast(s.saved[id] ? 'Removed from saved.' : 'Saved.'); } }; };
     const suggested = ['cardio-burst','upper-body','squat-leg','morning-warmup','total-body'].map(card);
     const moveSections = [
-      { title:'Quick start', items:['desk-stretch','cardio-burst'].map(card), seeAll:this.goSearch },
+      { title:'Quick start', items:['desk-stretch','wall-angels','cardio-burst'].map(card), seeAll:this.goSearch },
       { title:'Best for home', items:['total-body','morning-warmup','full-body'].map(card), seeAll:this.goSearch },
       { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
       { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
