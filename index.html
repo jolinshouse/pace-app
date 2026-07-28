@@ -577,22 +577,26 @@
       <sc-if value="{{ isFriend }}" hint-placeholder-val="{{ false }}">
         <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:60px 0 120px;">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <span style="color:#FED18D;font-size:14px;">Thursday, July 2</span>
-              <span style="color:#fff;font-size:24px;font-weight:500;">Your Circle</span>
+            <div onClick="{{ openYourFriends }}" style="cursor:pointer;display:flex;align-items:center;gap:8px;">
+              <span style="color:#fff;font-size:24px;font-weight:500;">{{ friendCount }} Friends</span>
+              <svg width="8" height="14" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <div style="display:flex;gap:12px;">
-              <div onClick="{{ openAddFriend }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ addFriendStyle }}"></div></div>
-              <div onClick="{{ openSharedGoal }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ goalStyle }}"></div></div>
-            </div>
+            <div onClick="{{ openSharedGoal }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ goalStyle }}"></div></div>
           </div>
           <div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:16px;">
             <sc-for list="{{ feed }}" as="p" hint-placeholder-count="4">
               <div style="background:#1E1F20;border-radius:20px;padding:20px;">
                 <div style="display:flex;align-items:flex-start;gap:14px;">
-                  <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;background:{{ p.avatarBg }};"><img src="{{ p.avatar }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"/></div>
-                  <div style="flex:1;"><div style="color:#fff;font-size:20px;font-weight:500;">{{ p.title }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:2px;">{{ p.ago }}</div></div>
-                  <span style="color:#B9BFC1;font-size:15px;">{{ p.min }}</span>
+                  <div onClick="{{ p.openProfile }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;background:{{ p.avatarBg }};"><img src="{{ p.avatar }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"/></div>
+                  <div style="flex:1;min-width:0;">
+                    <div onClick="{{ p.openProfile }}" style="cursor:pointer;color:#4DD5D0;font-size:14px;font-weight:500;">{{ p.username }}</div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="color:#fff;font-size:20px;font-weight:500;">{{ p.title }}</span>
+                      <sc-if value="{{ p.hasGroup }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:4px;background:#154B4C;border-radius:14px;padding:3px 9px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="#4DD5D0" stroke-width="1.6"/><path d="M3.5 19a5.5 5.5 0 0111 0" stroke="#4DD5D0" stroke-width="1.6" stroke-linecap="round"/><path d="M16 5.4a3 3 0 010 5.2M18.5 19a5.5 5.5 0 00-3-4.9" stroke="#4DD5D0" stroke-width="1.6" stroke-linecap="round"/></svg><span style="color:#4DD5D0;font-size:13px;font-weight:500;">{{ p.groupCount }}</span></span></sc-if>
+                    </div>
+                    <div style="color:#B9BFC1;font-size:14px;margin-top:2px;">{{ p.ago }}</div>
+                  </div>
+                  <span style="color:#B9BFC1;font-size:15px;flex-shrink:0;">{{ p.min }}</span>
                 </div>
                 <div style="color:#fff;font-size:17px;margin-top:14px;line-height:1.45;">{{ p.text }}</div>
                 <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;border-radius:14px;overflow:hidden;width:100%;aspect-ratio:4/3;"><img src="{{ p.img }}" alt="post" style="width:100%;height:100%;object-fit:cover;"/></div></sc-if>
@@ -1027,8 +1031,42 @@
         </div>
       </sc-if>
 
-      <!-- ============ SHARED GOAL ============ -->
+      <!-- ============ SHARED GOALS (LIST) ============ -->
       <sc-if value="{{ isSharedGoal }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Shared goals</span>
+            <div onClick="{{ openCreateGoal }}" style="cursor:pointer;position:absolute;right:20px;width:44px;height:44px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+          <div style="padding:26px 20px 0;">
+            <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Current goals</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ sgCurrent }}" as="g" hint-placeholder-count="2">
+                <div style="background:#1E1F20;border-radius:16px;padding:18px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:18px;font-weight:500;">{{ g.title }}</span><span style="color:#4DD5D0;font-size:14px;">{{ g.progress }}</span></div>
+                  <div style="color:#B9BFC1;font-size:14px;margin-top:4px;">{{ g.sub }}</div>
+                  <div style="height:7px;border-radius:4px;background:#2b3132;margin-top:12px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ hasPastGoals }}" hint-placeholder-val="{{ true }}">
+              <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Past goals</div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <sc-for list="{{ sgPast }}" as="g" hint-placeholder-count="1">
+                  <div style="background:#1E1F20;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:space-between;opacity:.8;">
+                    <div><div style="color:#fff;font-size:18px;font-weight:500;">{{ g.title }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:4px;">{{ g.sub }}</div></div>
+                    <span style="display:flex;align-items:center;gap:6px;color:#4DD5D0;font-size:14px;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-9" stroke="#4DD5D0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ g.progress }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CREATE SHARED GOAL ============ -->
+      <sc-if value="{{ isCreateGoal }}" hint-placeholder-val="{{ false }}">
         <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
           <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
             <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1038,8 +1076,15 @@
             <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Goal</div>
             <div style="display:flex;flex-direction:column;gap:12px;">
               <sc-for list="{{ goalTemplates }}" as="g" hint-placeholder-count="3"><div onClick="{{ g.select }}" style="{{ g.style }}"><span style="font-size:18px;">{{ g.label }}</span><span style="font-size:14px;color:#B9BFC1;">{{ g.sub }}</span></div></sc-for>
+              <div onClick="{{ openCustomGoal }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:14px;background:#1E1F20;border:1.5px dashed #44494A;">
+                <span style="color:#fff;font-size:18px;">Customize the goal</span>
+                <svg width="8" height="15" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
             </div>
-            <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Invite your circle</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;">
+              <span style="color:#fff;font-size:20px;font-weight:500;">Invite your friends</span>
+              <div onClick="{{ selectAllInvite }}" style="cursor:pointer;color:#4DD5D0;font-size:15px;">Select all</div>
+            </div>
             <div style="display:flex;flex-direction:column;gap:12px;">
               <sc-for list="{{ inviteFriends }}" as="f" hint-placeholder-count="3">
                 <div onClick="{{ f.toggle }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;background:#1E1F20;border-radius:16px;padding:14px 16px;">
@@ -1050,6 +1095,85 @@
               </sc-for>
             </div>
             <div onClick="{{ createGoal }}" style="cursor:pointer;margin-top:30px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Create & invite</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CUSTOMIZE YOUR GOAL ============ -->
+      <sc-if value="{{ isCustomGoal }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Customize your goal</span>
+          </div>
+          <div style="padding:28px 20px 0;">
+            <div style="color:#fff;font-size:16px;font-weight:500;margin-bottom:10px;">Goal name</div>
+            <input type="text" value="{{ goalDraft.name }}" onInput="{{ setGoalName }}" placeholder="e.g. Weekend step challenge" style="width:100%;height:56px;border-radius:12px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:17px;font-family:inherit;padding:0 18px;"/>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:26px 0 0;"><span style="color:#fff;font-size:20px;font-weight:500;">Target</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ goalDraft.target }}</span></div>
+            <input type="range" min="1" max="50" step="1" value="{{ goalDraft.target }}" onInput="{{ setGoalTarget }}" class="pace-slider" style="--pct:{{ goalTargetPct }};"/>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 12px;">Unit</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ goalUnits }}" as="u" hint-placeholder-count="5"><div onClick="{{ u.select }}" style="{{ u.style }}">{{ u.label }}</div></sc-for></div>
+            <div onClick="{{ saveCustomGoal }}" style="cursor:pointer;margin-top:30px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Save goal</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ YOUR FRIENDS ============ -->
+      <sc-if value="{{ isYourFriends }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 22%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Your Friends</span>
+            <div onClick="{{ openAddFriend }}" style="cursor:pointer;position:absolute;right:20px;width:44px;height:44px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+          <div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ friendsList }}" as="f" hint-placeholder-count="3">
+              <div onClick="{{ f.open }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;background:#1E1F20;border-radius:16px;padding:14px 16px;">
+                <div style="width:52px;height:52px;border-radius:50%;overflow:hidden;background:{{ f.bg }};flex-shrink:0;"><img src="{{ f.avatar }}" alt="{{ f.name }}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"/></div>
+                <div style="flex:1;min-width:0;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ f.name }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:2px;">{{ f.username }}</div></div>
+                <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;"><div style="{{ fireIconStyle }}"></div><span style="color:#FA8815;font-size:15px;font-weight:500;">{{ f.days }}</span></div>
+                <svg width="8" height="15" viewBox="0 0 7 12" fill="none" style="flex-shrink:0;"><path d="M1 1l5 5-5 5" stroke="#737A7B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ FRIEND PROFILE ============ -->
+      <sc-if value="{{ isFriendProfile }}" hint-placeholder-val="{{ false }}">
+        <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 26%);padding:60px 0 40px;">
+          <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px 0;">
+            <div onClick="{{ back }}" style="cursor:pointer;position:absolute;left:20px;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span style="color:#fff;font-size:24px;font-weight:500;">Profile</span>
+          </div>
+          <div style="padding:24px 20px 0;display:flex;flex-direction:column;align-items:center;">
+            <div style="width:96px;height:96px;border-radius:50%;overflow:hidden;background:{{ profile.bg }};"><img src="{{ profile.avatar }}" alt="{{ profile.name }}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"/></div>
+            <div style="color:#fff;font-size:24px;font-weight:500;margin-top:14px;">{{ profile.name }}</div>
+            <div style="color:#4DD5D0;font-size:15px;margin-top:3px;">{{ profile.username }}</div>
+            <div style="display:flex;align-items:center;gap:6px;color:#B9BFC1;font-size:14px;margin-top:8px;"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1.5c2.8 0 5 2.2 5 5 0 3.5-5 8-5 8s-5-4.5-5-8c0-2.8 2.2-5 5-5z" stroke="#B9BFC1" stroke-width="1.3"/><circle cx="8" cy="6.5" r="1.7" stroke="#B9BFC1" stroke-width="1.3"/></svg>{{ profile.location }}</div>
+          </div>
+          <div style="padding:22px 20px 0;">
+            <div style="display:flex;gap:12px;">
+              <div style="flex:1;background:#1E1F20;border-radius:16px;padding:18px;text-align:center;"><div style="display:flex;align-items:center;justify-content:center;gap:6px;"><div style="{{ fireIconStyle }}"></div><span style="color:#FA8815;font-size:28px;font-weight:500;">{{ profile.days }}</span></div><div style="color:#B9BFC1;font-size:13px;margin-top:4px;">active days</div></div>
+              <div style="flex:1;background:#1E1F20;border-radius:16px;padding:18px;text-align:center;"><span style="color:#fff;font-size:28px;font-weight:500;">2</span><div style="color:#B9BFC1;font-size:13px;margin-top:4px;">shared goals</div></div>
+            </div>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Shared goals</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ profileGoals }}" as="g" hint-placeholder-count="2">
+                <div style="background:#1E1F20;border-radius:16px;padding:16px;"><div style="display:flex;justify-content:space-between;"><span style="color:#fff;font-size:16px;font-weight:500;">{{ g.title }}</span><span style="color:#4DD5D0;font-size:14px;">{{ g.progress }}</span></div><div style="height:6px;border-radius:3px;background:#2b3132;margin-top:10px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div></div>
+              </sc-for>
+            </div>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Posts</div>
+            <sc-if value="{{ profile.hasPosts }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <sc-for list="{{ profile.posts }}" as="p" hint-placeholder-count="1">
+                  <div style="background:#1E1F20;border-radius:16px;padding:16px;"><div style="color:#fff;font-size:17px;font-weight:500;">{{ p.title }}</div><div style="color:#B9BFC1;font-size:14px;margin-top:2px;">{{ p.ago }}</div><div style="color:#fff;font-size:15px;margin-top:10px;line-height:1.45;">{{ p.text }}</div></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ profileNoPosts }}" hint-placeholder-val="{{ false }}">
+              <div style="color:#737A7B;font-size:15px;padding:6px 2px;">No posts yet.</div>
+            </sc-if>
           </div>
         </div>
       </sc-if>
@@ -1182,6 +1306,25 @@
       </div>
     </sc-if>
 
+    <!-- COMPOSE POST FLOATING BUTTON -->
+    <sc-if value="{{ composeButtonShow }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ openCompose }}" style="cursor:pointer;position:absolute;right:20px;bottom:104px;width:56px;height:56px;border-radius:50%;background:#EB6C0B;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(235,108,11,.45);z-index:31;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 20h4L19 9l-4-4L4 16v4z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 6l4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+    </sc-if>
+
+    <!-- COMPOSE POST OVERLAY -->
+    <sc-if value="{{ composeOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeCompose }}" style="position:absolute;inset:0;z-index:59;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;">
+        <div onClick="{{ stop }}" style="width:100%;border-radius:26px 26px 0 0;background:rgba(20,24,25,.98);border-top:1px solid rgba(255,255,255,.1);padding:22px 20px 30px;">
+          <div style="width:40px;height:4px;border-radius:2px;background:#3a4041;margin:0 auto 18px;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="color:#fff;font-size:20px;font-weight:500;">New post</span><div onClick="{{ closeCompose }}" style="cursor:pointer;padding:4px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#e6e8e9" stroke-width="1.6" stroke-linecap="round"/></svg></div></div>
+          <textarea onInput="{{ setCompose }}" placeholder="Share an update with your circle…" style="width:100%;min-height:120px;border-radius:14px;border:1px solid #44494A;background:transparent;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:14px 16px;line-height:1.5;resize:none;">{{ composeText }}</textarea>
+          <div onClick="{{ postCompose }}" style="cursor:pointer;margin-top:16px;height:56px;border-radius:28px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:500;">Post</div>
+        </div>
+      </div>
+    </sc-if>
+
     <!-- ============ NUDGE OVERLAY ============ -->
     <sc-if value="{{ nudgeOpen }}" hint-placeholder-val="{{ false }}">
       <div style="position:absolute;left:16px;right:16px;top:62px;z-index:38;border-radius:22px;padding:20px;background:rgba(58,62,63,.55);backdrop-filter:blur(22px) saturate(1.2);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 50px rgba(0,0,0,.5);{{ nudgeAnim }}">
@@ -1310,6 +1453,14 @@ class Component extends DCLogic {
     setMode: 'Active', setPhase: 'mode', modeStartOff: 0, modeEndOff: 7,
     // shared goal
     sharedGoalPick: 'Move 4 days/week', invite: { Mia: true, Henry: false, Sarah: false },
+    profileId: 'mia',
+    sharedGoals: [
+      { id:'g1', title:'Move 4 days/week', sub:'with Mia · Henry', status:'current', progress:'3 / 4 days', pct:0.75 },
+      { id:'g2', title:'Weekend 20k steps', sub:'with Sarah', status:'current', progress:'12.4k / 20k', pct:0.62 },
+      { id:'g3', title:'3 workouts together', sub:'with Mia', status:'past', progress:'Completed', pct:1 }
+    ],
+    goalDraft: { name:'', target:20, unit:'days/week' },
+    composeOpen: false, composeText: '', myPosts: [],
     // social
     likes: {}, likeBase: { yoga: 3, walk: 5, upper: 3, med: 1 },
     // overlays
@@ -1381,6 +1532,11 @@ class Component extends DCLogic {
     activity:{ iconBg:'#4DD5D0', icon:'🏋', title:'Activity detected', body:'Looks like you went to the gym on your leg day for about 20 minutes. Does that sound right?', yes:'Yes, record it', no:'Not quite' },
     desk:{ iconBg:'#4DD5D0', icon:'⏸', title:"You've been at your desk for 45 min!", body:'Try 10 shoulder rolls to stretch your body.', yes:"Let's do it", no:'Remind me later' }
   };
+  FRIENDS = [
+    { id:'mia',   name:'Mia Chen',   username:'@miachen',   avatar:'assets/avatar-yellow.png',  bg:'#F6F453', days:34, location:'Savannah, GA' },
+    { id:'henry', name:'Henry Ross', username:'@henryross', avatar:'assets/avatar-orange.png',  bg:'#FA8815', days:21, location:'Atlanta, GA' },
+    { id:'sarah', name:'Sarah Kim',  username:'@sarahkim',  avatar:'assets/avatar-yellow2.png', bg:'#F6F453', days:48, location:'Austin, TX' }
+  ];
   NOTIFLIST = [
     { icon:'☕', bg:'#4DD5D0', title:'Coffee time! Your moment to move', body:'While your coffee brews, try 10 standing calf raises.', time:'2h ago' },
     { icon:'🏋', bg:'#4DD5D0', title:'Activity detected', body:'Looks like a ~20 min leg session. Want to record it?', time:'4h ago' },
@@ -1694,14 +1850,27 @@ class Component extends DCLogic {
     // friend
     const heart = (k) => (s.likes[k] ? '#FA8815' : 'none');
     const heartS = (k) => (s.likes[k] ? '#FA8815' : '#B9BFC1');
-    const likeN = (k) => s.likeBase[k] + (s.likes[k] ? 1 : 0);
-    const mk = (k, o) => ({ ...o, like: () => this.setState(st => ({ likes: { ...st.likes, [k]: !st.likes[k] } })), heartFill:heart(k), heartStroke:heartS(k), likes:likeN(k) });
-    const feed = [
-      mk('yoga', { name:'Jolyne', title:'Morning Yoga', ago:'12m ago', min:'20 min', text:'Fresh morning 🧘', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:2, hasImg:false, img:'' }),
-      mk('walk', { name:'Mia', title:'Walking to the shed', ago:'3h ago', min:'10 min', text:'Nice weather today. Good for a walk!', avatar:'assets/avatar-yellow.png', avatarBg:'#F6F453', comments:3, hasImg:true, img:'assets/post-walk.jpg' }),
-      mk('upper', { name:'Dee', title:'Upper Body', ago:'1d ago', min:'20 min', text:'So relaxing… no more stress.', avatar:'assets/avatar-orange.png', avatarBg:'#FA8815', comments:1, hasImg:false, img:'' }),
-      mk('med', { name:'Sam', title:'Med Ball Core Power', ago:'7/1/26', min:'30 min', text:'Quick one before dinner. Counts.', avatar:'assets/avatar-yellow2.png', avatarBg:'#F6F453', comments:0, hasImg:false, img:'' })
+    const likeN = (k) => (s.likeBase[k]||0) + (s.likes[k] ? 1 : 0);
+    const mk = (k, o) => ({ ...o, key:k, like: () => this.setState(st => ({ likes: { ...st.likes, [k]: !st.likes[k] } })), heartFill:heart(k), heartStroke:heartS(k), likes:likeN(k) });
+    const openProfile = (id) => { this.setState({ profileId: id }); this.go('friendProfile'); };
+    const myFeed = s.myPosts.map((p,i) => mk('mp'+i, { name:'Jolyne', username:'@jolyne', pid:'', title:p.title, ago:'Just now', min:'', text:p.text, avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:0, hasImg:false, img:'', groupIcon:false }));
+    const baseFeed = [
+      mk('jolyne-goal', { name:'Jolyne', username:'@jolyne', pid:'', title:'Walk 20,000 steps', ago:'Just now', min:'', text:'New shared goal — who’s in? 🎯', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:1, hasImg:false, img:'', groupIcon:true, groupCount:'3' }),
+      mk('yoga', { name:'Jolyne', username:'@jolyne', pid:'', title:'Morning Yoga', ago:'12m ago', min:'20 min', text:'Fresh morning 🧘', avatar:'assets/avatar-jolyne.png', avatarBg:'#9CF3EA', comments:2, hasImg:false, img:'' }),
+      mk('walk', { name:'Mia', username:'@miachen', pid:'mia', title:'Walking to the shed', ago:'3h ago', min:'10 min', text:'Nice weather today. Good for a walk!', avatar:'assets/avatar-yellow.png', avatarBg:'#F6F453', comments:3, hasImg:true, img:'assets/post-walk.jpg' }),
+      mk('upper', { name:'Henry', username:'@henryross', pid:'henry', title:'Upper Body', ago:'1d ago', min:'20 min', text:'So relaxing… no more stress.', avatar:'assets/avatar-orange.png', avatarBg:'#FA8815', comments:1, hasImg:false, img:'' }),
+      mk('med', { name:'Sarah', username:'@sarahkim', pid:'sarah', title:'Med Ball Core Power', ago:'7/1/26', min:'30 min', text:'Quick one before dinner. Counts.', avatar:'assets/avatar-yellow2.png', avatarBg:'#F6F453', comments:0, hasImg:false, img:'' })
     ];
+    const feed = [...myFeed, ...baseFeed].map(p => ({ ...p, hasGroup: !!p.groupIcon, openProfile: p.pid ? () => openProfile(p.pid) : () => {} }));
+    const friendCount = this.FRIENDS.length;
+    const friendsList = this.FRIENDS.map(f => ({ ...f, days:String(f.days), open: () => openProfile(f.id) }));
+    const profF = this.FRIENDS.find(f => f.id===s.profileId) || this.FRIENDS[0];
+    const profilePosts = feed.filter(p => p.pid===profF.id);
+    const profile = { name:profF.name, username:profF.username, avatar:profF.avatar, bg:profF.bg, days:String(profF.days), location:profF.location, posts:profilePosts, hasPosts:profilePosts.length>0 };
+    const sgCurrent = s.sharedGoals.filter(g => g.status==='current').map(g => ({ ...g, barStyle:`height:100%;width:${Math.round(g.pct*100)}%;background:#4DD5D0;border-radius:4px;` }));
+    const sgPast = s.sharedGoals.filter(g => g.status==='past');
+    const hasPastGoals = sgPast.length>0;
+    const profileGoals = sgCurrent.slice(0,2);
 
     // account
     const accountRows = ['Notification setting','Set mode','Saved Workout','Health details','Units of measure','Health data','Apps & devices','Privacy','Help'].map(label => ({
@@ -2150,10 +2319,29 @@ class Component extends DCLogic {
       tones, triggers,
       // friend
       openAddFriend: () => this.go('addFriend'), openSharedGoal: () => this.go('sharedGoal'),
+      openYourFriends: () => this.go('yourFriends'), isYourFriends: s.screen==='yourFriends',
+      isFriendProfile: s.screen==='friendProfile',
+      friendCount, friendsList, profile, profileGoals, profileNoPosts: !profile.hasPosts,
+      isCreateGoal: s.screen==='createGoal', isCustomGoal: s.screen==='customGoal',
+      sgCurrent, sgPast, hasPastGoals,
+      openCreateGoal: () => this.go('createGoal'),
+      openCustomGoal: () => this.go('customGoal'),
+      goalDraft: s.goalDraft,
+      setGoalName: (e) => this.setState(st => ({ goalDraft: { ...st.goalDraft, name: e.target.value } })),
+      setGoalTarget: (e) => this.setState(st => ({ goalDraft: { ...st.goalDraft, target: +e.target.value } })),
+      goalTargetPct: pct(s.goalDraft.target,1,50),
+      goalUnits: ['days/week','workouts','steps','miles','minutes'].map(u => ({ label:u, style: chip(s.goalDraft.unit===u), select: () => this.setState(st => ({ goalDraft:{...st.goalDraft, unit:u} })) })),
+      saveCustomGoal: () => { const g = s.goalDraft; const name = (g.name||'Custom goal') + (g.target ? (' · '+g.target+' '+g.unit) : ''); this.setState({ sharedGoalPick: name }); this.back(); this.showToast('Custom goal ready to share.'); },
+      selectAllInvite: () => this.setState({ invite: { Mia:true, Henry:true, Sarah:true } }),
       myCode, qrEl, goalTemplates, inviteFriends,
-      createGoal: () => { this.back(); this.showToast('Shared goal created. Invites sent.'); },
+      createGoal: () => { const id='sg'+Date.now(); const inv = Object.keys(s.invite).filter(k=>s.invite[k]); const g = { id, title:s.sharedGoalPick, sub: inv.length?('with '+inv.join(' · ')):'Solo goal', status:'current', progress:'Just started', pct:0.03 }; this.setState(st => ({ sharedGoals:[g, ...st.sharedGoals] })); this.go('sharedGoal', false); this.showToast('Shared goal created. Invites sent.'); },
       sendRequest: () => this.showToast('Friend request sent.'),
       copyCode: () => { try { navigator.clipboard && navigator.clipboard.writeText(myCode); } catch(e){} this.showToast('Code copied.'); },
+      composeOpen: s.composeOpen, composeText: s.composeText, composeButtonShow: s.screen==='friend' && !s.composeOpen,
+      openCompose: () => this.setState({ composeOpen:true, composeText:'' }),
+      closeCompose: () => this.setState({ composeOpen:false }),
+      setCompose: (e) => this.setState({ composeText: e.target.value }),
+      postCompose: () => { const t=(s.composeText||'').trim(); if(!t){ this.setState({composeOpen:false}); return; } this.setState(st => ({ myPosts:[{ title:'Update', text:t }, ...st.myPosts], composeOpen:false })); this.showToast('Posted to your circle.'); },
       // saved empty
       noSaved,
       // break blurb
