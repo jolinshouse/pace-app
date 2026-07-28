@@ -226,6 +226,7 @@
                 <div style="position:relative;width:172px;height:186px;border-radius:16px;overflow:hidden;">
                   <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
                   <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:13px;padding:5px 12px;border-radius:20px;">{{ w.tag }}</span>
+                  <div onClick="{{ w.toggleSave }}" style="cursor:pointer;position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;"><svg width="12" height="15" viewBox="0 0 15 19" fill="none"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#fff" stroke-width="1.5" fill="{{ w.saveFill }}"/></svg></div>
                 </div>
                 <div style="color:#fff;font-size:17px;font-weight:500;margin-top:11px;">{{ w.title }}</div>
                 <div style="font-size:14px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
@@ -284,6 +285,7 @@
                     <div style="position:relative;width:186px;height:196px;border-radius:16px;overflow:hidden;">
                       <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
                       <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:13px;padding:5px 12px;border-radius:20px;">{{ w.tag }}</span>
+                      <div onClick="{{ w.toggleSave }}" style="cursor:pointer;position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;"><svg width="13" height="16" viewBox="0 0 15 19" fill="none"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#fff" stroke-width="1.5" fill="{{ w.saveFill }}"/></svg></div>
                     </div>
                     <div style="color:#fff;font-size:17px;font-weight:500;margin-top:11px;">{{ w.title }}</div>
                     <div style="font-size:14px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
@@ -304,7 +306,7 @@
             </div>
             <div style="flex:1;display:flex;align-items:center;gap:11px;height:50px;padding:0 18px;border-radius:26px;background:rgba(30,31,32,.7);backdrop-filter:blur(10px);border:1px solid #2b3132;">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6.3" stroke="#B9BFC1" stroke-width="1.6"/><path d="M12.7 12.7L16 16" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <input type="text" placeholder="Search workouts" style="flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:16px;font-family:inherit;"/>
+              <input type="text" placeholder="Search workouts" value="{{ searchQuery }}" onInput="{{ setSearch }}" style="flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:16px;font-family:inherit;"/>
             </div>
             <div onClick="{{ openFilter }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#F1EA2E;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#111" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -318,7 +320,7 @@
           </sc-if>
           <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
             <div>
-              <div style="color:#B9BFC1;font-size:16px;padding:22px 20px 6px;">24 workouts</div>
+              <div style="color:#B9BFC1;font-size:16px;padding:22px 20px 6px;">{{ searchCount }} workouts</div>
               <sc-for list="{{ searchResults }}" as="w" hint-placeholder-count="5">
                 <div onClick="{{ w.open }}" style="cursor:pointer;display:flex;gap:16px;padding:14px 20px;align-items:flex-start;">
                   <div style="width:132px;height:92px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative;">
@@ -330,7 +332,7 @@
                     <div style="font-size:14px;margin-top:5px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
                     <div style="color:#737A7B;font-size:14px;margin-top:3px;">{{ w.equip }}</div>
                   </div>
-                  <svg width="15" height="19" viewBox="0 0 15 19" fill="none" style="margin-top:4px;"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#B9BFC1" stroke-width="1.4" fill="{{ w.markFill }}"/></svg>
+                  <div onClick="{{ w.toggleMark }}" style="cursor:pointer;padding:4px;margin-top:2px;flex-shrink:0;"><svg width="15" height="19" viewBox="0 0 15 19" fill="none"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#B9BFC1" stroke-width="1.4" fill="{{ w.markFill }}"/></svg></div>
                 </div>
               </sc-for>
             </div>
@@ -729,8 +731,11 @@
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterCat }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
             <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Level</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterLevel }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 0;"><span style="color:#fff;font-size:20px;font-weight:500;">Max duration</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ filterVals.duration }} min</span></div>
-            <input type="range" min="10" max="90" step="5" value="{{ filterVals.duration }}" onInput="{{ setFilterDuration }}" class="pace-slider" style="--pct:{{ filterVals.durPct }};"/>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 0;"><span style="color:#fff;font-size:20px;font-weight:500;">Duration</span><span style="color:#4DD5D0;font-size:20px;font-weight:500;">{{ filterVals.durMin }}–{{ filterVals.durMax }} min</span></div>
+            <div style="color:#8b9092;font-size:14px;margin-top:10px;">Minimum</div>
+            <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMin }}" onInput="{{ setFilterDurMin }}" class="pace-slider" style="--pct:{{ filterVals.minPct }};margin-top:6px;"/>
+            <div style="color:#8b9092;font-size:14px;margin-top:16px;">Maximum</div>
+            <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMax }}" onInput="{{ setFilterDurMax }}" class="pace-slider" style="--pct:{{ filterVals.maxPct }};margin-top:6px;"/>
             <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Equipment</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterEquip }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
             <div onClick="{{ applyFilter }}" style="cursor:pointer;margin-top:34px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);">Show results</div>
@@ -1089,6 +1094,7 @@ class Component extends DCLogic {
     detailId: 'total-body',
     saved: { 'hip-dips': true, 'fat-burn': true, 'full-body': true },
     searchSaved: { 'standing-abs': true },
+    searchQuery: '',
     flip: {},
     loading: false,
     // workout
@@ -1103,7 +1109,7 @@ class Component extends DCLogic {
     sets: 3, reps: 12, weight: 20,
     // search filter
     filterOpen: false,
-    filter: { category: 'All', level: 'Any', duration: 60, equip: 'Any' },
+    filter: { category: {}, level: {}, equip: {}, durMin: 10, durMax: 60 },
     // progress
     progMetric: null, progPeriod: 'Day',
     sessionFilter: 'All', sessionDetailId: null,
@@ -1338,16 +1344,39 @@ class Component extends DCLogic {
         numStyle:'color:#FA8815;font-size:44px;font-weight:500;line-height:.8;letter-spacing:-1px;' }
     ].map(c => ({ ...c, open: () => { this.setState({ sessionDetailId: c.sess }); this.go('sessionDetail'); } }));
 
-    const card = (id) => { const w = this.WK[id]; return { id, title:w.title, tag:w.tag, min:w.min, level:w.level, img:this.IMG[id], equip:w.equip, open: () => this.openDetail(id) }; };
+    const card = (id) => { const w = this.WK[id]; return { id, title:w.title, tag:w.tag, min:w.min, level:w.level, img:this.IMG[id], equip:w.equip, open: () => this.openDetail(id),
+      saved: !!s.saved[id], saveFill: s.saved[id] ? '#fff' : 'none',
+      toggleSave: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState(st => ({ saved: { ...st.saved, [id]: !st.saved[id] } })); this.showToast(s.saved[id] ? 'Removed from saved.' : 'Saved.'); } }; };
     const suggested = ['cardio-burst','upper-body','squat-leg','morning-warmup','total-body'].map(card);
     const moveSections = [
       { title:'Best for home', items:['total-body','morning-warmup','full-body'].map(card), seeAll:this.goSearch },
       { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
       { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
     ];
-    const searchResults = ['total-body','standing-abs','upper-body','cardio-burst','med-ball','squat-leg'].map(id => {
-      const c = card(id); c.markFill = s.searchSaved[id] ? '#fff' : 'none'; return c;
-    });
+    const parseMin = (m) => parseInt(m,10)||0;
+    const CATBUCKET = { 'Pilates':'Pilates','Strength':'Strength','Yoga':'Yoga','Cardio':'Cardio','HIIT':'HIIT','Resistance Band':'Strength' };
+    const fCats = Object.keys(s.filter.category).filter(k => s.filter.category[k]);
+    const fLevels = Object.keys(s.filter.level).filter(k => s.filter.level[k]);
+    const fEquip = Object.keys(s.filter.equip).filter(k => s.filter.equip[k]);
+    const equipMatch = (w, e) => { const eq = (w.equip||'').toLowerCase();
+      if (e==='None') return eq===''||eq==='none';
+      if (e==='Band') return eq.includes('band');
+      if (e==='Machine') return /machine|press|treadmill|bike|rower|elliptical|cable|rack/.test(eq);
+      return eq.includes(e.toLowerCase()); };
+    const sq = (s.searchQuery||'').trim().toLowerCase();
+    const matchId = (id) => { const w = this.WK[id]; const mins = parseMin(w.min);
+      if (mins < s.filter.durMin || mins > s.filter.durMax) return false;
+      if (fCats.length && !fCats.includes(CATBUCKET[w.tag] || w.tag)) return false;
+      if (fLevels.length && !fLevels.includes(w.level)) return false;
+      if (fEquip.length && !fEquip.some(e => equipMatch(w, e))) return false;
+      if (sq) { const hay = (w.title+' '+w.tag+' '+w.level+' '+w.equip).toLowerCase(); if (!hay.includes(sq)) return false; }
+      return true; };
+    const matchedIds = Object.keys(this.WK).filter(matchId);
+    const searchResults = matchedIds.map(id => { const c = card(id);
+      c.markFill = s.searchSaved[id] ? '#fff' : 'none';
+      c.toggleMark = (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState(st => ({ searchSaved: { ...st.searchSaved, [id]: !st.searchSaved[id] } })); };
+      return c; });
+    const searchCount = matchedIds.length;
 
     // detail
     const dw = this.WK[s.detailId];
@@ -1619,10 +1648,12 @@ class Component extends DCLogic {
     const hasSaved = savedCards.length > 0;
 
     // search filter
-    const filterCat = ['All','Strength','Cardio','Yoga','Pilates','HIIT'].map(label => ({ label, style: chip(s.filter.category===label), select: () => this.setState({ filter: { ...s.filter, category: label } }) }));
-    const filterLevel = ['Any','Easy','Moderate','Hard'].map(label => ({ label, style: chip(s.filter.level===label), select: () => this.setState({ filter: { ...s.filter, level: label } }) }));
-    const filterEquip = ['Any','None','Mat','Dumbbell','Band','Machine'].map(label => ({ label, style: chip(s.filter.equip===label), select: () => this.setState({ filter: { ...s.filter, equip: label } }) }));
-    const filterVals = { duration: s.filter.duration, durPct: pct(s.filter.duration,10,90) };
+    const multiFilter = (field) => (label) => ({ label, style: chip(!!s.filter[field][label]),
+      select: () => this.setState(st => ({ filter: { ...st.filter, [field]: { ...st.filter[field], [label]: !st.filter[field][label] } } })) });
+    const filterCat = ['Strength','Cardio','Yoga','Pilates','HIIT'].map(multiFilter('category'));
+    const filterLevel = ['Easy','Moderate','Hard'].map(multiFilter('level'));
+    const filterEquip = ['None','Mat','Dumbbell','Band','Machine'].map(multiFilter('equip'));
+    const filterVals = { durMin: s.filter.durMin, durMax: s.filter.durMax, minPct: pct(s.filter.durMin,10,90), maxPct: pct(s.filter.durMax,10,90) };
 
     // progress metric detail
     const pm = s.progMetric;
@@ -1767,6 +1798,7 @@ class Component extends DCLogic {
       goSearch: this.goSearch,
       already, suggested, moveSections, searchResults,
       loading: s.loading, notLoading: !s.loading,
+      searchQuery: s.searchQuery, setSearch: (e) => this.setState({ searchQuery: e.target.value }), searchCount,
       detail, toggleSave,
       ex, startWorkout: this.startWorkout, togglePause: this.togglePause, nextExercise: this.nextExercise,
       voiceOn: s.voiceGuide, voiceOff: !s.voiceGuide,
@@ -1803,9 +1835,10 @@ class Component extends DCLogic {
       toggleSavedEdit: () => this.setState(st => ({ savedEdit: !st.savedEdit })),
       // filter
       openFilter: () => this.go('filter'), filterCat, filterLevel, filterEquip, filterVals,
-      setFilterDuration: (e) => this.setState({ filter: { ...s.filter, duration: +e.target.value } }),
-      applyFilter: () => { this.back(); this.setState({ loading: true }); setTimeout(() => this.setState({ loading: false }), 600); this.showToast('Filters applied.'); },
-      resetFilter: () => this.setState({ filter: { category:'All', level:'Any', duration:60, equip:'Any' } }),
+      setFilterDurMin: (e) => this.setState(st => ({ filter: { ...st.filter, durMin: Math.min(+e.target.value, st.filter.durMax) } })),
+      setFilterDurMax: (e) => this.setState(st => ({ filter: { ...st.filter, durMax: Math.max(+e.target.value, st.filter.durMin) } })),
+      applyFilter: () => { this.setState({ loading: true }); this.go('search', false); setTimeout(() => this.setState({ loading: false }), 500); this.showToast('Filters applied.'); },
+      resetFilter: () => this.setState({ filter: { category:{}, level:{}, equip:{}, durMin:10, durMax:60 } }),
       // progress metric
       openMetric: (m) => { this.setState({ progMetric: m, progPeriod: 'Day' }); this.go('metric'); },
       openStep: () => { this.setState({ progMetric: 'steps', progPeriod: 'Day' }); this.go('metric'); },
