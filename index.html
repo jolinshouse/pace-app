@@ -358,6 +358,10 @@
             <h1 style="color:#fff;font-size:34px;font-weight:500;margin:20px 0 12px;">{{ detail.title }}</h1>
             <div style="font-size:17px;"><span style="color:#4DD5D0;">{{ detail.min }}</span><span style="color:#B9BFC1;"> · {{ detail.level }} · {{ detail.sets }} · {{ detail.cal }}</span></div>
             <div style="color:#737A7B;font-size:16px;margin-top:8px;">{{ detail.equip }}</div>
+            <div style="display:flex;gap:10px;margin-top:18px;">
+              <div style="display:flex;align-items:center;gap:8px;background:#1E1F20;border:1px solid #2b3132;border-radius:20px;padding:8px 14px;"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="1.5" y="4" width="17" height="12" rx="2.5" stroke="#4DD5D0" stroke-width="1.5"/><path d="M8 7.5l4.5 2.5L8 12.5V7.5z" fill="#4DD5D0"/></svg><span style="color:#fff;font-size:14px;">Video</span></div>
+              <div style="display:flex;align-items:center;gap:8px;background:#1E1F20;border:1px solid #2b3132;border-radius:20px;padding:8px 14px;"><svg width="15" height="15" viewBox="0 0 28 28" fill="none"><path d="M5 15v-1a9 9 0 0118 0v1" stroke="#4DD5D0" stroke-width="2" stroke-linecap="round"/><rect x="3" y="15" width="6" height="9" rx="2.5" fill="#4DD5D0"/><rect x="19" y="15" width="6" height="9" rx="2.5" fill="#4DD5D0"/></svg><span style="color:#fff;font-size:14px;">Voice Guide</span></div>
+            </div>
             <p style="color:#fff;font-size:16px;line-height:1.62;margin:28px 0 0;">{{ detail.desc }}</p>
             <div onClick="{{ startWorkout }}" style="cursor:pointer;margin-top:40px;height:64px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.34);">Let's Go</div>
           </div>
@@ -368,8 +372,11 @@
       <sc-if value="{{ isWorkout }}" hint-placeholder-val="{{ false }}">
         <div style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;">
           <div style="padding:60px 24px 0;background:linear-gradient(180deg,#154B4C 0%,#000 100%);">
-            <div onClick="{{ back }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;">
-              <svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div onClick="{{ back }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;">
+                <svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10l8 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div style="text-align:right;"><div style="color:#fff;font-size:18px;font-weight:500;">{{ ex.progressTime }} <span style="color:#8b9092;font-size:15px;font-weight:400;">/ {{ ex.totalTime }}</span></div><div style="color:#8b9092;font-size:12px;">elapsed / total</div></div>
             </div>
             <div style="color:#B9BFC1;font-size:20px;margin:22px 0 12px;">Up next: {{ ex.next }}</div>
             <div style="display:flex;gap:8px;padding-bottom:22px;">
@@ -403,7 +410,7 @@
             <div onClick="{{ togglePause }}" style="cursor:pointer;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.62);display:flex;align-items:center;justify-content:center;">
               <span style="{{ ex.pauseIcon }}"></span>
             </div>
-            <div onClick="{{ nextExercise }}" style="cursor:pointer;position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center;">
+            <div style="position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center;">
               <svg width="132" height="132" viewBox="0 0 132 132" fill="none" style="position:absolute;inset:0;">
                 <circle cx="66" cy="66" r="58" stroke="#3a4041" stroke-width="9" fill="none"/>
                 <circle cx="66" cy="66" r="58" stroke="#F1EA2E" stroke-width="9" fill="none" stroke-linecap="round" style="{{ ex.ringStyle }}"/>
@@ -1008,6 +1015,50 @@
       </div>
     </sc-if>
 
+    <!-- AI CHAT FLOATING BUTTON -->
+    <sc-if value="{{ aiButtonShow }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ openAi }}" style="cursor:pointer;position:absolute;right:20px;bottom:104px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#5FE0DB,#19B3B0);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(77,213,208,.45);z-index:31;">
+        <div style="{{ aiIconStyleLg }}"></div>
+      </div>
+    </sc-if>
+
+    <!-- AI CHAT PANEL -->
+    <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeAi }}" style="position:absolute;inset:0;z-index:59;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:flex;align-items:flex-end;">
+        <div onClick="{{ stop }}" style="width:100%;height:80%;border-radius:26px 26px 0 0;background:rgba(16,20,21,.98);border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 20px 12px;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:34px;height:34px;border-radius:50%;background:#154B4C;display:flex;align-items:center;justify-content:center;"><div style="{{ aiIconStyle }}"></div></div><span style="color:#fff;font-size:19px;font-weight:500;">Pace AI</span></div>
+            <div onClick="{{ closeAi }}" style="cursor:pointer;padding:4px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#e6e8e9" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="pace-noscroll" style="flex:1;overflow-y:auto;padding:8px 20px 16px;display:flex;flex-direction:column;gap:16px;">
+            <sc-for list="{{ aiMsgs }}" as="m" hint-placeholder-count="1">
+              <div style="{{ m.wrapStyle }}">
+                <div style="{{ m.bubbleStyle }}">{{ m.text }}</div>
+                <sc-if value="{{ m.hasCards }}" hint-placeholder-val="{{ true }}">
+                  <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;margin-top:12px;padding-bottom:4px;align-self:stretch;">
+                    <sc-for list="{{ m.cards }}" as="w" hint-placeholder-count="3">
+                      <div onClick="{{ w.open }}" style="cursor:pointer;flex:none;width:150px;">
+                        <div style="position:relative;width:150px;height:104px;border-radius:14px;overflow:hidden;">
+                          <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                          <span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.62);color:#fff;font-size:11px;padding:3px 9px;border-radius:16px;">{{ w.tag }}</span>
+                        </div>
+                        <div style="color:#fff;font-size:15px;font-weight:500;margin-top:8px;">{{ w.title }}</div>
+                        <div style="font-size:13px;margin-top:2px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;padding:12px 16px 24px;border-top:1px solid #2b3132;flex-shrink:0;">
+            <input type="text" value="{{ aiInput }}" onInput="{{ setAiInput }}" placeholder="Ask Pace AI…" style="flex:1;height:48px;border-radius:24px;background:#26292a;border:none;outline:none;color:#fff;font-size:16px;font-family:inherit;padding:0 18px;"/>
+            <div onClick="{{ sendAi }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:#EB6C0B;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12h15M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
     <!-- ============ NUDGE OVERLAY ============ -->
     <sc-if value="{{ nudgeOpen }}" hint-placeholder-val="{{ false }}">
       <div style="position:absolute;left:16px;right:16px;top:62px;z-index:38;border-radius:22px;padding:20px;background:rgba(58,62,63,.55);backdrop-filter:blur(22px) saturate(1.2);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 50px rgba(0,0,0,.5);{{ nudgeAnim }}">
@@ -1036,7 +1087,10 @@
           </div>
           <div style="color:#fff;font-size:26px;font-weight:500;">Nice work.</div>
           <p style="color:#B9BFC1;font-size:16px;line-height:1.55;margin:12px 0 26px;">You moved 4 days this week. That's your pace, and it's working.</p>
-          <div onClick="{{ closeCelebrate }}" style="cursor:pointer;height:58px;border-radius:29px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:500;">Done</div>
+          <div style="display:flex;gap:12px;">
+            <div onClick="{{ nextActivity }}" style="cursor:pointer;flex:1;height:58px;border-radius:29px;background:rgba(120,126,127,.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:500;">Next Activity</div>
+            <div onClick="{{ imDone }}" style="cursor:pointer;flex:1;height:58px;border-radius:29px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:500;">I'm Done</div>
+          </div>
         </div>
       </div>
     </sc-if>
@@ -1136,13 +1190,16 @@ class Component extends DCLogic {
     nudge: null, celebrate: false,
     toast: null,
     scrolled: false,
+    myRecords: [],
+    aiOpen: false, aiInput: '', aiMsgs: [],
   };
 
   IMG = {
     'total-body':'assets/w-total-body.jpg','upper-body':'assets/w-upper-body.jpg','squat-leg':'assets/w-squat-leg.jpg',
     'morning-warmup':'assets/w-morning-warmup.jpg','cardio-burst':'assets/w-cardio-burst.jpg','full-body':'assets/w-full-body.jpg',
     'jump-rope':'assets/w-jump-rope.jpg','fat-burn':'assets/w-fat-burn.jpg','hip-dips':'assets/w-hip-dips.jpg',
-    'standing-abs':'assets/w-standing-abs.jpg','med-ball':'assets/w-med-ball.jpg'
+    'standing-abs':'assets/w-standing-abs.jpg','med-ball':'assets/w-med-ball.jpg',
+    'desk-stretch':'assets/w-standing-abs.jpg','neck-roll':'assets/w-morning-warmup.jpg','stair-climb':'assets/w-active.jpg','bathroom-clean':'assets/w-total-body.jpg','trash-run':'assets/w-jump-rope.jpg'
   };
   WK = {
     'total-body':{title:'Total Body Torcher',tag:'Pilates',min:'30 min',level:'Moderate',sets:'6 sets',cal:'200 cal',equip:'Mat',desc:"The Total Body Torcher blends compound strength moves like squats and push-ups with steady circuit work. Thirty focused minutes, at whatever intensity your day allows — no keeping up with anyone."},
@@ -1155,7 +1212,12 @@ class Component extends DCLogic {
     'fat-burn':{title:'Fat Burn',tag:'Cardio',min:'30 min',level:'Moderate',sets:'6 sets',cal:'260 cal',equip:'Mat',desc:"A moderate cardio flow built to be sustainable. The point isn't to overdo it — it's to keep showing up."},
     'hip-dips':{title:'Hip Dips Fix',tag:'Resistance Band',min:'15 min',level:'Moderate',sets:'4 sets',cal:'130 cal',equip:'Resistance band',desc:"Banded glute and hip work to build steady lower-body strength. Controlled reps over speed."},
     'standing-abs':{title:'Standing Abs',tag:'Strength',min:'20 min',level:'Hard',sets:'5 sets',cal:'150 cal',equip:'Mat, dumbbell',desc:"Core work you can do standing — no floor required. A solid option when you want something quick and effective."},
-    'med-ball':{title:'Med Ball Core Power',tag:'Strength',min:'10 min',level:'Hard',sets:'4 sets',cal:'120 cal',equip:'Medicine ball',desc:"Ten minutes of med-ball core work. Short, focused, and done before you've had time to talk yourself out of it."}
+    'med-ball':{title:'Med Ball Core Power',tag:'Strength',min:'10 min',level:'Hard',sets:'4 sets',cal:'120 cal',equip:'Medicine ball',desc:"Ten minutes of med-ball core work. Short, focused, and done before you've had time to talk yourself out of it."},
+    'desk-stretch':{title:'Desk Stretch',tag:'Stretch',min:'3 min',level:'Easy',sets:'1 set',cal:'12 cal',equip:'None',desc:"A handful of gentle stretches you can do right at your desk. Perfect for breaking up a long stretch of sitting."},
+    'neck-roll':{title:'Neck & Shoulders',tag:'Stretch',min:'2 min',level:'Easy',sets:'1 set',cal:'8 cal',equip:'None',desc:"Two minutes to loosen a stiff neck and tight shoulders after too long at a screen."},
+    'stair-climb':{title:'Take the Stairs',tag:'Cardio',min:'4 min',level:'Easy',sets:'1 set',cal:'30 cal',equip:'None',desc:"Skip the elevator. A few flights of stairs is an easy way to sneak movement into your day."},
+    'bathroom-clean':{title:'Clean the Bathroom',tag:'Chore',min:'5 min',level:'Easy',sets:'1 set',cal:'25 cal',equip:'None',desc:"A quick tidy that also gets you up and moving. Everyday tasks count too."},
+    'trash-run':{title:'Take Out the Trash',tag:'Errand',min:'3 min',level:'Easy',sets:'1 set',cal:'15 cal',equip:'None',desc:"A small errand that counts as movement. Every bit of getting up helps."}
   };
   EXS = ['Bodyweight Fly','Push-Up','Squat Pulse','Mountain Climber','Plank Reach','Glute Bridge'];
   EXIMG = ['assets/w-active.jpg','assets/w-full-body.jpg','assets/w-squat-leg.jpg','assets/w-cardio-burst.jpg','assets/w-total-body.jpg','assets/w-hip-dips.jpg'];
@@ -1277,6 +1339,15 @@ class Component extends DCLogic {
   });
   finishWorkout() { this.setState({ running: false, celebrate: true, history: [] }); this.fireConfetti(); }
   closeCelebrate = () => { this.setState({ celebrate: false, screen: 'progress', history: [] }); };
+  nextActivity = () => this.setState({ celebrate: false, screen: 'move', history: [] });
+  imDone = () => {
+    const w = this.WK[this.state.detailId] || this.WK['total-body'];
+    const catMap = { Pilates:'Yoga', Strength:'Gym', Yoga:'Yoga', Cardio:'Run', HIIT:'Run', 'Resistance Band':'Gym', Stretch:'Stretch', Chore:'Walk', Errand:'Walk' };
+    const id = 'w' + Date.now();
+    const rec = { id, cat: catMap[w.tag] || 'Gym', name: w.title, dateLabel:'Today', date:'Jul 2', span:'Just now', time: w.min, cal: w.cal, sets: w.sets, intensity: w.level, equip: w.equip, note:'' };
+    this.setState(st => ({ myRecords: [rec, ...st.myRecords], celebrate:false, sessionDetailId:id, history:[] }));
+    this.go('sessionDetail');
+  };
 
   fireConfetti() {
     if (this.props.reduceMotion === true) return;
@@ -1333,6 +1404,7 @@ class Component extends DCLogic {
     const pct = (v,mn,mx) => Math.round((v-mn)/(mx-mn)*100)+'%';
     const PI = (typeof window!=='undefined' && window.PACE_ICONS) ? window.PACE_ICONS : {};
     const mask = (name,color,size) => `width:${size}px;height:${size}px;-webkit-mask:url("${PI[name]||''}") center/contain no-repeat;mask:url("${PI[name]||''}") center/contain no-repeat;background-color:${color};`;
+    const allRecords = [...s.myRecords, ...this.RECORDED];
 
     // already-doing cards
     const already = [
@@ -1349,6 +1421,7 @@ class Component extends DCLogic {
       toggleSave: (ev) => { if(ev&&ev.stopPropagation)ev.stopPropagation(); this.setState(st => ({ saved: { ...st.saved, [id]: !st.saved[id] } })); this.showToast(s.saved[id] ? 'Removed from saved.' : 'Saved.'); } }; };
     const suggested = ['cardio-burst','upper-body','squat-leg','morning-warmup','total-body'].map(card);
     const moveSections = [
+      { title:'Quick Start', items:['desk-stretch','neck-roll','stair-climb','bathroom-clean','trash-run','cardio-burst'].map(card), seeAll:this.goSearch },
       { title:'Best for home', items:['total-body','morning-warmup','full-body'].map(card), seeAll:this.goSearch },
       { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
       { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
@@ -1398,6 +1471,8 @@ class Component extends DCLogic {
       next: this.EXS[Math.min(s.exIndex + 1, segTotal - 1)] + (s.exIndex >= segTotal - 1 ? ' (last)' : ''),
       setLabel: (s.exIndex + 1) + '/' + segTotal,
       clock: sec(s.secondsLeft),
+      progressTime: sec(s.exIndex * SET_SECONDS + (SET_SECONDS - s.secondsLeft)),
+      totalTime: sec(segTotal * SET_SECONDS),
       ringStyle: `stroke-dasharray:${ringC};stroke-dashoffset:${(ringC * (1 - ringFrac)).toFixed(1)};transform:rotate(-90deg);transform-box:fill-box;transform-origin:center;transition:stroke-dashoffset .9s linear;`,
       pauseIcon: s.running
         ? 'display:block;width:16px;height:18px;border-left:5px solid #111;border-right:5px solid #111;'
@@ -1459,7 +1534,15 @@ class Component extends DCLogic {
     const recordBtnStyle = recordEnabled
       ? 'cursor:pointer;margin-top:32px;height:62px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.32);'
       : 'margin-top:32px;height:62px;border-radius:32px;background:#2a2f30;display:flex;align-items:center;justify-content:center;color:#6b7172;font-size:20px;font-weight:500;';
-    const doRecord = () => { this.showToast('Logged. That counts — nice.'); this.go('progress'); this.setState({ cat: null, groups: {}, equip: null, intensity: null, focus: {} }); };
+    const doRecord = () => {
+      const catName = s.cat || 'Activity';
+      const id = 'u' + Date.now();
+      const rec = { id, cat: catName, name: catName, dateLabel:'Today', date:'Jul 2', span:'Just now', time: s.duration+' min', cal: Math.round(s.duration*5)+' cal', intensity: s.intensity||'Moderate', equip: s.equip||'None', note:'' };
+      if (catType==='distance') rec.distance = s.distance.toFixed(1)+' mi';
+      if (catType==='strength') { rec.sets = s.sets+' sets'; rec.reps = s.reps+' reps'; rec.weight = s.weight+' lbs'; }
+      this.setState(st => ({ myRecords: [rec, ...st.myRecords], cat: null, groups: {}, equip: null, intensity: null, focus: {} }));
+      this.showToast('Logged. That counts — nice.'); this.go('progress');
+    };
     const recordTap = recordEnabled ? doRecord : () => {};
     const rec = { duration:s.duration, sets:s.sets, reps:s.reps, weight:s.weight, distance:s.distance.toFixed(1),
       durPct:pct(s.duration,5,120), setsPct:pct(s.sets,1,10), repsPct:pct(s.reps,1,30), weightPct:pct(s.weight,0,100), distPct:pct(s.distance,0,10) };
@@ -1470,11 +1553,7 @@ class Component extends DCLogic {
     const barsA = barVals.slice(0,6).map((v,i) => ({ style:`width:9px;border-radius:3px;height:${Math.round(18+v*48)}px;background:${barColor(i)};` }));
     const barsB = [.5,.9,1,.7,.36,.32].map((v,i) => ({ style:`width:9px;border-radius:3px;height:${Math.round(18+v*48)}px;background:${barColor(i)};` }));
     const sessIcon = (file) => mask(file, '#4DD5D0', 26);
-    const sessions = [
-      { name:'Running', cal:'84 cal', date:'Today', iconStyle:sessIcon('run') },
-      { name:'Yoga', cal:'56 cal', date:'7/1/26', iconStyle:sessIcon('yoga') },
-      { name:'Chest', cal:'64 cal', date:'6/29/26', iconStyle:sessIcon('gym') }
-    ];
+    const sessions = allRecords.slice(0,3).map(r => ({ name: r.name, cal: r.cal, date: r.dateLabel, iconStyle: sessIcon(iconFor(r.cat)) }));
 
     // friend
     const heart = (k) => (s.likes[k] ? '#FA8815' : 'none');
@@ -1674,14 +1753,14 @@ class Component extends DCLogic {
     const chartCaption = pd.caption;
 
     // sessions list
-    const sessCats = ['All', ...Array.from(new Set(this.RECORDED.map(r => r.cat)))].map(label => ({ label, style: chip(s.sessionFilter===label), select: () => this.setState({ sessionFilter: label }) }));
-    const shown = this.RECORDED.filter(r => s.sessionFilter==='All' || r.cat===s.sessionFilter);
+    const sessCats = ['All', ...Array.from(new Set(allRecords.map(r => r.cat)))].map(label => ({ label, style: chip(s.sessionFilter===label), select: () => this.setState({ sessionFilter: label }) }));
+    const shown = allRecords.filter(r => s.sessionFilter==='All' || r.cat===s.sessionFilter);
     const grouped = [];
     shown.forEach(r => { let g = grouped.find(x => x.date===r.dateLabel); if(!g){ g={date:r.dateLabel, items:[]}; grouped.push(g); } g.items.push({ ...r, iconStyle: mask(iconFor(r.cat), '#4DD5D0', 24), open: () => { this.setState({ sessionDetailId: r.id }); this.go('sessionDetail'); } }); });
     const sessionGroups = grouped;
 
     // session detail
-    const sd = this.RECORDED.find(r => r.id === s.sessionDetailId) || this.RECORDED[0];
+    const sd = allRecords.find(r => r.id === s.sessionDetailId) || allRecords[0];
     const sdRows = [
       { k:'Workout time', v: sd.time }, { k:'Calories', v: sd.cal },
       sd.distance ? { k:'Distance', v: sd.distance } : null,
@@ -1773,6 +1852,15 @@ class Component extends DCLogic {
       ? "Break mode is on. Take the time you need — your streak and goals are safe until you're ready."
       : 'Life gets busy. Turn this on and Pace eases off without erasing the progress you\u2019ve made.';
     const noSaved = !hasSaved;
+
+    const aiMsgsView = s.aiMsgs.map(m => ({
+      text: m.text, hasCards: !!(m.cardIds && m.cardIds.length),
+      cards: (m.cardIds||[]).map(id => { const c = card(id); const orig = c.open; c.open = () => { this.setState({ aiOpen:false }); orig(); }; return c; }),
+      wrapStyle: `display:flex;flex-direction:column;align-items:${m.role==='user'?'flex-end':'flex-start'};`,
+      bubbleStyle: m.role==='user'
+        ? 'max-width:80%;background:#EB6C0B;color:#fff;font-size:16px;line-height:1.45;padding:12px 16px;border-radius:18px 18px 4px 18px;'
+        : 'max-width:86%;background:#26292a;color:#fff;font-size:16px;line-height:1.45;padding:12px 16px;border-radius:18px 18px 18px 4px;'
+    }));
 
     return {
       isHome: s.screen==='home', isMove: s.screen==='move', isSearch: s.screen==='search',
@@ -1889,6 +1977,24 @@ class Component extends DCLogic {
       nudgeAnim: this.props.reduceMotion===true ? '' : 'animation:none;',
       dismissNudge: this.dismissNudge, nudgeYes: this.nudgeYes,
       celebrate: s.celebrate, closeCelebrate: this.closeCelebrate,
+      nextActivity: this.nextActivity, imDone: this.imDone,
+      aiOpen: s.aiOpen, aiButtonShow: (s.screen==='home'||s.screen==='move') && !s.aiOpen,
+      aiMsgs: aiMsgsView, aiInput: s.aiInput,
+      aiIconStyle: mask('ai', '#4DD5D0', 18), aiIconStyleLg: mask('ai', '#06312f', 26),
+      openAi: () => this.setState(st => ({ aiOpen:true, aiMsgs: st.aiMsgs.length ? st.aiMsgs : [{ role:'ai', text:"Hi! I'm Pace AI. Tell me how you're feeling or how much time you have, and I'll suggest something.", cardIds:['cardio-burst','upper-body','morning-warmup'] }] })),
+      closeAi: () => this.setState({ aiOpen:false }),
+      setAiInput: (e) => this.setState({ aiInput: e.target.value }),
+      sendAi: () => {
+        const q = (this.state.aiInput||'').trim(); if(!q) return;
+        const lower = q.toLowerCase();
+        let ids = ['cardio-burst','upper-body','morning-warmup'];
+        let reply = 'Here are a few that could fit — tap one to open it.';
+        if (/strength|strong|muscle|tone/.test(lower)) { ids = ['full-body','hip-dips','squat-leg']; reply='For building strength, try one of these.'; }
+        else if (/quick|short|busy|desk|sit|min|10|5/.test(lower)) { ids = ['desk-stretch','neck-roll','cardio-burst']; reply='Short on time? These take under 10 minutes.'; }
+        else if (/cardio|run|endur|sweat|energ/.test(lower)) { ids = ['jump-rope','cardio-burst','fat-burn']; reply='Get your heart rate up with these.'; }
+        else if (/relax|stress|calm|yoga|stretch|tired|sleep/.test(lower)) { ids = ['morning-warmup','desk-stretch','neck-roll']; reply='Something gentle to unwind — try one of these.'; }
+        this.setState(st => ({ aiInput:'', aiMsgs:[...st.aiMsgs, {role:'user',text:q}, {role:'ai',text:reply,cardIds:ids}] }));
+      },
       toastOpen: !!s.toast, toastText: s.toast || '', toastAnim: '',
       scrimStyle: `position:absolute;top:0;left:0;right:0;height:100px;z-index:36;pointer-events:none;opacity:${s.scrolled?1:0};transition:opacity .3s ease;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.42) 55%,rgba(0,0,0,0) 100%);-webkit-mask:linear-gradient(180deg,#000 62%,transparent 100%);mask:linear-gradient(180deg,#000 62%,transparent 100%);`,
     };
