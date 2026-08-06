@@ -614,11 +614,14 @@
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                 <sc-for list="{{ growthCats }}" as="g" hint-placeholder-count="4">
                   <div style="background:#1E1F20;border-radius:18px;padding:18px;">
-                    <div style="width:40px;height:40px;border-radius:12px;background:#154B4C;display:flex;align-items:center;justify-content:center;">{{ g.iconEl }}</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                      <div style="width:40px;height:40px;border-radius:12px;background:#154B4C;display:flex;align-items:center;justify-content:center;">{{ g.iconEl }}</div>
+                      <span style="background:#26292a;color:#dfe2e2;font-size:12px;font-weight:500;padding:4px 10px;border-radius:12px;">{{ g.level }}</span>
+                    </div>
                     <div style="color:#fff;font-size:16px;font-weight:500;margin-top:12px;">{{ g.title }}</div>
                     <div style="color:#fff;font-size:30px;font-weight:500;margin-top:2px;">{{ g.big }}</div>
                     <div style="height:7px;border-radius:4px;background:#2b3132;margin-top:10px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
-                    <div style="color:#8b9092;font-size:12px;margin-top:8px;">{{ g.contrib }}</div>
+                    <div style="color:#8b9092;font-size:12px;margin-top:8px;">{{ g.nextText }}</div>
                   </div>
                 </sc-for>
               </div>
@@ -662,7 +665,7 @@
             </div>
           </div>
           <sc-if value="{{ hasCurrentGoals }}" hint-placeholder-val="{{ true }}">
-            <div style="padding:22px 20px 0;">
+            <div style="padding:40px 20px 0;">
               <div onClick="{{ openSharedGoal }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                 <div style="display:flex;align-items:center;gap:9px;"><div style="{{ goalStyle }}"></div><span style="color:#fff;font-size:18px;font-weight:500;">Shared goals</span></div>
                 <span style="display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -679,7 +682,8 @@
               </div>
             </div>
           </sc-if>
-          <div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:16px;">
+          <div style="padding:30px 20px 14px;"><span style="color:#fff;font-size:20px;font-weight:500;">From your circle</span></div>
+          <div style="padding:0 20px 0;display:flex;flex-direction:column;gap:16px;">
             <sc-for list="{{ feed }}" as="p" hint-placeholder-count="4">
               <div style="background:#1E1F20;border-radius:20px;padding:20px;">
                 <div style="display:flex;align-items:flex-start;gap:14px;">
@@ -956,6 +960,15 @@
                 </div>
               </sc-for>
             </div>
+            <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 12px;">Growth earned</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <sc-for list="{{ sessDetail.growth }}" as="gp" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:10px;background:#1E1F20;border-radius:14px;padding:12px 14px;">
+                  <span style="color:{{ gp.color }};font-size:22px;font-weight:600;">+{{ gp.pts }}</span>
+                  <span style="color:#B9BFC1;font-size:14px;line-height:1.2;">{{ gp.label }}</span>
+                </div>
+              </sc-for>
+            </div>
             <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 12px;">Benefits</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;">
               <sc-for list="{{ sessDetail.benefits }}" as="b" hint-placeholder-count="4">
@@ -1141,10 +1154,10 @@
             <div style="color:#fff;font-size:20px;font-weight:500;margin-bottom:14px;">Current goals</div>
             <div style="display:flex;flex-direction:column;gap:12px;">
               <sc-for list="{{ sgCurrent }}" as="g" hint-placeholder-count="2">
-                <div style="background:#1E1F20;border-radius:16px;padding:18px;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:18px;font-weight:500;">{{ g.title }}</span><span style="color:#4DD5D0;font-size:14px;">{{ g.progress }}</span></div>
-                  <div style="color:#B9BFC1;font-size:14px;margin-top:4px;">{{ g.sub }}</div>
-                  <div style="height:7px;border-radius:4px;background:#2b3132;margin-top:12px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
+                <div style="background:linear-gradient(135deg,#17403c,#0f2b29);border:1px solid rgba(77,213,208,.22);border-radius:16px;padding:18px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:#fff;font-size:18px;font-weight:500;">{{ g.title }}</span><span style="color:#5FE0DB;font-size:14px;">{{ g.progress }}</span></div>
+                  <div style="color:#9fd8d3;font-size:14px;margin-top:4px;">{{ g.sub }}</div>
+                  <div style="height:7px;border-radius:4px;background:rgba(0,0,0,.28);margin-top:12px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
                 </div>
               </sc-for>
             </div>
@@ -1686,6 +1699,19 @@ class Component extends DCLogic {
     'lat-pulldown':'Gym','bench-press':'Gym','leg-press':'Gym','cable-circuit':'Gym','rowing-machine':'Gym',
     'trail-run':'Outdoor activity','hill-hike':'Outdoor activity','cycling-loop':'Outdoor activity','park-sprints':'Outdoor activity','park-yoga':'Outdoor activity'
   };
+  GROWTHPTS = {
+    Run:      { heart:4, strength:1, endurance:3, mental:1 },
+    Walk:     { heart:3, strength:1, endurance:2, mental:2 },
+    Gym:      { heart:1, strength:4, endurance:1, mental:1 },
+    Yoga:     { heart:1, strength:1, endurance:4, mental:3 },
+    Stretch:  { heart:1, strength:1, endurance:2, mental:3 },
+    Pilates:  { heart:1, strength:3, endurance:2, mental:3 },
+    Swim:     { heart:3, strength:2, endurance:4, mental:2 },
+    Cycling:  { heart:3, strength:2, endurance:4, mental:1 },
+    Dancing:  { heart:3, strength:1, endurance:3, mental:2 },
+    Badminton:{ heart:3, strength:2, endurance:3, mental:1 },
+    default:  { heart:2, strength:2, endurance:2, mental:2 }
+  };
   RECORDED = [
     { id:'r1', cat:'Run', name:'Evening Run', dateLabel:'Today', date:'Jul 2', span:'6:10 PM – 6:42 PM', time:'32 min', cal:'318 cal', distance:'3.4 mi', steps:'5,940', intensity:'Moderate', equip:'None', note:'Felt good. Kept it easy the last mile.' },
     { id:'r2', cat:'Gym', name:'Leg Day', dateLabel:'Today', date:'Jul 2', span:'10:00 AM – 10:46 AM', time:'46 min', cal:'284 cal', sets:'5 sets', reps:'12 reps', weight:'40 lbs', equip:'Leg press, Squat rack', intensity:'Hard', note:'New squat PR. Slow and controlled.' },
@@ -2092,12 +2118,17 @@ class Component extends DCLogic {
     const segSw = (active) => `cursor:pointer;flex:1;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;transition:all .18s;${active?'background:#EB6C0B;color:#fff;':'color:#B9BFC1;'}`;
     const progTabs = ['Progress','Growth'].map(label => ({ label, style: segSw(s.progTab===label), select: () => this.setState({ progTab: label }) }));
     const gEl = (svg,color) => raw(svg.replace(/COL/g, color));
+    const GBASE = { heart:372, strength:258, endurance:264, mental:245 };
+    const earned = { heart:0, strength:0, endurance:0, mental:0 };
+    s.myRecords.forEach(r => { const p = this.GROWTHPTS[r.cat] || this.GROWTHPTS.default; earned.heart+=p.heart; earned.strength+=p.strength; earned.endurance+=p.endurance; earned.mental+=p.mental; });
+    const GPER = 100;
+    const gcat = (key) => { const t = GBASE[key] + earned[key]; return { level: Math.floor(t/GPER)+1, prog: t%GPER }; };
     const growthCats = [
-      { title:'Heart Health', big:'72%', contrib:'128 sessions logged', pct:0.72, color:'#FA8815', iconEl: gEl('<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.49L12 20.3z" fill="COL"/></svg>','#FA8815') },
-      { title:'Strength', big:'58%', contrib:'96 sessions logged', pct:0.58, color:'#4DD5D0', iconEl: raw('<img src="assets/strength.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
-      { title:'Endurance', big:'64%', contrib:'74 sessions logged', pct:0.64, color:'#F1EA2E', iconEl: raw('<img src="assets/endurance.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
-      { title:'Mental Focus', big:'45%', contrib:'40 sessions logged', pct:0.45, color:'#9CF3EA', iconEl: raw('<img src="assets/mental-focus.svg" style="width:26px;height:26px;object-fit:contain;"/>') }
-    ].map(g => ({ ...g, barStyle:`height:100%;width:${Math.round(g.pct*100)}%;background:${g.color};border-radius:5px;` }));
+      { title:'Heart Health', key:'heart', color:'#FA8815', iconEl: gEl('<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.49L12 20.3z" fill="COL"/></svg>','#FA8815') },
+      { title:'Strength', key:'strength', color:'#4DD5D0', iconEl: raw('<img src="assets/strength.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
+      { title:'Endurance', key:'endurance', color:'#F1EA2E', iconEl: raw('<img src="assets/endurance.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
+      { title:'Mental Focus', key:'mental', color:'#9CF3EA', iconEl: raw('<img src="assets/mental-focus.svg" style="width:26px;height:26px;object-fit:contain;"/>') }
+    ].map(g => { const d = gcat(g.key); return { ...g, level:'Level '+d.level, big:d.prog+'%', nextText:(GPER-d.prog)+' pts to Level '+(d.level+1), barStyle:`height:100%;width:${d.prog}%;background:${g.color};border-radius:5px;` }; });
     const growthInsights = [
       { big:'52 mi', text:"You've walked 52 miles this month. That's farther than crossing Manhattan." },
       { big:'6 bpm', text:'Your resting heart rate has improved by 6 bpm.' },
@@ -2356,7 +2387,14 @@ class Component extends DCLogic {
     ].filter(Boolean).map((r,i,arr) => ({ ...r, rowStyle: `display:flex;align-items:center;justify-content:space-between;padding:16px 0;${i < arr.length-1 ? 'border-bottom:1px solid #2b3132;' : ''}` }));
     const BENEFITS = { Run:['Stronger heart','Burn calories','Sharper focus','Better mood'], Gym:['Stronger muscle','Burn calories','Better posture'], Yoga:['Flexibility','Lower stress','Sharper focus'], Walk:['Stronger heart','Clear mind','Burn calories'], Stretch:['Flexibility','Less tension','Better sleep'] };
     const benefits = BENEFITS[sd.cat] || ['Stronger muscle','Stronger heart','Burn calories','Sharper focus'];
-    const sessDetail = { name: sd.name, cat: sd.cat, date: sd.date, span: sd.span, note: sd.note, hasNote: !!sd.note, rows: sdRows, benefits, iconStyle: mask(iconFor(sd.cat), '#4DD5D0', 28) };
+    const sdPts = this.GROWTHPTS[sd.cat] || this.GROWTHPTS.default;
+    const sdGrowth = [
+      { label:'Heart Health', pts:sdPts.heart, color:'#FA8815' },
+      { label:'Strength', pts:sdPts.strength, color:'#4DD5D0' },
+      { label:'Endurance', pts:sdPts.endurance, color:'#F1EA2E' },
+      { label:'Mental Focus', pts:sdPts.mental, color:'#9CF3EA' }
+    ];
+    const sessDetail = { name: sd.name, cat: sd.cat, date: sd.date, span: sd.span, note: sd.note, hasNote: !!sd.note, rows: sdRows, benefits, growth: sdGrowth, iconStyle: mask(iconFor(sd.cat), '#4DD5D0', 28) };
     const editIntensity = ['Gentle','Easy','Moderate','Hard'].map(label => ({ label, style: chip(s.editDraft.intensity===label), select: () => this.setState(st => ({ editDraft: { ...st.editDraft, intensity: label } })) }));
 
     // edit summary — each card has a toggle + (when on) an inline goal slider
