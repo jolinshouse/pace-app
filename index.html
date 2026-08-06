@@ -623,11 +623,11 @@
                 </sc-for>
               </div>
               <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Insights</div>
-              <div style="display:flex;flex-direction:column;gap:12px;">
+              <div class="pace-noscroll" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;">
                 <sc-for list="{{ growthInsights }}" as="i" hint-placeholder-count="4">
-                  <div style="display:flex;align-items:center;gap:16px;background:#1E1F20;border-radius:16px;padding:18px;">
-                    <span style="color:#4DD5D0;font-size:22px;font-weight:500;min-width:74px;">{{ i.big }}</span>
-                    <span style="flex:1;color:#fff;font-size:15px;line-height:1.4;">{{ i.text }}</span>
+                  <div style="flex:none;width:258px;scroll-snap-align:start;background:#1E1F20;border-radius:18px;padding:20px;min-height:158px;display:flex;flex-direction:column;">
+                    <div style="color:#4DD5D0;font-size:38px;font-weight:500;letter-spacing:-1px;">{{ i.big }}</div>
+                    <div style="color:#fff;font-size:15px;line-height:1.45;margin-top:12px;">{{ i.text }}</div>
                   </div>
                 </sc-for>
               </div>
@@ -660,21 +660,20 @@
               <span style="color:#fff;font-size:24px;font-weight:500;">{{ friendCount }} Friends</span>
               <svg width="8" height="14" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <div onClick="{{ openSharedGoal }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:#1E1F20;display:flex;align-items:center;justify-content:center;"><div style="{{ goalStyle }}"></div></div>
           </div>
           <sc-if value="{{ hasCurrentGoals }}" hint-placeholder-val="{{ true }}">
             <div style="padding:22px 20px 0;">
               <div onClick="{{ openSharedGoal }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                <span style="color:#fff;font-size:18px;font-weight:500;">Shared goals</span>
+                <div style="display:flex;align-items:center;gap:9px;"><div style="{{ goalStyle }}"></div><span style="color:#fff;font-size:18px;font-weight:500;">Shared goals</span></div>
                 <span style="display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </div>
               <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
                 <sc-for list="{{ sgCurrent }}" as="g" hint-placeholder-count="2">
-                  <div onClick="{{ openSharedGoal }}" style="cursor:pointer;flex:none;width:230px;background:#1E1F20;border-radius:16px;padding:16px;">
+                  <div onClick="{{ openSharedGoal }}" style="cursor:pointer;flex:none;width:230px;background:linear-gradient(135deg,#17403c,#0f2b29);border:1px solid rgba(77,213,208,.22);border-radius:16px;padding:16px;">
                     <div style="color:#fff;font-size:16px;font-weight:500;">{{ g.title }}</div>
-                    <div style="color:#B9BFC1;font-size:13px;margin-top:3px;">{{ g.sub }}</div>
-                    <div style="height:7px;border-radius:4px;background:#2b3132;margin-top:12px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
-                    <div style="color:#4DD5D0;font-size:13px;margin-top:8px;">{{ g.progress }}</div>
+                    <div style="color:#9fd8d3;font-size:13px;margin-top:3px;">{{ g.sub }}</div>
+                    <div style="height:7px;border-radius:4px;background:rgba(0,0,0,.28);margin-top:12px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
+                    <div style="color:#5FE0DB;font-size:13px;margin-top:8px;">{{ g.progress }}</div>
                   </div>
                 </sc-for>
               </div>
@@ -1632,10 +1631,10 @@ class Component extends DCLogic {
     'morning-warmup':'assets/w-morning-warmup.jpg','cardio-burst':'assets/w-cardio-burst.jpg','full-body':'assets/w-full-body.jpg',
     'jump-rope':'assets/w-jump-rope.jpg','fat-burn':'assets/w-fat-burn.jpg','hip-dips':'assets/w-hip-dips.jpg',
     'standing-abs':'assets/w-standing-abs.jpg','med-ball':'assets/w-med-ball.jpg',
-    'desk-stretch':'assets/w-desk-stretch.jpg','neck-roll':'assets/w-morning-warmup.jpg','stair-climb':'assets/w-active.jpg','bathroom-clean':'assets/w-total-body.jpg','trash-run':'assets/w-jump-rope.jpg',
+    'desk-stretch':'assets/w-desk-stretch.jpg','neck-roll':'assets/w-morning-warmup.jpg','stair-climb':'assets/w-take-the-stairs.jpeg','bathroom-clean':'assets/w-clean-the-bathroom.jpeg','trash-run':'assets/w-take-out-the-trash.jpeg',
     'wall-angels':'assets/w-wall-angels.png',
-    'lat-pulldown':'assets/w-upper-body.jpg','bench-press':'assets/w-full-body.jpg','leg-press':'assets/w-squat-leg.jpg','cable-circuit':'assets/w-total-body.jpg','rowing-machine':'assets/w-cardio-burst.jpg',
-    'trail-run':'assets/w-active.jpg','hill-hike':'assets/w-active.jpg','cycling-loop':'assets/w-jump-rope.jpg','park-sprints':'assets/w-cardio-burst.jpg','park-yoga':'assets/w-morning-warmup.jpg'
+    'lat-pulldown':'assets/w-lat-pulldown.jpeg','bench-press':'assets/w-bench-press.jpeg','leg-press':'assets/w-leg-press.jpeg','cable-circuit':'assets/w-cable-circuit.jpeg','rowing-machine':'assets/w-rowing-machine.jpeg',
+    'trail-run':'assets/w-trail-run.jpeg','hill-hike':'assets/w-hill-hike.jpeg','cycling-loop':'assets/w-cycling-loop.jpeg','park-sprints':'assets/w-park-sprints.jpeg','park-yoga':'assets/w-park-yoga.jpeg'
   };
   WK = {
     'total-body':{title:'Total Body Torcher',tag:'Pilates',min:'30 min',level:'Moderate',sets:'6 sets',cal:'200 cal',equip:'Mat',desc:"The Total Body Torcher blends compound strength moves like squats and push-ups with steady circuit work. Thirty focused minutes, at whatever intensity your day allows — no keeping up with anyone."},
@@ -1681,7 +1680,7 @@ class Component extends DCLogic {
   BIGCAT = {
     'total-body':'Home exercise','upper-body':'Home exercise','squat-leg':'Home exercise','morning-warmup':'Home exercise',
     'cardio-burst':'Home exercise','full-body':'Home exercise','jump-rope':'Home exercise','fat-burn':'Home exercise',
-    'hip-dips':'Home exercise','standing-abs':'Home exercise','med-ball':'Home exercise',
+    'hip-dips':'Home exercise','standing-abs':'Gym','med-ball':'Gym',
     'desk-stretch':'Home exercise','neck-roll':'Home exercise','bathroom-clean':'Home exercise','wall-angels':'Home exercise',
     'stair-climb':'Outdoor activity','trash-run':'Outdoor activity',
     'lat-pulldown':'Gym','bench-press':'Gym','leg-press':'Gym','cable-circuit':'Gym','rowing-machine':'Gym',
@@ -1691,7 +1690,7 @@ class Component extends DCLogic {
     { id:'r1', cat:'Run', name:'Evening Run', dateLabel:'Today', date:'Jul 2', span:'6:10 PM – 6:42 PM', time:'32 min', cal:'318 cal', distance:'3.4 mi', steps:'5,940', intensity:'Moderate', equip:'None', note:'Felt good. Kept it easy the last mile.' },
     { id:'r2', cat:'Gym', name:'Leg Day', dateLabel:'Today', date:'Jul 2', span:'10:00 AM – 10:46 AM', time:'46 min', cal:'284 cal', sets:'5 sets', reps:'12 reps', weight:'40 lbs', equip:'Leg press, Squat rack', intensity:'Hard', note:'New squat PR. Slow and controlled.' },
     { id:'r3', cat:'Yoga', name:'Morning Yoga', dateLabel:'Yesterday', date:'Jul 1', span:'7:30 AM – 7:50 AM', time:'20 min', cal:'56 cal', intensity:'Gentle', equip:'Mat', note:'Focus on hips and shoulders.' },
-    { id:'r4', cat:'Walk', name:'Walk to campus', dateLabel:'Yesterday', date:'Jul 1', span:'8:40 AM – 8:59 AM', time:'19 min', cal:'42 cal', distance:'0.9 mi', steps:'1,880', intensity:'Easy', equip:'None', note:'Logged automatically.' },
+    { id:'r4', cat:'Walk', name:'Walk to campus', dateLabel:'Yesterday', date:'Jul 1', span:'8:40 AM – 8:59 AM', time:'19 min', cal:'42 cal', distance:'0.9 mi', steps:'584', intensity:'Easy', equip:'None', note:'Logged automatically.' },
     { id:'r5', cat:'Gym', name:'Chest & Arms', dateLabel:'Jun 29', date:'Jun 29', span:'6:20 PM – 6:58 PM', time:'38 min', cal:'240 cal', sets:'4 sets', reps:'10 reps', weight:'30 lbs', equip:'Bench press, Dumbbells', intensity:'Moderate', note:'' },
     { id:'r6', cat:'Stretch', name:'Evening Stretch', dateLabel:'Jun 29', date:'Jun 29', span:'9:15 PM – 9:27 PM', time:'12 min', cal:'28 cal', intensity:'Gentle', equip:'Mat', note:'Wind-down before bed.' },
     { id:'r7', cat:'Stretch', name:'Morning Stretch', dateLabel:'Today', date:'Jul 2', span:'7:05 AM – 7:17 AM', time:'12 min', cal:'34 cal', intensity:'Gentle', equip:'Mat', note:'Loosened up before the day.' }
@@ -1941,7 +1940,7 @@ class Component extends DCLogic {
       { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
       { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
     ];
-    const moveChips = ['All','Home exercise','Gym','Outdoor activity'].map(label => ({ label, style: chip(s.moveCat===label), select: () => this.setState({ moveCat: label }) }));
+    const moveChips = ['All','Home exercise','Gym','Outdoor activity'].map(label => ({ label, style: chip(s.moveCat===label)+'flex:none;white-space:nowrap;', select: () => this.setState({ moveCat: label }) }));
     const isMoveAll = s.moveCat==='All';
     const moveFilteredCards = isMoveAll ? [] : Object.keys(this.WK).filter(id => this.BIGCAT[id]===s.moveCat).map(card);
     const parseMin = (m) => parseInt(m,10)||0;
@@ -2058,13 +2057,19 @@ class Component extends DCLogic {
       const rec = { id, cat: catName, name: catName, dateLabel:'Today', date:'Jul 2', span:'Just now', time: s.duration+' min', cal: Math.round(s.duration*5)+' cal', intensity: s.intensity||'Moderate', equip: s.equip||'None', note:'' };
       if (catType==='distance') { rec.distance = s.distance.toFixed(1)+' mi'; rec.steps = Math.round(s.distance*2100).toLocaleString(); }
       if (catType==='strength') { rec.sets = s.sets+' sets'; rec.reps = s.reps+' reps'; rec.weight = s.weight+' lbs'; }
-      const msgs = {
-        strength: 'Six months ago you did 12 push-ups. Now you do 28.',
-        distance: "You used to skip Wednesdays. They're now your most reliable workout day.",
-        flex: 'A month ago you could barely reach your toes. Look how far you bend now.',
-        simple: 'Three months ago this felt hard. Today you made it look easy.'
+      const CATMSGS = {
+        Gym: ['Six months ago you did 12 push-ups. Now you do 28.','Your bench has climbed 25 lbs since spring.','A year ago three sets felt brutal. Today you cruised through five.'],
+        Run: ['Your average pace is 40 seconds faster than three months ago.','You used to stop at one mile. Now three feels easy.','Six months ago a 5K left you winded. Not anymore.'],
+        Walk: ["You used to skip Wednesdays. They're now your most reliable day.",'Your daily steps are up 3,000 from last spring.','A month ago this route felt long. Today it flew by.'],
+        Stretch: ['A month ago you could barely reach your toes. Look how far you bend now.','Your shoulders are noticeably looser than in January.'],
+        Yoga: ['Your balance holds twice as long as it did in spring.','Three months ago this flow felt impossible. Now it feels calm.'],
+        Swim: ['You swim two more laps than you could in spring.'],
+        Cycling: ['Your rides are five miles longer than three months ago.'],
+        Dancing: ['You last twice as long on the floor as you used to.']
       };
-      const msg = msgs[catType] || msgs.simple;
+      const fallback = { strength:['A year ago three sets felt brutal. Today you cruised through five.'], distance:["You used to skip Wednesdays. They're now your most reliable day."], flex:['A month ago you could barely reach your toes. Look how far you bend now.'], simple:['Three months ago this felt hard. Today you made it look easy.'] };
+      const pool = CATMSGS[catName] || fallback[catType] || fallback.simple;
+      const msg = pool[Math.floor(Math.random()*pool.length)];
       this.setState(st => ({ myRecords: [rec, ...st.myRecords], cat: null, groups: {}, equip: null, intensity: null, focus: {}, recordCelebrate: msg }));
       this.go('progress'); this.fireConfetti();
     };
@@ -2089,9 +2094,9 @@ class Component extends DCLogic {
     const gEl = (svg,color) => raw(svg.replace(/COL/g, color));
     const growthCats = [
       { title:'Heart Health', big:'72%', contrib:'128 sessions logged', pct:0.72, color:'#FA8815', iconEl: gEl('<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.49L12 20.3z" fill="COL"/></svg>','#FA8815') },
-      { title:'Strength', big:'58%', contrib:'96 sessions logged', pct:0.58, color:'#4DD5D0', iconEl: gEl('<svg width="24" height="24" viewBox="0 0 26 26" fill="none"><path d="M4 10v6M7 8v10M19 8v10M22 10v6M7 13h12" stroke="COL" stroke-width="2.4" stroke-linecap="round"/></svg>','#4DD5D0') },
-      { title:'Endurance', big:'64%', contrib:'74 sessions logged', pct:0.64, color:'#F1EA2E', iconEl: gEl('<svg width="24" height="24" viewBox="0 0 26 26" fill="none"><circle cx="16" cy="5" r="2.4" fill="COL"/><path d="M14 9l-4 2 -2 4M14 9l3 0 3 3M14 9l-1 4 3 2 1 5M9 15l-2 1-2 4" stroke="COL" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>','#F1EA2E') },
-      { title:'Mental Focus', big:'45%', contrib:'40 sessions logged', pct:0.45, color:'#9CF3EA', iconEl: gEl('<svg width="24" height="24" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="5" r="2.4" fill="COL"/><path d="M13 8l0 5M13 13l-7 3M13 13l7 3M6 20l7-4 7 4" stroke="COL" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>','#9CF3EA') }
+      { title:'Strength', big:'58%', contrib:'96 sessions logged', pct:0.58, color:'#4DD5D0', iconEl: raw('<img src="assets/strength.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
+      { title:'Endurance', big:'64%', contrib:'74 sessions logged', pct:0.64, color:'#F1EA2E', iconEl: raw('<img src="assets/endurance.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
+      { title:'Mental Focus', big:'45%', contrib:'40 sessions logged', pct:0.45, color:'#9CF3EA', iconEl: raw('<img src="assets/mental-focus.svg" style="width:26px;height:26px;object-fit:contain;"/>') }
     ].map(g => ({ ...g, barStyle:`height:100%;width:${Math.round(g.pct*100)}%;background:${g.color};border-radius:5px;` }));
     const growthInsights = [
       { big:'52 mi', text:"You've walked 52 miles this month. That's farther than crossing Manhattan." },
