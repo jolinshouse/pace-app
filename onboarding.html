@@ -399,7 +399,7 @@
               <div style="display:flex;align-items:center;gap:8px;background:#1E1F20;border:1px solid #2b3132;border-radius:20px;padding:8px 14px;"><svg width="15" height="15" viewBox="0 0 28 28" fill="none"><path d="M5 15v-1a9 9 0 0118 0v1" stroke="#4DD5D0" stroke-width="2" stroke-linecap="round"/><rect x="3" y="15" width="6" height="9" rx="2.5" fill="#4DD5D0"/><rect x="19" y="15" width="6" height="9" rx="2.5" fill="#4DD5D0"/></svg><span style="color:#fff;font-size:14px;">Voice Guide</span></div>
             </div>
             <p style="color:#fff;font-size:16px;line-height:1.62;margin:28px 0 0;">{{ detail.desc }}</p>
-            <div onClick="{{ startWorkout }}" style="cursor:pointer;margin-top:40px;height:64px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.34);">Let's Go</div>
+            <div onClick="{{ startTap }}" style="{{ startCursor }}margin-top:40px;height:64px;border-radius:32px;background:#EB6C0B;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:500;box-shadow:0 10px 30px rgba(235,108,11,.34);">Let's Go</div>
           </div>
         </div>
       </sc-if>
@@ -621,7 +621,7 @@
                     <div style="color:#fff;font-size:16px;font-weight:500;margin-top:12px;">{{ g.title }}</div>
                     <div style="color:#fff;font-size:30px;font-weight:500;margin-top:2px;">{{ g.big }}</div>
                     <div style="height:7px;border-radius:4px;background:#2b3132;margin-top:10px;overflow:hidden;"><div style="{{ g.barStyle }}"></div></div>
-                    <div style="color:#8b9092;font-size:12px;margin-top:8px;">{{ g.nextText }}</div>
+                    <div style="{{ g.nextStyle }}">{{ g.nextText }}</div>
                   </div>
                 </sc-for>
               </div>
@@ -667,7 +667,7 @@
           <sc-if value="{{ hasCurrentGoals }}" hint-placeholder-val="{{ true }}">
             <div style="padding:40px 20px 0;">
               <div onClick="{{ openSharedGoal }}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                <div style="display:flex;align-items:center;gap:9px;"><div style="{{ goalStyle }}"></div><span style="color:#fff;font-size:18px;font-weight:500;">Shared goals</span></div>
+                <div style="display:flex;align-items:center;gap:9px;"><div style="{{ goalStyle }}"></div><span style="color:#fff;font-size:20px;font-weight:500;">Shared goals</span></div>
                 <span style="display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </div>
               <div class="pace-noscroll" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
@@ -682,7 +682,7 @@
               </div>
             </div>
           </sc-if>
-          <div style="padding:30px 20px 14px;"><span style="color:#fff;font-size:20px;font-weight:500;">From your circle</span></div>
+          <div style="padding:30px 20px 14px;"><span style="color:#fff;font-size:20px;font-weight:500;">Life in motion</span></div>
           <div style="padding:0 20px 0;display:flex;flex-direction:column;gap:16px;">
             <sc-for list="{{ feed }}" as="p" hint-placeholder-count="4">
               <div style="background:#1E1F20;border-radius:20px;padding:20px;">
@@ -1998,6 +1998,9 @@ class Component extends DCLogic {
     const dw = this.WK[s.detailId];
     const detail = { ...dw, img:this.IMG[s.detailId], saveFill: s.saved[s.detailId] ? '#fff' : 'none',
       saveFillTop: s.saved[s.detailId] };
+    const ALLOWSTART = ['cardio-burst','total-body','morning-warmup','full-body','fat-burn'];
+    const canStart = ALLOWSTART.includes(s.detailId);
+    const startTap = canStart ? this.startWorkout : () => {};
     const toggleSave = () => this.setState(st => ({ saved: { ...st.saved, [s.detailId]: !st.saved[s.detailId] } }));
 
     // workout
@@ -2128,7 +2131,7 @@ class Component extends DCLogic {
       { title:'Strength', key:'strength', color:'#4DD5D0', iconEl: raw('<img src="assets/strength.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
       { title:'Endurance', key:'endurance', color:'#F1EA2E', iconEl: raw('<img src="assets/endurance.svg" style="width:26px;height:26px;object-fit:contain;"/>') },
       { title:'Mental Focus', key:'mental', color:'#9CF3EA', iconEl: raw('<img src="assets/mental-focus.svg" style="width:26px;height:26px;object-fit:contain;"/>') }
-    ].map(g => { const d = gcat(g.key); return { ...g, level:'Level '+d.level, big:d.prog+'%', nextText:(GPER-d.prog)+' pts to Level '+(d.level+1), barStyle:`height:100%;width:${d.prog}%;background:${g.color};border-radius:5px;` }; });
+    ].map(g => { const d = gcat(g.key); return { ...g, level:'Level '+d.level, big:d.prog+'%', nextText:(GPER-d.prog)+' pts to Level '+(d.level+1), nextStyle:`color:${g.color};font-size:12px;margin-top:8px;`, barStyle:`height:100%;width:${d.prog}%;background:${g.color};border-radius:5px;` }; });
     const growthInsights = [
       { big:'52 mi', text:"You've walked 52 miles this month. That's farther than crossing Manhattan." },
       { big:'6 bpm', text:'Your resting heart rate has improved by 6 bpm.' },
@@ -2576,7 +2579,7 @@ class Component extends DCLogic {
       loading: s.loading, notLoading: !s.loading,
       searchQuery: s.searchQuery, setSearch: (e) => this.setState({ searchQuery: e.target.value }), searchCount,
       detail, toggleSave,
-      ex, startWorkout: this.startWorkout, togglePause: this.togglePause, nextExercise: this.nextExercise,
+      ex, startWorkout: this.startWorkout, startTap, startCursor: canStart ? 'cursor:pointer;' : 'cursor:default;', togglePause: this.togglePause, nextExercise: this.nextExercise,
       voiceOn: s.voiceGuide, voiceOff: !s.voiceGuide,
       toggleVoice: () => this.setState(st => ({ voiceGuide: !st.voiceGuide })),
       headphoneStyle: `cursor:pointer;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s;background:${s.voiceGuide ? '#F1EA2E' : 'rgba(255,255,255,.62)'};`,
