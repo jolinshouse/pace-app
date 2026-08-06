@@ -626,7 +626,7 @@
                 </sc-for>
               </div>
               <div style="color:#fff;font-size:20px;font-weight:500;margin:26px 0 14px;">Insights</div>
-              <div class="pace-noscroll" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;">
+              <div class="pace-noscroll" style="display:flex;gap:14px;overflow-x:auto;padding:0 20px 6px;margin:0 -20px;scroll-snap-type:x mandatory;">
                 <sc-for list="{{ growthInsights }}" as="i" hint-placeholder-count="4">
                   <div style="flex:none;width:258px;scroll-snap-align:start;background:#1E1F20;border-radius:18px;padding:20px;min-height:158px;display:flex;flex-direction:column;">
                     <div style="color:#4DD5D0;font-size:38px;font-weight:500;letter-spacing:-1px;">{{ i.big }}</div>
@@ -2137,8 +2137,7 @@ class Component extends DCLogic {
       { big:'6 bpm', text:'Your resting heart rate has improved by 6 bpm.' },
       { big:'Leg day', text:'Leg day has become your most consistent habit.' },
       { big:'Tue AM', text:'You tend to exercise best on Tuesday mornings.' },
-      { big:'27%', text:"You've become 27% more consistent than last month." },
-      { big:'42 hrs', text:"Over the past year you've spent 42 hours investing in your future health." }
+      { big:'27%', text:"You've become 27% more consistent than last month." }
     ];
     const growthMilestones = [
       { title:'First 5 workouts', done:true, sub:'Unlocked', barStyle:'height:100%;width:100%;background:#4DD5D0;border-radius:3px;' },
