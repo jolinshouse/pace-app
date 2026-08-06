@@ -192,9 +192,13 @@
       <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
         <div class="pace-noscroll" style="position:absolute;inset:0;overflow-y:auto;background:linear-gradient(180deg,#154B4C 0%,#000 20%);padding:64px 0 120px;">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px 0;">
-            <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;flex-direction:column;gap:6px;">
               <span style="color:#FED18D;font-size:14px;">Thursday, July 2</span>
-              <span style="color:#fff;font-size:24px;font-weight:500;">Good afternoon</span>
+              <div onClick="{{ goSetMode }}" style="cursor:pointer;display:flex;align-items:center;gap:9px;">
+                <div style="{{ homeModeIconStyle }}"></div>
+                <span style="color:#fff;font-size:24px;font-weight:500;">{{ homeModeName }}</span>
+                <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#8b9092" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
             </div>
             <div onClick="{{ goAccount }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;overflow:hidden;background:#9CF3EA;flex-shrink:0;">
               <img src="assets/avatar-jolyne.png" alt="profile" style="width:100%;height:100%;object-fit:cover;object-position:80% 12%;"/>
@@ -202,7 +206,7 @@
           </div>
 
           <div style="display:flex;align-items:center;justify-content:space-between;padding:36px 20px 14px;">
-            <span style="color:#fff;font-size:20px;font-weight:500;">You're already doing</span>
+            <span style="color:#fff;font-size:20px;font-weight:500;">Today's wins</span>
             <div onClick="{{ openSessions }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;color:#B9BFC1;font-size:14px;">See all
               <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B9BFC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -283,6 +287,10 @@
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#111" stroke-width="1.8" stroke-linecap="round"/></svg>
             </div>
           </div>
+          <div class="pace-noscroll" style="display:flex;gap:10px;overflow-x:auto;padding:18px 20px 0;">
+            <sc-for list="{{ moveChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for>
+          </div>
+          <sc-if value="{{ isMoveAll }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ moveSections }}" as="s" hint-placeholder-count="3">
             <div>
               <div style="display:flex;align-items:center;justify-content:space-between;padding:30px 20px 14px;">
@@ -306,6 +314,22 @@
               </div>
             </div>
           </sc-for>
+          </sc-if>
+          <sc-if value="{{ moveNotAll }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:20px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <sc-for list="{{ moveFilteredCards }}" as="w" hint-placeholder-count="4">
+                <div onClick="{{ w.open }}" style="cursor:pointer;">
+                  <div style="position:relative;width:100%;height:150px;border-radius:16px;overflow:hidden;">
+                    <img src="{{ w.img }}" alt="{{ w.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+                    <span style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);color:#fff;font-size:12px;padding:4px 10px;border-radius:20px;">{{ w.tag }}</span>
+                    <div onClick="{{ w.toggleSave }}" style="cursor:pointer;position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;"><svg width="12" height="15" viewBox="0 0 15 19" fill="none"><path d="M1 1h13v17l-6.5-4L1 18V1z" stroke="#fff" stroke-width="1.5" fill="{{ w.saveFill }}"/></svg></div>
+                  </div>
+                  <div style="color:#fff;font-size:16px;font-weight:500;margin-top:10px;">{{ w.title }}</div>
+                  <div style="font-size:13px;margin-top:3px;"><span style="color:#4DD5D0;">{{ w.min }}</span><span style="color:#B9BFC1;"> · {{ w.level }}</span></div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -787,8 +811,8 @@
             <div style="position:relative;height:22px;margin-top:18px;">
               <div style="position:absolute;top:8px;left:0;right:0;height:6px;border-radius:3px;background:#3a4041;"></div>
               <div style="position:absolute;top:8px;height:6px;border-radius:3px;background:#4DD5D0;left:{{ filterVals.minPct }};right:{{ filterVals.maxRight }};"></div>
-              <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMin }}" onInput="{{ setFilterDurMin }}" class="pace-range2" style="z-index:3;"/>
-              <input type="range" min="10" max="90" step="5" value="{{ filterVals.durMax }}" onInput="{{ setFilterDurMax }}" class="pace-range2" style="z-index:4;"/>
+              <input type="range" min="0" max="90" step="5" value="{{ filterVals.durMin }}" onInput="{{ setFilterDurMin }}" class="pace-range2" style="z-index:3;"/>
+              <input type="range" min="0" max="90" step="5" value="{{ filterVals.durMax }}" onInput="{{ setFilterDurMax }}" class="pace-range2" style="z-index:4;"/>
             </div>
             <div style="color:#fff;font-size:20px;font-weight:500;margin:28px 0 14px;">Equipment</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;"><sc-for list="{{ filterEquip }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</div></sc-for></div>
@@ -1475,7 +1499,8 @@ class Component extends DCLogic {
     sets: 3, reps: 12, weight: 20,
     // search filter
     filterOpen: false,
-    filter: { category: {}, level: {}, equip: {}, durMin: 10, durMax: 60 },
+    filter: { category: {}, level: {}, equip: {}, durMin: 0, durMax: 60 },
+    moveCat: 'All',
     // progress
     progMetric: null, progPeriod: 'Day',
     sessionFilter: 'All', sessionDetailId: null,
@@ -1523,7 +1548,9 @@ class Component extends DCLogic {
     'jump-rope':'assets/w-jump-rope.jpg','fat-burn':'assets/w-fat-burn.jpg','hip-dips':'assets/w-hip-dips.jpg',
     'standing-abs':'assets/w-standing-abs.jpg','med-ball':'assets/w-med-ball.jpg',
     'desk-stretch':'assets/w-desk-stretch.jpg','neck-roll':'assets/w-morning-warmup.jpg','stair-climb':'assets/w-active.jpg','bathroom-clean':'assets/w-total-body.jpg','trash-run':'assets/w-jump-rope.jpg',
-    'wall-angels':'assets/w-wall-angels.png'
+    'wall-angels':'assets/w-wall-angels.png',
+    'lat-pulldown':'assets/w-upper-body.jpg','bench-press':'assets/w-full-body.jpg','leg-press':'assets/w-squat-leg.jpg','cable-circuit':'assets/w-total-body.jpg','rowing-machine':'assets/w-cardio-burst.jpg',
+    'trail-run':'assets/w-active.jpg','hill-hike':'assets/w-active.jpg','cycling-loop':'assets/w-jump-rope.jpg','park-sprints':'assets/w-cardio-burst.jpg','park-yoga':'assets/w-morning-warmup.jpg'
   };
   WK = {
     'total-body':{title:'Total Body Torcher',tag:'Pilates',min:'30 min',level:'Moderate',sets:'6 sets',cal:'200 cal',equip:'Mat',desc:"The Total Body Torcher blends compound strength moves like squats and push-ups with steady circuit work. Thirty focused minutes, at whatever intensity your day allows — no keeping up with anyone."},
@@ -1542,7 +1569,17 @@ class Component extends DCLogic {
     'stair-climb':{title:'Take the Stairs',tag:'Cardio',min:'4 min',level:'Easy',sets:'1 set',cal:'30 cal',equip:'None',desc:"Skip the elevator. A few flights of stairs is an easy way to sneak movement into your day."},
     'bathroom-clean':{title:'Clean the Bathroom',tag:'Chore',min:'5 min',level:'Easy',sets:'1 set',cal:'25 cal',equip:'None',desc:"A quick tidy that also gets you up and moving. Everyday tasks count too."},
     'trash-run':{title:'Take Out the Trash',tag:'Errand',min:'3 min',level:'Easy',sets:'1 set',cal:'15 cal',equip:'None',desc:"A small errand that counts as movement. Every bit of getting up helps."},
-    'wall-angels':{title:'Wall Angels',tag:'Stretch',min:'4 min',level:'Easy',sets:'1 set',cal:'18 cal',equip:'Wall',desc:"Stand with your back against a wall and slide your arms up and down like a snow angel. A simple reset for tight shoulders and upper-back posture after sitting."}
+    'wall-angels':{title:'Wall Angels',tag:'Stretch',min:'4 min',level:'Easy',sets:'1 set',cal:'18 cal',equip:'Wall',desc:"Stand with your back against a wall and slide your arms up and down like a snow angel. A simple reset for tight shoulders and upper-back posture after sitting."},
+    'lat-pulldown':{title:'Lat Pulldown',tag:'Strength',min:'12 min',level:'Moderate',sets:'4 sets',cal:'140 cal',equip:'Lat pulldown machine',desc:"Build a stronger back with controlled lat pulldowns. Great for posture and pulling strength."},
+    'bench-press':{title:'Bench Press',tag:'Strength',min:'15 min',level:'Hard',sets:'5 sets',cal:'180 cal',equip:'Bench press',desc:"A classic chest and triceps builder. Work through your sets at a challenging but controlled weight."},
+    'leg-press':{title:'Leg Press',tag:'Strength',min:'18 min',level:'Hard',sets:'5 sets',cal:'220 cal',equip:'Leg press',desc:"Lower-body power on the leg press. Push through your heels and keep every rep smooth."},
+    'cable-circuit':{title:'Cable Circuit',tag:'Strength',min:'20 min',level:'Moderate',sets:'6 sets',cal:'200 cal',equip:'Cable machine',desc:"A full-body cable circuit that hits multiple muscle groups with steady, constant tension."},
+    'rowing-machine':{title:'Rowing Machine',tag:'Cardio',min:'15 min',level:'Moderate',sets:'1 set',cal:'170 cal',equip:'Rower',desc:"Low-impact full-body cardio on the rower. Drive with the legs, finish with the arms."},
+    'trail-run':{title:'Trail Run',tag:'Cardio',min:'30 min',level:'Moderate',sets:'1 set',cal:'300 cal',equip:'None',desc:"Head outside for a steady trail run. Fresh air, changing terrain, and honest cardio."},
+    'hill-hike':{title:'Hill Hike',tag:'Hiking',min:'45 min',level:'Moderate',sets:'1 set',cal:'340 cal',equip:'None',desc:"A moderate hike with some incline. Great for your legs, your heart, and a clear head."},
+    'cycling-loop':{title:'Cycling Loop',tag:'Cycling',min:'40 min',level:'Moderate',sets:'1 set',cal:'360 cal',equip:'Bike',desc:"A steady cycling loop to build endurance while you enjoy the ride."},
+    'park-sprints':{title:'Park Sprints',tag:'Cardio',min:'20 min',level:'Hard',sets:'6 sets',cal:'260 cal',equip:'None',desc:"Interval sprints at the park with walk-back recovery. Short, intense, effective."},
+    'park-yoga':{title:'Park Yoga',tag:'Yoga',min:'20 min',level:'Easy',sets:'1 set',cal:'80 cal',equip:'Mat',desc:"Gentle outdoor yoga to stretch and reset. Bring a mat and find a quiet spot."}
   };
   EXS = ['Bodyweight Fly','Push-Up','Squat Pulse','Mountain Climber','Plank Reach','Glute Bridge'];
   EXIMG = ['assets/w-active.jpg','assets/w-full-body.jpg','assets/w-squat-leg.jpg','assets/w-cardio-burst.jpg','assets/w-total-body.jpg','assets/w-hip-dips.jpg'];
@@ -1556,6 +1593,15 @@ class Component extends DCLogic {
   ];
   CATFILE = { Walk:'walk', Run:'run', Stretch:'stretch', Gym:'gym', Yoga:'yoga', Swim:'run', Dance:'yoga', Dancing:'dancing', Badminton:'run', Cycling:'run' };
   CATTYPE = { Walk:'distance', Run:'distance', Stretch:'flex', Yoga:'flex', Gym:'strength' };
+  BIGCAT = {
+    'total-body':'Home exercise','upper-body':'Home exercise','squat-leg':'Home exercise','morning-warmup':'Home exercise',
+    'cardio-burst':'Home exercise','full-body':'Home exercise','jump-rope':'Home exercise','fat-burn':'Home exercise',
+    'hip-dips':'Home exercise','standing-abs':'Home exercise','med-ball':'Home exercise',
+    'desk-stretch':'Home exercise','neck-roll':'Home exercise','bathroom-clean':'Home exercise','wall-angels':'Home exercise',
+    'stair-climb':'Outdoor activity','trash-run':'Outdoor activity',
+    'lat-pulldown':'Gym','bench-press':'Gym','leg-press':'Gym','cable-circuit':'Gym','rowing-machine':'Gym',
+    'trail-run':'Outdoor activity','hill-hike':'Outdoor activity','cycling-loop':'Outdoor activity','park-sprints':'Outdoor activity','park-yoga':'Outdoor activity'
+  };
   RECORDED = [
     { id:'r1', cat:'Run', name:'Evening Run', dateLabel:'Today', date:'Jul 2', span:'6:10 PM – 6:42 PM', time:'32 min', cal:'318 cal', distance:'3.4 mi', intensity:'Moderate', equip:'None', note:'Felt good. Kept it easy the last mile.' },
     { id:'r2', cat:'Gym', name:'Leg Day', dateLabel:'Today', date:'Jul 2', span:'10:00 AM – 10:46 AM', time:'46 min', cal:'284 cal', sets:'5 sets', reps:'12 reps', weight:'40 lbs', equip:'Leg press, Squat rack', intensity:'Hard', note:'New squat PR. Slow and controlled.' },
@@ -1797,9 +1843,14 @@ class Component extends DCLogic {
     const moveSections = [
       { title:'Quick start', items:['desk-stretch','wall-angels','cardio-burst'].map(card), seeAll:this.goSearch },
       { title:'Best for home', items:['total-body','morning-warmup','full-body'].map(card), seeAll:this.goSearch },
+      { title:'At the gym', items:['bench-press','lat-pulldown','leg-press','cable-circuit','rowing-machine'].map(card), seeAll:this.goSearch },
+      { title:'Get outdoors', items:['trail-run','hill-hike','cycling-loop','park-sprints','park-yoga'].map(card), seeAll:this.goSearch },
       { title:'Improve endurance', items:['cardio-burst','jump-rope','fat-burn'].map(card), seeAll:this.goSearch },
       { title:'Strengthen your muscle', items:['hip-dips','squat-leg','upper-body'].map(card), seeAll:this.goSearch }
     ];
+    const moveChips = ['All','Home exercise','Gym','Outdoor activity'].map(label => ({ label, style: chip(s.moveCat===label), select: () => this.setState({ moveCat: label }) }));
+    const isMoveAll = s.moveCat==='All';
+    const moveFilteredCards = isMoveAll ? [] : Object.keys(this.WK).filter(id => this.BIGCAT[id]===s.moveCat).map(card);
     const parseMin = (m) => parseInt(m,10)||0;
     const CATBUCKET = { 'Pilates':'Pilates','Strength':'Strength','Yoga':'Yoga','Cardio':'Cardio','HIIT':'HIIT','Resistance Band':'Strength' };
     const fCats = Object.keys(s.filter.category).filter(k => s.filter.category[k]);
@@ -1813,7 +1864,7 @@ class Component extends DCLogic {
     const sq = (s.searchQuery||'').trim().toLowerCase();
     const matchId = (id) => { const w = this.WK[id]; const mins = parseMin(w.min);
       if (mins < s.filter.durMin || mins > s.filter.durMax) return false;
-      if (fCats.length && !fCats.includes(w.tag)) return false;
+      if (fCats.length && !fCats.includes(this.BIGCAT[id])) return false;
       if (fLevels.length && !fLevels.includes(w.level)) return false;
       if (fEquip.length && !fEquip.some(e => equipMatch(w, e))) return false;
       if (sq) { const hay = (w.title+' '+w.tag+' '+w.level+' '+w.equip).toLowerCase(); if (!hay.includes(sq)) return false; }
@@ -2126,11 +2177,11 @@ class Component extends DCLogic {
     // search filter
     const multiFilter = (field) => (label) => ({ label, style: chip(!!s.filter[field][label]),
       select: () => this.setState(st => ({ filter: { ...st.filter, [field]: { ...st.filter[field], [label]: !st.filter[field][label] } } })) });
-    const filterCat = ['Strength','Cardio','Yoga','Pilates','HIIT','Resistance Band','Stretch','Chore'].map(multiFilter('category'));
+    const filterCat = ['Home exercise','Gym','Outdoor activity'].map(multiFilter('category'));
     const filterLevel = ['Easy','Moderate','Hard'].map(multiFilter('level'));
     const filterEquip = ['None','Mat','Dumbbell','Band','Machine'].map(multiFilter('equip'));
     const pctN = (v,mn,mx) => Math.round((v-mn)/(mx-mn)*100);
-    const filterVals = { durMin: s.filter.durMin, durMax: s.filter.durMax, minPct: pctN(s.filter.durMin,10,90)+'%', maxRight: (100 - pctN(s.filter.durMax,10,90))+'%' };
+    const filterVals = { durMin: s.filter.durMin, durMax: s.filter.durMax, minPct: pctN(s.filter.durMin,0,90)+'%', maxRight: (100 - pctN(s.filter.durMax,0,90))+'%' };
 
     // progress metric detail
     const pm = s.progMetric;
@@ -2334,8 +2385,10 @@ class Component extends DCLogic {
       back: this.back,
       goHome: () => this.go('home'), goMove: () => this.go('move'), goRecord: () => this.go('record'),
       goProgress: () => this.go('progress'), goFriend: () => this.go('friend'), goAccount: () => this.go('account'),
+      goSetMode: () => { this.setState({ setPhase:'mode' }); this.go('breakMode'); }, homeModeName: activeMode.key, homeModeIconStyle: mask(activeMode.icon, activeMode.color, 22),
       goSearch: this.goSearch,
       already, suggested, moveSections, searchResults,
+      moveChips, isMoveAll, moveNotAll: !isMoveAll, moveFilteredCards,
       loading: s.loading, notLoading: !s.loading,
       searchQuery: s.searchQuery, setSearch: (e) => this.setState({ searchQuery: e.target.value }), searchCount,
       detail, toggleSave,
@@ -2377,7 +2430,7 @@ class Component extends DCLogic {
       setFilterDurMin: (e) => this.setState(st => ({ filter: { ...st.filter, durMin: Math.min(+e.target.value, st.filter.durMax) } })),
       setFilterDurMax: (e) => this.setState(st => ({ filter: { ...st.filter, durMax: Math.max(+e.target.value, st.filter.durMin) } })),
       applyFilter: () => { this.setState({ loading: true }); this.go('search', false); setTimeout(() => this.setState({ loading: false }), 500); this.showToast('Filters applied.'); },
-      resetFilter: () => this.setState({ filter: { category:{}, level:{}, equip:{}, durMin:10, durMax:60 } }),
+      resetFilter: () => this.setState({ filter: { category:{}, level:{}, equip:{}, durMin:0, durMax:60 } }),
       // progress metric
       openMetric: (m) => { this.setState({ progMetric: m, progPeriod: 'Day' }); this.go('metric'); },
       openStep: () => { this.setState({ progMetric: 'steps', progPeriod: 'Day' }); this.go('metric'); },
